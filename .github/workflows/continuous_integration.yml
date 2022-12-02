@@ -30,7 +30,13 @@ jobs:
         with:
           name: docsource-jar
           path: target/docsource-*.jar
-        
+
+      - name: Build and Publish Docker JAR
+        run: mvn -B -DskipTests package jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -55,6 +61,12 @@ jobs:
           name: docsource-linux
           path: target/docsource
 
+      - name: Build and Publish Docker Linux
+        run: mvn -B -DskipTests -Pnative package jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Dproject.target-platform=linux
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+
   build-windows:
     runs-on: windows-latest
     steps:
@@ -78,3 +90,9 @@ jobs:
         with:
           name: docsource-windows
           path: target/docsource.exe
+
+      - name: Build and Publish Docker Windows
+        run: mvn -B -DskipTests -Pnative package jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Dproject.target-platform=windows
+        env:
+          DOCKER_USER: ${{ secrets.DOCKER_USER }}
+          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
