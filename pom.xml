@@ -215,6 +215,9 @@
 							<pluginExtensions>
 								<pluginExtension>
 									<implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
+									<properties>
+									  <imageName>docsource</imageName>
+									</properties>
 								</pluginExtension>
 							</pluginExtensions>
 						</configuration>
