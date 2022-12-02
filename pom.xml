@@ -202,7 +202,7 @@
 						</dependencies>
 						<configuration>
 							<from>
-								<image>alpine:3.17.0</image>
+								<image>ubuntu:22.10</image>
 							</from>
 							<to>
 								<image>docker.io/loicgreffier/docsource:${project.version}-linux</image>
