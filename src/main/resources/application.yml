@@ -1,0 +1,9 @@
+app.version: @project.version@
+
+spring:
+  main:
+    log-startup-info: false
+
+logging:
+  level:
+    root: off

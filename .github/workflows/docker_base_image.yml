@@ -1,0 +1,52 @@
+name: Build Docker base image
+
+on: 
+  workflow_dispatch:
+    inputs:
+      linux-version:
+        description: 'Linux image version'
+        required: false
+      jar-version:
+        description: 'Java image version'
+        required: false
+        
+jobs:
+  build-linux-base-image:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event.inputs.linux-version != ''
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build the Docker image
+        run: |
+          docker build . -f .docker/Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
+          docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
+  
+  build-jar-base-image:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' && github.event.inputs.jar-version != ''
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Docker login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Build the Docker image
+        run: |
+          docker build . -f .docker/jar.Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
+          docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
