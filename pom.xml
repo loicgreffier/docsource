@@ -41,7 +41,6 @@
 		<java.version>17</java.version>
 		<picocli.version>4.6.3</picocli.version>
 		<picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
-		<project.target-platform>jvm</project.target-platform>
 		<spring-native.version>0.11.3</spring-native.version>
 	</properties>
 
@@ -130,30 +129,18 @@
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>${jib-maven-plugin.version}</version>
-				<dependencies>
-					<dependency>
-						<groupId>com.google.cloud.tools</groupId>
-						<artifactId>jib-native-image-extension-maven</artifactId>
-						<version>0.1.0</version>
-					</dependency>
-				</dependencies>
 				<configuration>
 					<from>
 						<image>eclipse-temurin:17.0.3_7-jre</image>
 					</from>
 					<to>
-						<image>docker.io/loicgreffier/docsource:${project.version}-${project.target-platform}</image>
+						<image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
 					</to>
 					<container>
 						<ports>
 							<port>8080</port>
 						</ports>
 					</container>
-					<pluginExtensions>
-						<pluginExtension>
-							<implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
-						</pluginExtension>
-					</pluginExtensions>
 				</configuration>
 			</plugin>
 		</plugins>
@@ -200,6 +187,36 @@
 						<artifactId>spring-boot-maven-plugin</artifactId>
 						<configuration>
 							<classifier>exec</classifier>
+						</configuration>
+					</plugin>
+					<plugin>
+						<groupId>com.google.cloud.tools</groupId>
+						<artifactId>jib-maven-plugin</artifactId>
+						<version>${jib-maven-plugin.version}</version>
+						<dependencies>
+							<dependency>
+								<groupId>com.google.cloud.tools</groupId>
+								<artifactId>jib-native-image-extension-maven</artifactId>
+								<version>0.1.0</version>
+							</dependency>
+						</dependencies>
+						<configuration>
+							<from>
+								<image>alpine:3.17.0</image>
+							</from>
+							<to>
+								<image>docker.io/loicgreffier/docsource:${project.version}-linux</image>
+							</to>
+							<container>
+								<ports>
+									<port>8080</port>
+								</ports>
+							</container>
+							<pluginExtensions>
+								<pluginExtension>
+									<implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
+								</pluginExtension>
+							</pluginExtensions>
 						</configuration>
 					</plugin>
 				</plugins>

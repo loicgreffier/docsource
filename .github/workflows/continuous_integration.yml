@@ -90,9 +90,3 @@ jobs:
         with:
           name: docsource-windows
           path: target/docsource.exe
-
-      - name: Build and Publish Docker Windows
-        run: mvn -B -DskipTests -Pnative package jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Dproject.target-platform=windows
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
