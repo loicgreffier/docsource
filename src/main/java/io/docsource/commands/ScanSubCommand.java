@@ -22,14 +22,14 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
 
 import static io.docsource.commands.DocsourceCommand.VERBOSE;
 import static io.docsource.models.Link.Status.*;
-import static io.docsource.models.Link.Type.LOCAL;
-import static io.docsource.models.Link.Type.REMOTE;
+import static io.docsource.models.Link.Type.*;
 
 @Component
 @CommandLine.Command(name = "scan",
@@ -44,16 +44,15 @@ import static io.docsource.models.Link.Type.REMOTE;
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true)
 public class ScanSubCommand implements Callable<Integer> {
-    @Autowired
-    ApplicationContext applicationContext;
+    private static final String EMAIL_REGEX = "(.+)@(.+)";
 
     @CommandLine.Parameters(description = "Directory or file(s) to scan.")
-    List<File> paths;
+    public List<File> paths;
 
     @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
 
-    private List<ScannedFile> scannedFiles = new ArrayList<>();
+    private final List<ScannedFile> scannedFiles = new ArrayList<>();
 
     /**
      * Execute the "docsource scan" sub command
@@ -82,7 +81,7 @@ public class ScanSubCommand implements Callable<Integer> {
                     links.forEach(link -> {
                         Link.Type type = REMOTE;
                         Link.Status status = SUCCESS;
-                        String errorCause = "";
+                        String result = "OK";
                         if (link.contains("://")) {
                             try {
                                 HttpRequest request = HttpRequest.newBuilder()
@@ -92,6 +91,7 @@ public class ScanSubCommand implements Callable<Integer> {
                                         .build();
 
                                 HttpResponse<String> response = HttpClient.newBuilder()
+                                        .connectTimeout(Duration.ofSeconds(3))
                                         .build()
                                         .send(request, HttpResponse.BodyHandlers.ofString());
 
@@ -101,26 +101,33 @@ public class ScanSubCommand implements Callable<Integer> {
                                     status = REDIRECT;
                                 }
 
-                                errorCause = String.valueOf(response.statusCode());
+                                result = String.valueOf(response.statusCode());
                             } catch (IllegalArgumentException | URISyntaxException e) {
                                 status = DEAD;
-                                errorCause = e.getMessage();
+                                result = e.getMessage();
                             } catch (IOException e) {
                                 status = DEAD;
-                                errorCause = "invalid URL";
+                                result = "invalid URL";
                             } catch (InterruptedException e) {
                                 Thread.currentThread().interrupt();
                                 status = DEAD;
-                                errorCause = e.getMessage();
+                                result = e.getMessage();
+                            }
+                        } else if (link.contains("mailto:")) {
+                            type = EMAIL;
+                            if (!link.substring(link.indexOf("mailto:")).matches(EMAIL_REGEX)) {
+                                status = DEAD;
+                                result = "file not found";
                             }
                         } else {
                             type = LOCAL;
-                            if (!Files.exists(Paths.get(link))) {
+                            if (!Files.exists(Paths.get("./" + link))) {
                                 status = DEAD;
+                                result = "file not found";
                             }
                         }
 
-                        Link scannedLink = new Link(link, status, errorCause, type);
+                        Link scannedLink = new Link(link, status, result, type);
                         if (VERBOSE) {
                             System.out.println(CommandLine.Help.Ansi.AUTO.string(scannedLink.toAnsiString()));
                         }
@@ -136,7 +143,8 @@ public class ScanSubCommand implements Callable<Integer> {
 
         long totalRemote = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> REMOTE.equals(link.getType()))).count();
         long totalLocal = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> LOCAL.equals(link.getType()))).count();
-        long total = totalRemote + totalLocal;
+        long totalEmail = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> EMAIL.equals(link.getType()))).count();
+        long total = totalRemote + totalLocal + totalEmail;
         long totalSuccess = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> SUCCESS.equals(link.getStatus()))).count();
         long totalRedirect = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> REDIRECT.equals(link.getStatus()))).count();
         long totalDead = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> DEAD.equals(link.getStatus()))).count();
@@ -145,7 +153,7 @@ public class ScanSubCommand implements Callable<Integer> {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
         int numberOfHyphens = 29 + String.valueOf(total).length();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalLocal + "|@ local / @|bold " + totalRemote + "|@ remote)"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalLocal + "|@ local / @|bold " + totalRemote + "|@ remote / @|bold " + totalEmail + "|@ email)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalDead + "|@ dead link(s)\n"));

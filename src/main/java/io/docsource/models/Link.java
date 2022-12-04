@@ -11,7 +11,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 public class Link {
     private String address;
     private Status status;
-    private String errorCause;
+    private String result;
     private Type type;
 
     /**
@@ -19,7 +19,7 @@ public class Link {
      * @return A string with Ansi format
      */
     public String toAnsiString() {
-        return "@|bold,cyan " + address + "|@ (@|bold," + getAnsiColor() + " " + errorCause + "|@)";
+        return "@|bold,cyan " + address + "|@ (@|bold," + getAnsiColor() + " " + result + "|@)";
     }
 
     /**
@@ -36,7 +36,8 @@ public class Link {
 
     public enum Type {
         LOCAL,
-        REMOTE
+        REMOTE,
+        EMAIL
     }
 
     public enum Status {
