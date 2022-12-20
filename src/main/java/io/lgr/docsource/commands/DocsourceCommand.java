@@ -1,6 +1,6 @@
-package io.docsource.commands;
+package io.lgr.docsource.commands;
 
-import io.docsource.utils.VersionProvider;
+import io.lgr.docsource.utils.VersionProvider;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 

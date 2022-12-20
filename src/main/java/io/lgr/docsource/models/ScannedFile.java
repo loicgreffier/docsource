@@ -1,8 +1,7 @@
-package io.docsource.models;
+package io.lgr.docsource.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.ToString;
 
 import java.util.List;
 

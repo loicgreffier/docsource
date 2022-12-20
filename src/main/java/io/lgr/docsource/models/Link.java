@@ -1,4 +1,4 @@
-package io.docsource.models;
+package io.lgr.docsource.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

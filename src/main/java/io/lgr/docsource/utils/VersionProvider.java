@@ -1,6 +1,6 @@
-package io.docsource.utils;
+package io.lgr.docsource.utils;
 
-import io.docsource.properties.AppProperties;
+import io.lgr.docsource.properties.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

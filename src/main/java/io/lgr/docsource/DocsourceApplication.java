@@ -1,6 +1,6 @@
-package io.docsource;
+package io.lgr.docsource;
 
-import io.docsource.commands.DocsourceCommand;
+import io.lgr.docsource.commands.DocsourceCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

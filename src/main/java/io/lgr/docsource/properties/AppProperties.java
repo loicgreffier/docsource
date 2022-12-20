@@ -1,4 +1,4 @@
-package io.docsource.properties;
+package io.lgr.docsource.properties;
 
 import lombok.Getter;
 import lombok.Setter;
