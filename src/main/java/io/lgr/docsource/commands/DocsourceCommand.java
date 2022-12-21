@@ -20,22 +20,19 @@ import java.util.concurrent.Callable;
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true)
 public class DocsourceCommand implements Callable<Integer> {
-    /**
-     * Does verbose mode is activated or not
-     */
     public static boolean VERBOSE = false;
 
     /**
-     * If "-v" is given, set verbose mode
+     * If "-v" is given, set verbose mode.
      * @param verbose The verbose mode
      */
     @CommandLine.Option(names = {"-v", "--verbose"}, description = "Enable the verbose mode.", scope = CommandLine.ScopeType.INHERIT)
-    public void setVerbose(final boolean verbose) {
+    public static void setVerbose(final boolean verbose) {
         VERBOSE = verbose;
     }
 
     /**
-     * Execute the "docsource" command
+     * Execute the "docsource" command.
      * @return An execution code
      */
     @Override

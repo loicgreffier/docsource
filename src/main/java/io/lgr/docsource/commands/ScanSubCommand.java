@@ -1,31 +1,28 @@
 package io.lgr.docsource.commands;
 
-import java.io.File;
-
 import io.lgr.docsource.models.Link;
-import io.lgr.docsource.models.ScannedFile;
+import io.lgr.docsource.models.impl.EmailLink;
+import io.lgr.docsource.models.impl.LocalLink;
+import io.lgr.docsource.models.impl.RemoteLink;
 import io.lgr.docsource.utils.FileUtils;
 import io.lgr.docsource.utils.VersionProvider;
 import lombok.Getter;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 import picocli.CommandLine;
 
+import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Stream;
+
+import static io.lgr.docsource.commands.DocsourceCommand.VERBOSE;
+import static io.lgr.docsource.models.Link.Status.*;
 
 @Component
 @CommandLine.Command(name = "scan",
@@ -40,8 +37,6 @@ import java.util.stream.Stream;
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true)
 public class ScanSubCommand implements Callable<Integer> {
-    private static final String EMAIL_REGEX = "(.+)@(.+)";
-
     @CommandLine.Parameters(description = "Directory or file(s) to scan.")
     public List<File> paths;
 
@@ -49,10 +44,10 @@ public class ScanSubCommand implements Callable<Integer> {
     public boolean recursive;
 
     @Getter
-    private final List<ScannedFile> scannedFiles = new ArrayList<>();
+    private final List<Link> scannedLinks = new ArrayList<>();
 
     /**
-     * Execute the "docsource scan" sub command
+     * Execute the "docsource scan" sub command.
      * @return An execution code
      */
     @Override
@@ -61,6 +56,10 @@ public class ScanSubCommand implements Callable<Integer> {
             CommandLine docsourceScan = new CommandLine(this);
             docsourceScan.usage(System.out);
             return 0;
+        }
+
+        if (VERBOSE) {
+            System.out.println("Using current directory " + System.getProperty("user.dir") + " as root directory\n");
         }
 
         paths.forEach(path -> {
@@ -76,112 +75,63 @@ public class ScanSubCommand implements Callable<Integer> {
                     }
 
                     links.forEach(link -> {
-                        Link.Type type = Link.Type.REMOTE;
-                        Link.Status status = Link.Status.SUCCESS;
-                        String result = "OK";
+                        Link linkToScan;
                         if (link.contains("://")) {
-                            try {
-                                HttpRequest request = HttpRequest.newBuilder()
-                                        .header("User-Agent", "Docsource") // Modify user-agent for websites with protection against Java HTTP clients
-                                        .uri(new URI(link))
-                                        .GET()
-                                        .build();
-
-                                HttpResponse<String> response = HttpClient.newBuilder()
-                                        .connectTimeout(Duration.ofSeconds(3))
-                                        .build()
-                                        .send(request, HttpResponse.BodyHandlers.ofString());
-
-                                if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
-                                    status = Link.Status.DEAD;
-                                } else if (response.statusCode() >= HttpURLConnection.HTTP_MULT_CHOICE) {
-                                    status = Link.Status.REDIRECT;
-                                }
-
-                                result = String.valueOf(response.statusCode());
-                            } catch (IllegalArgumentException | URISyntaxException e) {
-                                status = Link.Status.DEAD;
-                                result = e.getMessage();
-                            } catch (IOException e) {
-                                status = Link.Status.DEAD;
-                                result = "invalid URL";
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                status = Link.Status.DEAD;
-                                result = e.getMessage();
-                            }
+                            linkToScan = new RemoteLink(link, file);
                         } else if (link.contains("mailto:")) {
-                            type = Link.Type.EMAIL;
-                            if (!link.substring(link.indexOf("mailto:")).matches(EMAIL_REGEX)) {
-                                status = Link.Status.DEAD;
-                                result = "bad format";
-                            }
+                            linkToScan = new EmailLink(link, file);
                         } else {
-                            type = Link.Type.LOCAL;
-
-                            if (!StringUtils.hasText(FilenameUtils.getExtension(link))) {
-                                link += ".md";
-                            }
-
-                            if (!Files.exists(Paths.get(file.getParent() + "/" + link))) {
-                                status = Link.Status.DEAD;
-                                result = "file not found";
-                            }
+                            linkToScan = new LocalLink(link, file);
                         }
+                        linkToScan.validate();
 
-                        Link scannedLink = new Link(link, status, result, type);
-                        if (DocsourceCommand.VERBOSE) {
-                            System.out.println(CommandLine.Help.Ansi.AUTO.string(scannedLink.toAnsiString()));
+                        if (VERBOSE) {
+                            System.out.println(CommandLine.Help.Ansi.AUTO.string(linkToScan.toAnsiString()));
                         }
-                        updateScannedFiles(file, scannedLink);
+                        scannedLinks.add(linkToScan);
                     });
 
-                    if (DocsourceCommand.VERBOSE) System.out.println();
+                    if (VERBOSE) System.out.println();
                 } catch (IOException e) {
                     System.err.println("Cannot get links from file " + file + ".");
                 }
             });
         });
 
-        long totalRemote = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Type.REMOTE.equals(link.getType()))).count();
-        long totalLocal = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Type.LOCAL.equals(link.getType()))).count();
-        long totalEmail = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Type.EMAIL.equals(link.getType()))).count();
+        long totalRemote = getScannedLinksByType(RemoteLink.class).size();
+        long totalLocal = getScannedLinksByType(LocalLink.class).size();
+        long totalEmail = getScannedLinksByType(EmailLink.class).size();
         long total = totalRemote + totalLocal + totalEmail;
-        long totalSuccess = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Status.SUCCESS.equals(link.getStatus()))).count();
-        long totalRedirect = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Status.REDIRECT.equals(link.getStatus()))).count();
-        long totalDead = scannedFiles.stream().flatMap(scannedFile -> scannedFile.getLinks().stream().filter(link -> Link.Status.DEAD.equals(link.getStatus()))).count();
+        long totalSuccess = getScannedLinksByStatus(SUCCESS).size();
+        long totalRedirect = getScannedLinksByStatus(REDIRECT).size();
+        List<Link> deadLinks = getScannedLinksByStatus(DEAD);
+        long totalDead = deadLinks.size();
 
-        if (!DocsourceCommand.VERBOSE) System.out.println();
+        if (!VERBOSE) System.out.println();
+
         System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
-        int numberOfHyphens = 29 + String.valueOf(total).length();
+        int numberOfHyphens = 30 + String.valueOf(total).length();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalLocal + "|@ local / @|bold " + totalRemote + "|@ remote / @|bold " + totalEmail + "|@ email)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalDead + "|@ dead link(s)\n"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalDead + "|@ dead link(s)"));
 
         if (totalDead > 0) {
-            System.out.println("List of dead links");
-            System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-
-            Stream<ScannedFile> filesWithDeadLinks = scannedFiles
-                    .stream()
-                    .filter(scannedFile -> scannedFile.getLinks().stream().anyMatch(link -> Link.Status.DEAD.equals(link.getStatus())));
-
-            filesWithDeadLinks.forEach(file -> {
-                System.out.println(CommandLine.Help.Ansi.AUTO.string(file.toAnsiString()));
-                file.getLinks()
-                        .stream()
-                        .filter(link -> Link.Status.DEAD.equals(link.getStatus()))
-                        .forEach(deadLink -> System.out.println(CommandLine.Help.Ansi.AUTO.string("  - " + deadLink.toAnsiString())));
-            });
-            System.out.println();
+            deadLinks.forEach(deadLink ->
+                    System.out.println(CommandLine.Help.Ansi.AUTO.string("  - " + deadLink.toAnsiString() + " in file @|bold " + deadLink.getFile().toAbsolutePath() + "|@")));
         }
 
-        System.out.println("End scanning... It's been an honour!");
+        System.out.println("\nEnd scanning... It's been an honour!");
         return totalDead == 0 ? 0 : 1;
     }
 
+    /**
+     * Get all the files at the given path.
+     * The path may be a file itself or a folder.
+     * @param path The path to get the files
+     * @return A list of files
+     */
     public List<Path> getFilesFromPath(File path) {
         if (path.isFile()) {
             String fileExtension = FilenameUtils.getExtension(path.toString());
@@ -209,13 +159,28 @@ public class ScanSubCommand implements Callable<Integer> {
         return List.of();
     }
 
-    private void updateScannedFiles(Path file, Link link) {
-        Optional<ScannedFile> scannedFileOptional = scannedFiles.stream().filter(scannedFile -> scannedFile.getName().equals(file.toString())).findFirst();
-        if (scannedFileOptional.isEmpty()) {
-            scannedFiles.add(new ScannedFile(file.toString(), new ArrayList<>(Collections.singletonList(link))));
-        } else {
-            ScannedFile scannedFile = scannedFileOptional.get();
-            scannedFile.getLinks().add(link);
-        }
+    /**
+     * Get the scanned links by type
+     * @param linkClass The link class
+     * @return A list of links
+     * @param <T> Any type of link
+     */
+    public <T extends Link> List<Link> getScannedLinksByType(Class<T> linkClass) {
+        return scannedLinks
+                .stream()
+                .filter(linkClass::isInstance)
+                .toList();
+    }
+
+    /**
+     * Get the scanned links by status
+     * @param status The link status
+     * @return A list of links
+     */
+    public List<Link> getScannedLinksByStatus(Link.Status status) {
+        return scannedLinks
+                .stream()
+                .filter(link -> status.equals(link.getStatus()))
+                .toList();
     }
 }

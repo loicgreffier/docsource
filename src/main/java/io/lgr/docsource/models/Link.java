@@ -1,25 +1,34 @@
 package io.lgr.docsource.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
+
+import java.nio.file.Path;
 
 import static org.fusesource.jansi.Ansi.Color.*;
 
-@Data
-@AllArgsConstructor
-public class Link {
-    private String address;
-    private Status status;
-    private String result;
-    private Type type;
+@Getter
+@RequiredArgsConstructor
+public abstract class Link {
+    protected final String path;
+    protected final Path file;
+    protected Status status;
+    protected String details;
+
+    /**
+     * Validate the status of a link
+     */
+    public abstract void validate();
 
     /**
      * Print a link as Ansi string
      * @return A string with Ansi format
      */
     public String toAnsiString() {
-        return "@|bold,cyan " + address + "|@ (@|bold," + getAnsiColor() + " " + result + "|@)";
+        return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
     }
 
     /**
@@ -32,12 +41,6 @@ public class Link {
             case REDIRECT -> YELLOW;
             case DEAD -> RED;
         };
-    }
-
-    public enum Type {
-        LOCAL,
-        REMOTE,
-        EMAIL
     }
 
     public enum Status {

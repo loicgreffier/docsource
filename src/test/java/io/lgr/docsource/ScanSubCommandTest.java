@@ -10,7 +10,6 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ScanSubCommandTest {
-
     @Test
     void shouldGetFile() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
@@ -21,7 +20,7 @@ class ScanSubCommandTest {
     }
 
     @Test
-    void shouldNotGetFileIfNotSupportedFormat() {
+    void shouldNotGetFileIfFormatNotSupported() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify/index.html"));
 
