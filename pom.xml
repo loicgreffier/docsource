@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>2.6.5</version>
+		<version>3.0.1</version>
 		<relativePath/>
 	</parent>
 
@@ -39,25 +39,18 @@
 		<jib-maven-plugin.version>3.3.1</jib-maven-plugin.version>
 		<lombok.version>1.18.24</lombok.version>
 		<java.version>17</java.version>
-		<picocli.version>4.6.3</picocli.version>
+		<picocli.version>4.7.0</picocli.version>
 		<picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
 		<spring-native.version>0.11.3</spring-native.version>
 	</properties>
 
 	<dependencies>
 		<dependency>
-			<groupId>org.springframework.experimental</groupId>
-			<artifactId>spring-native</artifactId>
-			<version>${spring-native.version}</version>
-		</dependency>
-
-		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli-spring-boot-starter</artifactId>
 			<version>${picocli.version}</version>
 		</dependency>
 
-		<!-- Required for native https://github.com/remkop/picocli/tree/main/picocli-codegen#212-maven -->
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli-codegen</artifactId>
@@ -106,26 +99,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.springframework.experimental</groupId>
-				<artifactId>spring-aot-maven-plugin</artifactId>
-				<version>${spring-native.version}</version>
-				<executions>
-					<execution>
-						<id>generate</id>
-						<goals>
-							<goal>generate</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>test-generate</id>
-						<goals>
-							<goal>test-generate</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
 				<groupId>com.google.cloud.tools</groupId>
 				<artifactId>jib-maven-plugin</artifactId>
 				<version>${jib-maven-plugin.version}</version>
@@ -149,46 +122,8 @@
 	<profiles>
 		<profile>
 			<id>native</id>
-			<dependencies>
-				<!-- Required with Maven Surefire 2.x -->
-				<dependency>
-					<groupId>org.junit.platform</groupId>
-					<artifactId>junit-platform-launcher</artifactId>
-					<scope>test</scope>
-				</dependency>
-			</dependencies>
 			<build>
 				<plugins>
-					<plugin>
-						<groupId>org.graalvm.buildtools</groupId>
-						<artifactId>native-maven-plugin</artifactId>
-						<version>0.9.10</version>
-						<extensions>true</extensions>
-						<executions>
-							<execution>
-								<id>build-native</id>
-								<goals>
-									<goal>build</goal>
-								</goals>
-								<phase>package</phase>
-							</execution>
-							<execution>
-								<id>test-native</id>
-								<goals>
-									<goal>test</goal>
-								</goals>
-								<phase>test</phase>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Avoid a clash between Spring Boot repackaging and native-maven-plugin -->
-					<plugin>
-						<groupId>org.springframework.boot</groupId>
-						<artifactId>spring-boot-maven-plugin</artifactId>
-						<configuration>
-							<classifier>exec</classifier>
-						</configuration>
-					</plugin>
 					<plugin>
 						<groupId>com.google.cloud.tools</groupId>
 						<artifactId>jib-maven-plugin</artifactId>
@@ -216,7 +151,7 @@
 								<pluginExtension>
 									<implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
 									<properties>
-									  <imageName>docsource</imageName>
+										<imageName>docsource</imageName>
 									</properties>
 								</pluginExtension>
 							</pluginExtensions>
