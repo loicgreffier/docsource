@@ -43,8 +43,6 @@ class ScanSubCommandTest {
         List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify"));
 
         assertThat(paths).hasSize(3);
-        assertThat(paths.get(0).getFileName().toString()).hasToString("page.md");
-        assertThat(paths.get(1).getFileName().toString()).hasToString("page.md");
-        assertThat(paths.get(2).getFileName().toString()).hasToString("README.md");
+        assertThat(paths.stream().map(path -> path.getFileName().toString()).toList()).containsAll(List.of("page.md", "README.md"));
     }
 }
