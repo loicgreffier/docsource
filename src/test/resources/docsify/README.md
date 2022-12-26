@@ -1,46 +1,46 @@
-# Remote Link
+# External Link
 
 ## Success
 
-This is a remote link to [Google](https://www.google.fr/).
+This is an external link to [Google](https://www.google.fr/).
 
 ## Dead
 
-This is a remote dead link to [a wrong URL](https://www.gogle.fr/).
+This is an external dead link to [a wrong URL](https://www.gogle.fr/).
 
 ## Redirect
 
-This is a remote link to [Google being redirected](https://google.fr/).
+This is an external link to [Google being redirected](https://google.fr/).
 
-# Local Link
+# Inline Link
 
 ## Relative
 
 ### Success
 
-This is a local relative link to [./folder/page](./folder/page).
+This is an inline relative link to [./folderOne/page](./folderOne/page).
 
-This is a local relative link to [folder/page](folder/page).
+This is an inline relative link to [folderOne/page](folderOne/page).
 
-This is a local relative link to [./folder/page.md](./folder/page.md) with extension specified.
+This is an inline relative link to [./folderOne/page.md](./folderOne/page.md) with extension specified.
 
 ![](images/spring-boot-logo.png)
 
 ### Dead
 
-This is a local dead relative link to [a page that does not exist](./does-not-exist).
+This is an inline dead relative link to [a page that does not exist](./does-not-exist).
 
 ## Absolute
 
 ### Success
 
-This is a local absolute link to [/folder/page](/folder/page).
+This is an inline absolute link to [/folderOne/page](/folderOne/page).
 
 ### Dead
 
-This is a local dead absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).
+This is an inline dead absolute link to [/doesNotExist/folderOne/page](/doesNotExist/folderOne/page).
 
-# Mailto Link
+# Email Link
 
 ## Success
 

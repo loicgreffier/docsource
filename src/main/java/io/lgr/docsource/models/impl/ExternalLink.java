@@ -12,8 +12,8 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.time.Duration;
 
-public class RemoteLink extends Link {
-    public RemoteLink(String path, Path file) {
+public class ExternalLink extends Link {
+    public ExternalLink(String path, Path file) {
         super(path, file);
     }
 

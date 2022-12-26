@@ -6,6 +6,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 
 import static org.fusesource.jansi.Ansi.Color.*;

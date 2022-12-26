@@ -4,13 +4,22 @@ import io.lgr.docsource.models.Link;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class LocalLink extends Link {
-    public LocalLink(String path, Path file) {
+public class InlineLink extends Link {
+    private String base;
+
+    public InlineLink(String path, Path file) {
         super(path, file);
+    }
+
+    public InlineLink(String base, String path, Path file) {
+        super(path, file);
+        this.base = base;
     }
 
     /**
@@ -20,8 +29,12 @@ public class LocalLink extends Link {
     public void validate() {
         String link = path;
 
+        if (base != null && !link.startsWith("/" + base)) {
+            link = "/" + base + "/" + link;
+        }
+
         // Absolute link to root folder looking for a README.md
-        if (path.equals("/")) {
+        if (link.equals("/")) {
             link = "/README.md";
         }
 

@@ -2,8 +2,8 @@ package io.lgr.docsource.commands;
 
 import io.lgr.docsource.models.Link;
 import io.lgr.docsource.models.impl.EmailLink;
-import io.lgr.docsource.models.impl.LocalLink;
-import io.lgr.docsource.models.impl.RemoteLink;
+import io.lgr.docsource.models.impl.InlineLink;
+import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.utils.FileUtils;
 import io.lgr.docsource.utils.VersionProvider;
 import lombok.Getter;
@@ -43,6 +43,9 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
 
+    @CommandLine.Option(names = {"-b", "--base"}, description = "Verify inline links from another base folder")
+    public String base;
+
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
 
@@ -77,11 +80,11 @@ public class ScanSubCommand implements Callable<Integer> {
                     links.forEach(link -> {
                         Link linkToScan;
                         if (link.contains("://")) {
-                            linkToScan = new RemoteLink(link, file);
+                            linkToScan = new ExternalLink(link, file);
                         } else if (link.contains("mailto:")) {
                             linkToScan = new EmailLink(link, file);
                         } else {
-                            linkToScan = new LocalLink(link, file);
+                            linkToScan = new InlineLink(base, link, file);
                         }
                         linkToScan.validate();
 
@@ -98,10 +101,10 @@ public class ScanSubCommand implements Callable<Integer> {
             });
         });
 
-        long totalRemote = getScannedLinksByType(RemoteLink.class).size();
-        long totalLocal = getScannedLinksByType(LocalLink.class).size();
+        long totalExternal = getScannedLinksByType(ExternalLink.class).size();
+        long totalInline = getScannedLinksByType(InlineLink.class).size();
         long totalEmail = getScannedLinksByType(EmailLink.class).size();
-        long total = totalRemote + totalLocal + totalEmail;
+        long total = totalExternal + totalInline + totalEmail;
         long totalSuccess = getScannedLinksByStatus(SUCCESS).size();
         long totalRedirect = getScannedLinksByStatus(REDIRECT).size();
         List<Link> deadLinks = getScannedLinksByStatus(DEAD);
@@ -112,7 +115,7 @@ public class ScanSubCommand implements Callable<Integer> {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
         int numberOfHyphens = 30 + String.valueOf(total).length();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalLocal + "|@ local / @|bold " + totalRemote + "|@ remote / @|bold " + totalEmail + "|@ email)"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalInline + "|@ inline / @|bold " + totalExternal + "|@ external / @|bold " + totalEmail + "|@ email)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalDead + "|@ dead link(s)"));
