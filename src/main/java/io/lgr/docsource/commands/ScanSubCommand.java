@@ -61,10 +61,6 @@ public class ScanSubCommand implements Callable<Integer> {
             return 0;
         }
 
-        if (VERBOSE) {
-            System.out.println("Using current directory " + System.getProperty("user.dir") + " as root directory\n");
-        }
-
         paths.forEach(path -> {
             List<Path> filesToScan = getFilesFromPath(path);
             filesToScan.forEach(file -> {
@@ -84,7 +80,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new EmailLink(link, file);
                         } else {
-                            linkToScan = new InlineLink(base, link, file);
+                            linkToScan = new InlineLink(base, link, file, path);
                         }
                         linkToScan.validate();
 
@@ -145,14 +141,7 @@ public class ScanSubCommand implements Callable<Integer> {
             return List.of(path.toPath());
         }
 
-        try {
-            System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path + "|@"));
-            System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path.getCanonicalPath() + "|@"));
-            System.out.println(CommandLine.Help.Ansi.AUTO.string(System.getProperty("user.dir")));
-            System.out.println(CommandLine.Help.Ansi.AUTO.string(new File(".").getAbsolutePath()));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path.getAbsolutePath() + "|@"));
 
         try {
             try (Stream<Path> filesStream = Files.find(Paths.get(path.toURI()), recursive ? Integer.MAX_VALUE : 1,

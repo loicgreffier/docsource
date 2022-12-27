@@ -14,18 +14,10 @@ import static io.lgr.docsource.models.Link.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ScanCustomTest {
-    @BeforeEach
-    void setUp() {
-        System.setProperty("user.dir", new File("src/test/resources/custom/").getAbsolutePath());
-    }
-
     @Test
     void shouldScanCustomFolderRecursively() {
-        System.out.println("Run test");
-        System.out.println(new File("src/test/resources/custom/").getAbsolutePath());
-
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-rb=content", "src/test/resources/custom/");
+        int code = new CommandLine(scanSubCommand).execute("-rb=src/test/resources/custom/content", "src/test/resources/custom/");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(10);

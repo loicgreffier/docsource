@@ -14,11 +14,6 @@ import static io.lgr.docsource.models.Link.Status.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ScanDocsifyTest {
-    @BeforeEach
-    void setUp() {
-        System.setProperty("user.dir", new File("src/test/resources/docsify").getAbsolutePath());
-    }
-
     @Test
     void shouldScanDocsifyFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
@@ -52,7 +47,7 @@ class ScanDocsifyTest {
     @Test
     void shouldScanDocsifyPage() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-r", "src/test/resources/docsify/folderOne/page.md");
+        int code = new CommandLine(scanSubCommand).execute("src/test/resources/docsify/folderOne/page.md");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(6);
