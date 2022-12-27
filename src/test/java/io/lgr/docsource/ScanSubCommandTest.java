@@ -45,4 +45,22 @@ class ScanSubCommandTest {
         assertThat(paths).hasSize(3);
         assertThat(paths.stream().map(path -> path.getFileName().toString()).toList()).containsAll(List.of("page.md", "README.md"));
     }
+
+    @Test
+    void shouldGetCurrentDirParameterAsCurrentDirectory() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        scanSubCommand.currentDir = "/test";
+        String currentDirectory = scanSubCommand.getCurrentDirectory();
+
+        assertThat(currentDirectory).isEqualTo(scanSubCommand.currentDir);
+    }
+
+    @Test
+    void shouldGetSystemUserDirCurrentDirectory() {
+        System.setProperty("user.dir", "test");
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        String currentDirectory = scanSubCommand.getCurrentDirectory();
+
+        assertThat(currentDirectory).isEqualTo(System.getProperty("user.dir"));
+    }
 }

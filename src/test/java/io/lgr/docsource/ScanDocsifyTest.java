@@ -32,7 +32,7 @@ class ScanDocsifyTest {
     @Test
     void shouldScanDocsifyReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("src/test/resources/docsify/README.md");
+        int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(12);
@@ -47,7 +47,7 @@ class ScanDocsifyTest {
     @Test
     void shouldScanDocsifyPage() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("src/test/resources/docsify/folderOne/page.md");
+        int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/folderOne/page.md");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(6);

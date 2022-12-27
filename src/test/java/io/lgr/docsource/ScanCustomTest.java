@@ -17,7 +17,7 @@ class ScanCustomTest {
     @Test
     void shouldScanCustomFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-rb=src/test/resources/custom/content", "src/test/resources/custom/");
+        int code = new CommandLine(scanSubCommand).execute("-r", "-s=content", "src/test/resources/custom");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(10);
@@ -32,7 +32,7 @@ class ScanCustomTest {
     @Test
     void shouldScanCustomFolderOneReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-b=content", "src/test/resources/custom/content/folderOne/README.md");
+        int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/custom", "-s=content", "src/test/resources/custom/content/folderOne/README.md");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(10);

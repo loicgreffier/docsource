@@ -43,8 +43,11 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
 
-    @CommandLine.Option(names = {"-b", "--base"}, description = "Verify inline links from another base folder")
-    public String base;
+    @CommandLine.Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
+    public String currentDir;
+
+    @CommandLine.Option(names = {"-s", "--start-with"}, description = "Complete the beginning of inline links with a partial path.")
+    public String startWith;
 
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
@@ -80,7 +83,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new EmailLink(link, file);
                         } else {
-                            linkToScan = new InlineLink(base, link, file, path);
+                            linkToScan = new InlineLink(link, file, getCurrentDirectory(), path, startWith);
                         }
                         linkToScan.validate();
 
@@ -181,5 +184,17 @@ public class ScanSubCommand implements Callable<Integer> {
                 .stream()
                 .filter(link -> status.equals(link.getStatus()))
                 .toList();
+    }
+
+    /**
+     * Get the user current directory
+     * @return The user current directory
+     */
+    public String getCurrentDirectory() {
+        if (currentDir != null) {
+            return currentDir;
+        }
+
+        return System.getProperty("user.dir");
     }
 }
