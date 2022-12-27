@@ -28,6 +28,12 @@ jobs:
       - name: Test
         run: mvn test
 
+      - name: Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: '**/target/surefire-reports/TEST-*.xml'
+
       - name: Upload
         uses: actions/upload-artifact@v3
         with:
@@ -55,8 +61,14 @@ jobs:
           java-version: '17'
           components: 'native-image'
 
-      - name: Build
+      - name: Build & Test
         run: mvn clean package -P native,nativeTest
+
+      - name: Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: '**/target/native-test-reports/TEST-*.xml'
 
       - name: Upload
         uses: actions/upload-artifact@v3
@@ -87,6 +99,12 @@ jobs:
 
       - name: Build & Test
         run: mvn clean package -P native,nativeTest
+
+      - name: Publish Test Report
+        if: always()
+        uses: mikepenz/action-junit-report@v3
+        with:
+          report_paths: '**/target/native-test-reports/TEST-*.xml'
 
       - name: Upload
         uses: actions/upload-artifact@v3
