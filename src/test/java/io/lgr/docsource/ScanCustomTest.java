@@ -21,6 +21,9 @@ class ScanCustomTest {
 
     @Test
     void shouldScanCustomFolderRecursively() {
+        System.out.println("Run test");
+        System.out.println(new File("src/test/resources/custom/").getAbsolutePath());
+
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         int code = new CommandLine(scanSubCommand).execute("-rb=content", "src/test/resources/custom/");
 
