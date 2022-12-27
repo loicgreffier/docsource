@@ -22,16 +22,19 @@ jobs:
           distribution: 'temurin'
           cache: maven
         
-      - name: Build JAR
-        run: mvn clean package
-      
-      - name: Upload JAR
+      - name: Build
+        run: mvn clean package -DskipTests
+
+      - name: Test
+        run: mvn test
+
+      - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: docsource-jar
           path: target/docsource-*.jar
 
-      - name: Build and Publish Docker JAR
+      - name: Docker
         run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -52,16 +55,16 @@ jobs:
           java-version: '17'
           components: 'native-image'
 
-      - name: Build Linux
-        run: mvn clean package -Pnative
+      - name: Build
+        run: mvn clean package -Pnative,nativeTest
 
-      - name: Upload Linux
+      - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: docsource-linux
           path: target/docsource
 
-      - name: Build and Publish Docker Linux
+      - name: Docker
         run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Dproject.target-platform=linux
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -82,10 +85,10 @@ jobs:
           java-version: '17'
           components: 'native-image'
 
-      - name: Build Windows
-        run: mvn clean package -Pnative
+      - name: Build & Test
+        run: mvn clean package -Pnative,nativeTest
 
-      - name: Upload Windows
+      - name: Upload
         uses: actions/upload-artifact@v3
         with:
           name: docsource-windows
