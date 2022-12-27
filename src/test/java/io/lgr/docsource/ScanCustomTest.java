@@ -16,13 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ScanCustomTest {
     @BeforeEach
     void setUp() {
-        System.setProperty("user.dir", new File("src/test/resources/custom").getAbsolutePath());
+        System.setProperty("user.dir", new File("src/test/resources/custom/").getAbsolutePath());
     }
 
     @Test
     void shouldScanCustomFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-rb=content", "src/test/resources/custom");
+        int code = new CommandLine(scanSubCommand).execute("-rb=content", "src/test/resources/custom/");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(10);
