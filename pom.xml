@@ -33,7 +33,6 @@
 	</pluginRepositories>
 
 	<properties>
-		<repackage.classifier/>
 		<commons-io.version>2.11.0</commons-io.version>
 		<jansi.version>2.4.0</jansi.version>
 		<jib-maven-plugin.version>3.3.1</jib-maven-plugin.version>
@@ -41,7 +40,6 @@
 		<java.version>17</java.version>
 		<picocli.version>4.7.0</picocli.version>
 		<picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
-		<spring-native.version>0.11.3</spring-native.version>
 	</properties>
 
 	<dependencies>
@@ -49,7 +47,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>info.picocli</groupId>
 			<artifactId>picocli-spring-boot-starter</artifactId>

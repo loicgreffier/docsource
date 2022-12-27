@@ -23,7 +23,7 @@ jobs:
           cache: maven
         
       - name: Build JAR
-        run: mvn -B package
+        run: mvn clean package
       
       - name: Upload JAR
         uses: actions/upload-artifact@v3
@@ -53,7 +53,7 @@ jobs:
           components: 'native-image'
 
       - name: Build Linux
-        run: mvn -B -Pnative package
+        run: mvn clean package -Pnative
 
       - name: Upload Linux
         uses: actions/upload-artifact@v3
@@ -83,7 +83,7 @@ jobs:
           components: 'native-image'
 
       - name: Build Windows
-        run: mvn -B -Pnative package
+        run: mvn clean package -Pnative
 
       - name: Upload Windows
         uses: actions/upload-artifact@v3
