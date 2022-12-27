@@ -145,7 +145,14 @@ public class ScanSubCommand implements Callable<Integer> {
             return List.of(path.toPath());
         }
 
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path.getAbsolutePath() + "|@"));
+        try {
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path + "|@"));
+            System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path.getCanonicalPath() + "|@"));
+            System.out.println(CommandLine.Help.Ansi.AUTO.string(System.getProperty("user.dir")));
+            System.out.println(CommandLine.Help.Ansi.AUTO.string(new File(".").getAbsolutePath()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 
         try {
             try (Stream<Path> filesStream = Files.find(Paths.get(path.toURI()), recursive ? Integer.MAX_VALUE : 1,
