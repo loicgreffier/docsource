@@ -18,6 +18,7 @@ Docsource is a CLI that validates all the links a Markdown documentation contain
     * [Mailto Links](#mailto-links)
   * [CLI](#cli)
     * [Directory](#directory)
+* [Motivation](#motivation)
 
 # Usage
 
@@ -25,7 +26,7 @@ Docsource is a CLI that validates all the links a Markdown documentation contain
 
 The main capability of Docsource is to detect broken links inside Markdown documentations.
 
-There are 3 kind of links:
+There are 3 kinds of links:
 - **External** - a link that points to an external domain.
 - **Relative** - a link that points to a resource within the same domain.
 - **Mailto** - a link that contains an email address. 
@@ -38,7 +39,7 @@ They contain text displayed to the user enclosed in square brackets [] and URL e
 Docsource will ping all the external links and deduct a status according to the HTTP code:
 - **400** and higher is a broken link
 - **3xx** is a redirected link. 
-As redirection can occur for multiple reasons (e.g. authentication required before accessing the resource), a redirected link is considered as a valid link.
+As redirection can occur for multiple reasons (e.g., authentication required before accessing the resource), a redirected link is considered as a valid link.
 - **2xx** is a valid link.
 
 ### Relative Links
