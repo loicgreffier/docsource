@@ -40,14 +40,17 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Parameters(description = "Directory or file(s) to scan.")
     public List<File> paths;
 
-    @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
-    public boolean recursive;
+    @CommandLine.Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
+    public boolean relativeToAbsolute;
 
     @CommandLine.Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
     public String currentDir;
 
-    @CommandLine.Option(names = {"-s", "--start-with"}, description = "Complete the beginning of inline links with a partial path.")
-    public String startWith;
+    @CommandLine.Option(names = {"-p", "--path-prefix"}, description = "Prefix the beginning of relative links with a partial path.")
+    public String pathPrefix;
+
+    @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
+    public boolean recursive;
 
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
@@ -83,7 +86,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new MailtoLink(link, file);
                         } else {
-                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), startWith);
+                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), pathPrefix, relativeToAbsolute);
                         }
                         linkToScan.validate();
 

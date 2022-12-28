@@ -1,25 +1,27 @@
-# Inline Link
+# Relative Link
 
 ## Relative
 
 ### Success
 
-This is an external relative link to [../README](../README).
+This is a relative link to [../README](../README).
 
-This is an external relative link to [../folderTwo/page](../folderTwo/page).
+This is a relative link to [../folderTwo/page](../folderTwo/page).
 
 ### Broken
 
-This is an external broken relative link to [./folderTwo/page](./folderTwo/page).
+This is a broken relative link to [./folderTwo/page](./folderTwo/page).
+
+![This is a broken relative link to an image](images/spring-boot-logo.png)
 
 ## Absolute 
 
 ### Success
 
-This is an inline relative link to [/README](/README).
+This is a relative link to [/README](/README).
 
-This is an inline relative link to [/](/).
+This is a relative link to [/](/).
 
 ### Broken
 
-This is an inline broken absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).
+This is a broken absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).

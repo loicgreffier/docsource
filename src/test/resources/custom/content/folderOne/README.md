@@ -12,31 +12,35 @@ This is an external broken link to [a wrong URL](https://www.gogle.fr/).
 
 This is an external link to [Google being redirected](https://google.fr/).
 
-# Inline Link
+# Relative Link
 
 ## Relative
 
 ### Success
 
-<!-- This not works in Docsify mode, but it has to in custom mode. Inline links should be auto-completed by "/content" -->
+<!-- This not works in Docsify mode, but it has to in custom mode. -->
+<!-- Relative link paths should be considered as absolute paths and auto-completed by "content" when necessary -->
 
-This is an inline relative link to [./folderTwo/README](./folderTwo/README).
+This is a relative link to [./folderTwo/README](./folderTwo/README).
 
-This is another inline relative link to [folderTwo/README](folderTwo/README).
+This is another relative link to [folderTwo/README](folderTwo/README).
+
+![This is a relative link to an image](content/folderOne/images/spring-boot-logo.png)
 
 ### Broken
 
-This is an inline broken link to [a page that does not exist](./folderTwo/does-not-exist).
+This is a relative broken link to [a page that does not exist](./folderTwo/does-not-exist).
 
 ## Absolute
 
 ### Success
 
-<!-- This not works in Docsify mode, but it does in custom mode. Inline links should be auto-completed by "/content" -->
+<!-- This not works in Docsify mode, but it has to in custom mode. -->
+<!-- Relative link paths should be considered as absolute paths and auto-completed by "content" when necessary -->
 
-This is an inline absolute link to [/folderTwo/README](/folderTwo/README).
+This is an absolute link to [/folderTwo/README](/folderTwo/README).
 
-![](/content/folderOne/images/spring-boot-logo.png)
+![This is a relative link to an image](/content/folderOne/images/spring-boot-logo.png)
 
 # Mailto Link
 

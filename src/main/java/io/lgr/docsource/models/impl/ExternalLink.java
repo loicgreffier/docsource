@@ -15,8 +15,8 @@ import java.time.Duration;
 import static io.lgr.docsource.models.Link.Status.*;
 
 public class ExternalLink extends Link {
-    public ExternalLink(String path, Path file) {
-        super(path, file);
+    public ExternalLink(String link, Path file) {
+        super(link, file);
     }
 
     /**
@@ -27,7 +27,7 @@ public class ExternalLink extends Link {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .header("User-Agent", "Docsource") // Modify user-agent for websites with protection against Java HTTP clients
-                    .uri(new URI(path))
+                    .uri(new URI(link))
                     .GET()
                     .build();
 

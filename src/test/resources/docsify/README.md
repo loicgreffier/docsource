@@ -12,33 +12,33 @@ This is an external broken link to [a wrong URL](https://www.gogle.fr/).
 
 This is an external link to [Google being redirected](https://google.fr/).
 
-# Inline Link
+# Relative Link
 
 ## Relative
 
 ### Success
 
-This is an inline relative link to [./folderOne/page](./folderOne/page).
+This is a relative link to [./folderOne/page](./folderOne/page).
 
-This is an inline relative link to [folderOne/page](folderOne/page).
+This is a relative link to [folderOne/page](folderOne/page).
 
-This is an inline relative link to [./folderOne/page.md](./folderOne/page.md) with extension specified.
+This is a relative link to [./folderOne/page.md](./folderOne/page.md) with extension specified.
 
-![](images/spring-boot-logo.png)
+![This is a relative link to an image](images/spring-boot-logo.png)
 
 ### Broken
 
-This is an inline broken relative link to [a page that does not exist](./does-not-exist).
+This is a broken relative link to [a page that does not exist](./does-not-exist).
 
 ## Absolute
 
 ### Success
 
-This is an inline absolute link to [/folderOne/page](/folderOne/page).
+This is an absolute link to [/folderOne/page](/folderOne/page).
 
 ### Broken
 
-This is an inline broken absolute link to [/doesNotExist/folderOne/page](/doesNotExist/folderOne/page).
+This is a broken absolute link to [/doesNotExist/folderOne/page](/doesNotExist/folderOne/page).
 
 # Mailto Link
 

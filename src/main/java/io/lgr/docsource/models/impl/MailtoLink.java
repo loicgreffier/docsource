@@ -10,8 +10,8 @@ import static io.lgr.docsource.models.Link.Status.SUCCESS;
 public class MailtoLink extends Link {
     private static final String EMAIL_REGEX = "(.+)@(.+)";
 
-    public MailtoLink(String path, Path file) {
-        super(path, file);
+    public MailtoLink(String link, Path file) {
+        super(link, file);
     }
 
     /**
@@ -19,7 +19,7 @@ public class MailtoLink extends Link {
      */
     @Override
     public void validate() {
-        if (path.substring(path.indexOf("mailto:")).matches(EMAIL_REGEX)) {
+        if (link.substring(link.indexOf("mailto:")).matches(EMAIL_REGEX)) {
             status = SUCCESS;
             details = "OK";
         } else {

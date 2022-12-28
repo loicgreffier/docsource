@@ -14,45 +14,30 @@ class ScanCustomTest {
     @Test
     void shouldScanCustomFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-r", "-c=src/test/resources/custom", "-s=content", "src/test/resources/custom");
+        int code = new CommandLine(scanSubCommand).execute("-rAc=src/test/resources/custom", "-p=content", "src/test/resources/custom");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(10);
-        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(6);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(11);
+        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(7);
         assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(3);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(5);
-        assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
-    }
-
-    @Test
-    void shouldScanCustomFolderOne() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/custom", "-s=content", "src/test/resources/custom/content/folderOne");
-
-        assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(10);
-        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(6);
-        assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
-        assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(5);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(6);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 
     @Test
     void shouldScanCustomFolderOneReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/custom", "-s=content", "src/test/resources/custom/content/folderOne/README.md");
+        int code = new CommandLine(scanSubCommand).execute("-Ac=src/test/resources/custom", "-p=content", "src/test/resources/custom/content/folderOne/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(10);
-        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(6);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(11);
+        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(7);
         assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(3);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(5);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(6);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 }

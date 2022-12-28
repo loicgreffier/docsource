@@ -14,15 +14,15 @@ class ScanDocsifyTest {
     @Test
     void shouldScanDocsifyFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-r", "-c=src/test/resources/docsify", "src/test/resources/docsify");
+        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(18);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(19);
         assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(11);
-        assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(6);
+        assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(7);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(13);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(14);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 
@@ -42,17 +42,17 @@ class ScanDocsifyTest {
     }
 
     @Test
-    void shouldScanDocsifyPage() {
+    void shouldScanDocsifyFolderOnePage() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/folderOne/page.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(6);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(7);
         assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(4);
-        assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(2);
+        assertThat(scanSubCommand.getScannedLinksByStatus(BROKEN)).hasSize(3);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).isEmpty();
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).isEmpty();
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(6);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(7);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).isEmpty();
     }
 }

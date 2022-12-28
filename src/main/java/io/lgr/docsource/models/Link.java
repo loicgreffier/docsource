@@ -15,7 +15,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 @Getter
 @RequiredArgsConstructor
 public abstract class Link {
-    protected final String path;
+    protected final String link;
     protected final Path file;
     protected Status status;
     protected String details;
@@ -30,7 +30,7 @@ public abstract class Link {
      * @return A string with Ansi format
      */
     public String toAnsiString() {
-        return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
+        return "@|bold,cyan " + link + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
     }
 
     /**
