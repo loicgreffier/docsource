@@ -41,13 +41,13 @@ public abstract class Link {
         return switch(status) {
             case SUCCESS -> GREEN;
             case REDIRECT -> YELLOW;
-            case DEAD -> RED;
+            case BROKEN -> RED;
         };
     }
 
     public enum Status {
         SUCCESS,
         REDIRECT,
-        DEAD
+        BROKEN
     }
 }

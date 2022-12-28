@@ -4,9 +4,9 @@
 
 This is an external link to [Google](https://www.google.fr/).
 
-## Dead
+## Broken
 
-This is an external dead link to [a wrong URL](https://www.gogle.fr/).
+This is an external broken link to [a wrong URL](https://www.gogle.fr/).
 
 ## Redirect
 
@@ -24,9 +24,9 @@ This is an inline relative link to [./folderTwo/README](./folderTwo/README).
 
 This is another inline relative link to [folderTwo/README](folderTwo/README).
 
-### Dead
+### Broken
 
-This is an inline dead link to [a page that does not exist](./folderTwo/does-not-exist).
+This is an inline broken link to [a page that does not exist](./folderTwo/does-not-exist).
 
 ## Absolute
 
@@ -44,6 +44,6 @@ This is an inline absolute link to [/folderTwo/README](/folderTwo/README).
 
 This is a mailto link to [mailto:test@gmail](mailto:test@gmail).
 
-## Dead
+## Broken
 
-This is a dead mailto link to [mailto:testgmail](mailto:testgmail).
+This is a broken mailto link to [mailto:testgmail](mailto:testgmail).

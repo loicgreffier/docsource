@@ -5,18 +5,19 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class InlineLink extends Link {
+import static io.lgr.docsource.models.Link.Status.BROKEN;
+import static io.lgr.docsource.models.Link.Status.SUCCESS;
+
+public class RelativeLink extends Link {
     private final File pathToScan;
     private final String currentDir;
     private final String startWith;
 
-    public InlineLink(String path, Path file, String currentDir, File pathToScan, String startWith) {
+    public RelativeLink(String path, Path file, String currentDir, File pathToScan, String startWith) {
         super(path, file);
         this.currentDir = currentDir;
         this.pathToScan = pathToScan;
@@ -58,10 +59,10 @@ public class InlineLink extends Link {
         }
 
         if (Files.exists(Paths.get(link))) {
-            status = Status.SUCCESS;
+            status = SUCCESS;
             details = "OK";
         } else {
-            status = Status.DEAD;
+            status = BROKEN;
             details = "file not found";
         }
     }

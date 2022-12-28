@@ -4,6 +4,9 @@ import io.lgr.docsource.models.Link;
 
 import java.nio.file.Path;
 
+import static io.lgr.docsource.models.Link.Status.BROKEN;
+import static io.lgr.docsource.models.Link.Status.SUCCESS;
+
 public class EmailLink extends Link {
     private static final String EMAIL_REGEX = "(.+)@(.+)";
 
@@ -17,10 +20,10 @@ public class EmailLink extends Link {
     @Override
     public void validate() {
         if (path.substring(path.indexOf("mailto:")).matches(EMAIL_REGEX)) {
-            status = Status.SUCCESS;
+            status = SUCCESS;
             details = "OK";
         } else {
-            status = Status.DEAD;
+            status = BROKEN;
             details = "bad format";
         }
     }

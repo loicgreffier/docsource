@@ -8,9 +8,9 @@ This is an external relative link to [../README](../README).
 
 This is an external relative link to [../folderTwo/page](../folderTwo/page).
 
-### Dead
+### Broken
 
-This is an external dead relative link to [./folderTwo/page](./folderTwo/page).
+This is an external broken relative link to [./folderTwo/page](./folderTwo/page).
 
 ## Absolute 
 
@@ -20,6 +20,6 @@ This is an inline relative link to [/README](/README).
 
 This is an inline relative link to [/](/).
 
-### Dead
+### Broken
 
-This is an inline dead absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).
+This is an inline broken absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).

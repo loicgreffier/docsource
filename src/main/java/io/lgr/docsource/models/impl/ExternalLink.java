@@ -12,6 +12,8 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.time.Duration;
 
+import static io.lgr.docsource.models.Link.Status.*;
+
 public class ExternalLink extends Link {
     public ExternalLink(String path, Path file) {
         super(path, file);
@@ -35,23 +37,23 @@ public class ExternalLink extends Link {
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
-                status = Status.DEAD;
+                status = BROKEN;
             } else if (response.statusCode() >= HttpURLConnection.HTTP_MULT_CHOICE) {
-                status = Status.REDIRECT;
+                status = REDIRECT;
             } else {
-                status = Status.SUCCESS;
+                status = SUCCESS;
             }
 
             details = String.valueOf(response.statusCode());
         } catch (IllegalArgumentException | URISyntaxException e) {
-            status = Status.DEAD;
+            status = BROKEN;
             details = e.getMessage();
         } catch (IOException e) {
-            status = Status.DEAD;
+            status = BROKEN;
             details = "invalid URL";
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            status = Status.DEAD;
+            status = BROKEN;
             details = e.getMessage();
         }
     }

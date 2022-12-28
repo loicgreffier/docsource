@@ -2,7 +2,7 @@ package io.lgr.docsource.commands;
 
 import io.lgr.docsource.models.Link;
 import io.lgr.docsource.models.impl.EmailLink;
-import io.lgr.docsource.models.impl.InlineLink;
+import io.lgr.docsource.models.impl.RelativeLink;
 import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.utils.FileUtils;
 import io.lgr.docsource.utils.VersionProvider;
@@ -83,7 +83,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new EmailLink(link, file);
                         } else {
-                            linkToScan = new InlineLink(link, file, getCurrentDirectory(), path, startWith);
+                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), path, startWith);
                         }
                         linkToScan.validate();
 
@@ -101,31 +101,31 @@ public class ScanSubCommand implements Callable<Integer> {
         });
 
         long totalExternal = getScannedLinksByType(ExternalLink.class).size();
-        long totalInline = getScannedLinksByType(InlineLink.class).size();
+        long totalRelative = getScannedLinksByType(RelativeLink.class).size();
         long totalEmail = getScannedLinksByType(EmailLink.class).size();
-        long total = totalExternal + totalInline + totalEmail;
+        long total = totalExternal + totalRelative + totalEmail;
         long totalSuccess = getScannedLinksByStatus(SUCCESS).size();
         long totalRedirect = getScannedLinksByStatus(REDIRECT).size();
-        List<Link> deadLinks = getScannedLinksByStatus(DEAD);
-        long totalDead = deadLinks.size();
+        List<Link> brokenLinks = getScannedLinksByStatus(BROKEN);
+        long totalBroken = brokenLinks.size();
 
         if (!VERBOSE) System.out.println();
 
         System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
         int numberOfHyphens = 30 + String.valueOf(total).length();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalInline + "|@ inline / @|bold " + totalExternal + "|@ external / @|bold " + totalEmail + "|@ email)"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalRelative + "|@ relative / @|bold " + totalExternal + "|@ external / @|bold " + totalEmail + "|@ email)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalDead + "|@ dead link(s)"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalBroken + "|@ broken link(s)"));
 
-        if (totalDead > 0) {
-            deadLinks.forEach(deadLink ->
-                    System.out.println(CommandLine.Help.Ansi.AUTO.string("  - " + deadLink.toAnsiString() + " in file @|bold " + deadLink.getFile().toAbsolutePath() + "|@")));
+        if (totalBroken > 0) {
+            brokenLinks.forEach(brokenLink ->
+                    System.out.println(CommandLine.Help.Ansi.AUTO.string("  - " + brokenLink.toAnsiString() + " in file @|bold " + brokenLink.getFile().toAbsolutePath() + "|@")));
         }
 
         System.out.println("\nEnd scanning... It's been an honour!");
-        return totalDead == 0 ? 0 : 1;
+        return totalBroken == 0 ? 0 : 1;
     }
 
     /**
