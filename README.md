@@ -13,20 +13,55 @@
 * [Download](#download)
 * [Usage](#usage)
   * [Scan](#scan)
-  * [Overview](#overview)
-    * [External Links](#external-links)
-    * [Relative Links](#relative-links)
-    * [Mailto Links](#mailto-links)
-  * [CLI](#cli)
-    * [Directory](#directory)
+* [Functioning](#functioning)
+  * [External Links](#external-links)
+  * [Relative Links](#relative-links)
+  * [Mailto Links](#mailto-links)
 * [Motivation](#motivation)
 
 # Download
+
+Docsource can be downloaded at https://github.com/loicgreffier/docsource/releases and is available in 3 different formats:
+- JAR (Java 17 required)
+- Windows
+- Linux
 
 # Usage
 
 ## Scan 
 
+```
+ ____   __    ___  ____   __   _  _  ____   ___  ____
+(    \ /  \  / __)/ ___) /  \ / )( \(  _ \ / __)(  __)
+ ) D ((  O )( (__ \___ \(  O )) \/ ( )   /( (__  ) _)
+(____/ \__/  \___)(____/ \__/ \____/(__\_) \___)(____)
+
+Usage: docsource [-hvV] [COMMAND]
+
+Description:
+
+These are common Docsource commands used in various situations.
+
+Options:
+  -h, --help      Show this help message and exit.
+  -v, --verbose   Enable the verbose mode.
+  -V, --version   Print version information and exit.
+
+Commands:
+  scan  Scan documentation.
+```
+
+### Multiple folders/files
+
+Multiple folders or files can be given in input.
+
+```shell
+
+```
+
+### Path prefix
+
+Depending on your documentation 
 
 # Functioning 
 
@@ -53,8 +88,8 @@ For those links, Docsource checks the linked resource actually exists:
 - the link is valid if the linked resource exist.
 
 A relative link can be:
-- absolute: the link is checked from the user current directory. It can be overridden with `-c` option.
-- relative: the link is checked from the file it belongs.
+- absolute: the link is checked from the user current directory. It can be overridden with `--current-dir` option.
+- relative: the link is checked from the file it belongs, unless the `--all-absolute` has been enabled.
 
 ## Mailto Links
 

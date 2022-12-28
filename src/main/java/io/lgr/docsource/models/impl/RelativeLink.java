@@ -15,13 +15,13 @@ import static io.lgr.docsource.models.Link.Status.SUCCESS;
 public class RelativeLink extends Link {
     private final String currentDir;
     private final String pathPrefix;
-    private final boolean relativeToAbsolute;
+    private final boolean allAbsolute;
 
-    public RelativeLink(String link, Path file, String currentDir, String pathPrefix, boolean relativeToAbsolute) {
+    public RelativeLink(String link, Path file, String currentDir, String pathPrefix, boolean allAbsolute) {
         super(link, file);
         this.currentDir = currentDir;
         this.pathPrefix = pathPrefix;
-        this.relativeToAbsolute = relativeToAbsolute;
+        this.allAbsolute = allAbsolute;
     }
 
     /**
@@ -47,7 +47,7 @@ public class RelativeLink extends Link {
         }
 
         // If the link is absolute
-        if (path.startsWith(File.separator) || relativeToAbsolute) {
+        if (path.startsWith(File.separator) || allAbsolute) {
             path = Path.of(currentDir + File.separator + path);
         } else { // If the link is relative then check it is valid from the file it belongs
             path = Path.of(file.getParent() + File.separator + path);

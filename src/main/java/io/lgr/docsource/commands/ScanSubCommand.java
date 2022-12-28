@@ -41,7 +41,7 @@ public class ScanSubCommand implements Callable<Integer> {
     public List<File> paths;
 
     @CommandLine.Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
-    public boolean relativeToAbsolute;
+    public boolean allAbsolute;
 
     @CommandLine.Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
     public String currentDir;
@@ -86,7 +86,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new MailtoLink(link, file);
                         } else {
-                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), pathPrefix, relativeToAbsolute);
+                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), pathPrefix, allAbsolute);
                         }
                         linkToScan.validate();
 
