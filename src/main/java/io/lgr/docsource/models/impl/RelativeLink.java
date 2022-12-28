@@ -47,7 +47,7 @@ public class RelativeLink extends Link {
         // If the link is absolute
         if (link.startsWith("/")) {
             link = currentDir + link;
-        } else { // If the link is relative then check it is valid from the path of the file it belongs
+        } else { // If the link is relative then check it is valid from the file it belongs
             link = file.getParent() + "/" + link;
         }
 
