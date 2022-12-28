@@ -40,7 +40,7 @@ This is an inline absolute link to [/folderOne/page](/folderOne/page).
 
 This is an inline broken absolute link to [/doesNotExist/folderOne/page](/doesNotExist/folderOne/page).
 
-# Email Link
+# Mailto Link
 
 ## Success
 

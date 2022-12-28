@@ -7,10 +7,10 @@ import java.nio.file.Path;
 import static io.lgr.docsource.models.Link.Status.BROKEN;
 import static io.lgr.docsource.models.Link.Status.SUCCESS;
 
-public class EmailLink extends Link {
+public class MailtoLink extends Link {
     private static final String EMAIL_REGEX = "(.+)@(.+)";
 
-    public EmailLink(String path, Path file) {
+    public MailtoLink(String path, Path file) {
         super(path, file);
     }
 

@@ -1,7 +1,7 @@
 package io.lgr.docsource.commands;
 
 import io.lgr.docsource.models.Link;
-import io.lgr.docsource.models.impl.EmailLink;
+import io.lgr.docsource.models.impl.MailtoLink;
 import io.lgr.docsource.models.impl.RelativeLink;
 import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.utils.FileUtils;
@@ -81,7 +81,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         if (link.contains("://")) {
                             linkToScan = new ExternalLink(link, file);
                         } else if (link.contains("mailto:")) {
-                            linkToScan = new EmailLink(link, file);
+                            linkToScan = new MailtoLink(link, file);
                         } else {
                             linkToScan = new RelativeLink(link, file, getCurrentDirectory(), path, startWith);
                         }
@@ -102,8 +102,8 @@ public class ScanSubCommand implements Callable<Integer> {
 
         long totalExternal = getScannedLinksByType(ExternalLink.class).size();
         long totalRelative = getScannedLinksByType(RelativeLink.class).size();
-        long totalEmail = getScannedLinksByType(EmailLink.class).size();
-        long total = totalExternal + totalRelative + totalEmail;
+        long totalMailto = getScannedLinksByType(MailtoLink.class).size();
+        long total = totalExternal + totalRelative + totalMailto;
         long totalSuccess = getScannedLinksByStatus(SUCCESS).size();
         long totalRedirect = getScannedLinksByStatus(REDIRECT).size();
         List<Link> brokenLinks = getScannedLinksByStatus(BROKEN);
@@ -114,7 +114,7 @@ public class ScanSubCommand implements Callable<Integer> {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
         int numberOfHyphens = 30 + String.valueOf(total).length();
         System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalRelative + "|@ relative / @|bold " + totalExternal + "|@ external / @|bold " + totalEmail + "|@ email)"));
+        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalRelative + "|@ relative / @|bold " + totalExternal + "|@ external / @|bold " + totalMailto + "|@ mailto)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalBroken + "|@ broken link(s)"));

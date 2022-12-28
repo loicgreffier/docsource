@@ -34,17 +34,28 @@ There are 3 kinds of links:
 ### External Links
 
 External links are links pointing to an external domain. 
-They contain text displayed to the user enclosed in square brackets [] and URL enclosed in parenthesis (). 
 
-Docsource will ping all the external links and deduct a status according to the HTTP code:
-- **400** and higher is a broken link
-- **3xx** is a redirected link. 
-As redirection can occur for multiple reasons (e.g., authentication required before accessing the resource), a redirected link is considered as a valid link.
-- **2xx** is a valid link.
+Docsource will check the status of external links according to the returned HTTP code:
+- **400** and higher, the link is broken.
+- **3xx**, the link is redirected. 
+As redirection can occur for multiple reasons (e.g. authentication required before accessing the resource), a redirected link is considered as a valid link.
+- **2xx**, the link is valid.
 
 ### Relative Links
 
+Relative links are used for links within the same domain.
+
+Docsource will check the status of relative links by verifying the linked resource actually exists at the specified path:
+- if the path points to a resource that does not exist, the link is broken.
+- if the paths points to a resource that actually exist, the link is valid.
+
 ### Mailto Links
+
+Mailto links are used to include a link with an email address. 
+
+Docsource will check the status of mailto links by verifying the format of the email addresses:
+- if the format is wrong, the link is broken.
+- if the format is valid, the link is valid.
 
 ## CLI
 

@@ -1,7 +1,7 @@
 package io.lgr.docsource;
 
 import io.lgr.docsource.commands.ScanSubCommand;
-import io.lgr.docsource.models.impl.EmailLink;
+import io.lgr.docsource.models.impl.MailtoLink;
 import io.lgr.docsource.models.impl.RelativeLink;
 import io.lgr.docsource.models.impl.ExternalLink;
 import org.junit.jupiter.api.Test;
@@ -23,7 +23,7 @@ class ScanCustomTest {
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
         assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(5);
-        assertThat(scanSubCommand.getScannedLinksByType(EmailLink.class)).hasSize(2);
+        assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 
     @Test
@@ -38,6 +38,6 @@ class ScanCustomTest {
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
         assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(5);
-        assertThat(scanSubCommand.getScannedLinksByType(EmailLink.class)).hasSize(2);
+        assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 }
