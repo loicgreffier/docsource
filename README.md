@@ -30,38 +30,54 @@ Docsource can be downloaded at https://github.com/loicgreffier/docsource/release
 
 ## Scan 
 
-```
+```console
  ____   __    ___  ____   __   _  _  ____   ___  ____
 (    \ /  \  / __)/ ___) /  \ / )( \(  _ \ / __)(  __)
  ) D ((  O )( (__ \___ \(  O )) \/ ( )   /( (__  ) _)
 (____/ \__/  \___)(____/ \__/ \____/(__\_) \___)(____)
 
-Usage: docsource [-hvV] [COMMAND]
+Usage: docsource scan [-AhrvV] [-c=<currentDir>] [-p=<pathPrefix>] [<paths>...]
 
 Description:
 
-These are common Docsource commands used in various situations.
+Scan documentation.
+
+Parameters:
+      [<paths>...]     Directory or file(s) to scan.
 
 Options:
-  -h, --help      Show this help message and exit.
-  -v, --verbose   Enable the verbose mode.
-  -V, --version   Print version information and exit.
-
-Commands:
-  scan  Scan documentation.
+  -A, --all-absolute   Consider relative link paths as absolute paths.
+  -c, --current-dir=<currentDir>
+                       Override the current directory.
+  -h, --help           Show this help message and exit.
+  -p, --path-prefix=<pathPrefix>
+                       Prefix the beginning of relative links with a partial path.
+  -r, --recursive      Scan directories recursively.
+  -v, --verbose        Enable the verbose mode.
+  -V, --version        Print version information and exit.
 ```
+
+Scan needs to be run at the root folder of your documentation.
 
 ### Multiple folders/files
 
 Multiple folders or files can be given in input.
 
-```shell
-
+```console
+docsource scan directory1 directory2 file1.md file2.md
 ```
 
-### Path prefix
+### All absolute and Path prefix
 
-Depending on your documentation 
+Depending on how your documentation is built (e.g., a custom Angular/React project that parses Markdown files) you may need to:
+- consider relative link paths as absolute paths. 
+E.g., you may want `[link](./folderTwo/README)` to be checked from your current directory rather than the "folderTwo" directory.
+- add a prefix to your relative paths. 
+E.g., your link is `[link](./folderTwo/README)`. The actual path is `/content/folderTwo/README` where `content` is handled automatically by your parser.
+
+For these cases:
+- `--all-absolute` checks relative link paths as absolute paths
+- `--path-prefix` allows to add a partial path at the beginning of each relative links
 
 # Functioning 
 
