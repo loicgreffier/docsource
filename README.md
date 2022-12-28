@@ -11,12 +11,12 @@
 # Table of Contents
 
 * [Download](#download)
-* [Usage](#usage)
-  * [Scan](#scan)
 * [Functioning](#functioning)
   * [External Links](#external-links)
   * [Relative Links](#relative-links)
   * [Mailto Links](#mailto-links)
+* [Usage](#usage)
+  * [Scan](#scan)
 * [Motivation](#motivation)
 
 # Download
@@ -25,6 +25,43 @@ Docsource can be downloaded at https://github.com/loicgreffier/docsource/release
 - JAR (Java 17 required)
 - Windows
 - Linux
+
+# Functioning
+
+Docsource can check the 3 kinds of Markdown links:
+- External links
+- Relative links
+- Mailto links
+
+## External Links
+
+External links are links pointing to an external domain.
+
+For those links, Docsource sends an HTTP request and checks the HTTP return code:
+- the link is broken when the return code is 400 and higher.
+- the link is valid when the return code is strictly lower than 400.
+  As it can be complicated to verify redirected links (code 3xx) because of several reasons (e.g. authentication before accessing the resource), they are always considered as valid.
+
+## Relative Links
+
+Relative links are used for links within the same domain.
+
+For those links, Docsource checks the linked resource actually exists:
+- the link is broken if the linked resource does not exist.
+- the link is valid if the linked resource exist.
+
+A relative link can be:
+- absolute: the link is checked from the user current directory. That's why it is important to run Docsource from the root folder of your documentation.
+It can be overridden with `--current-dir` option.
+- relative: the link is checked from the file it belongs, unless the `--all-absolute` has been enabled.
+
+## Mailto Links
+
+Mailto links are used to include a link with an email address.
+
+For those links, Docsource checks the format of the linked email address:
+- the link is broken if the format is wrong.
+- the link is valid if the format is good.
 
 # Usage
 
@@ -78,42 +115,6 @@ E.g., your link is `[link](./folderTwo/README)`. The actual path is `/content/fo
 For these cases:
 - `--all-absolute` checks relative link paths as absolute paths
 - `--path-prefix` allows to add a partial path at the beginning of each relative links
-
-# Functioning 
-
-Docsource can check the 3 kinds of Markdown links:
-- External links
-- Relative links
-- Mailto links
-
-## External Links
-
-External links are links pointing to an external domain.
-
-For those links, Docsource sends an HTTP request and checks the HTTP return code:
-- the link is broken when the return code is 400 and higher.
-- the link is valid when the return code is strictly lower than 400.
-As it can be complicated to verify redirected links (code 3xx) because of several reasons (e.g. authentication before accessing the resource), they are always considered as valid.
-
-## Relative Links
-
-Relative links are used for links within the same domain.
-
-For those links, Docsource checks the linked resource actually exists:
-- the link is broken if the linked resource does not exist.
-- the link is valid if the linked resource exist.
-
-A relative link can be:
-- absolute: the link is checked from the user current directory. It can be overridden with `--current-dir` option.
-- relative: the link is checked from the file it belongs, unless the `--all-absolute` has been enabled.
-
-## Mailto Links
-
-Mailto links are used to include a link with an email address.
-
-For those links, Docsource checks the format of the linked email address:
-- the link is broken if the format is wrong.
-- the link is valid if the format is good.
 
 # Motivation
 
