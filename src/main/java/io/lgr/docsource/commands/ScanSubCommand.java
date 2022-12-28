@@ -83,7 +83,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         } else if (link.contains("mailto:")) {
                             linkToScan = new MailtoLink(link, file);
                         } else {
-                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), path, startWith);
+                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), startWith);
                         }
                         linkToScan.validate();
 

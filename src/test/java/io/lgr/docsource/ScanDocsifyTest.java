@@ -14,7 +14,7 @@ class ScanDocsifyTest {
     @Test
     void shouldScanDocsifyFolderRecursively() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-r", "src/test/resources/docsify");
+        int code = new CommandLine(scanSubCommand).execute("-r", "-c=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
         assertThat(scanSubCommand.getScannedLinks()).hasSize(18);

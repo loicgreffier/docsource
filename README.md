@@ -61,9 +61,9 @@ Docsource will check the status of mailto links by verifying the format of the e
 
 ### Directory
 
-Docsource will look for all Markdown files inside a given directory.
-
 `docsource scan .`
+
+When a directory is scanned, Docsource will check all the Markdown files inside it.
 
 # Motivation
 

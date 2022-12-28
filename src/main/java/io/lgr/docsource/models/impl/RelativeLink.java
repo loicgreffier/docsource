@@ -13,14 +13,12 @@ import static io.lgr.docsource.models.Link.Status.BROKEN;
 import static io.lgr.docsource.models.Link.Status.SUCCESS;
 
 public class RelativeLink extends Link {
-    private final File pathToScan;
     private final String currentDir;
     private final String startWith;
 
-    public RelativeLink(String path, Path file, String currentDir, File pathToScan, String startWith) {
+    public RelativeLink(String path, Path file, String currentDir, String startWith) {
         super(path, file);
         this.currentDir = currentDir;
-        this.pathToScan = pathToScan;
         this.startWith = startWith;
     }
 
@@ -48,12 +46,7 @@ public class RelativeLink extends Link {
 
         // If the link is absolute
         if (link.startsWith("/")) {
-            // Check the validity from the given root directory
-            if (pathToScan.isDirectory()) {
-                link = pathToScan + link;
-            } else { // Check the validity from the current user directory
-                link = currentDir + link;
-            }
+            link = currentDir + link;
         } else { // If the link is relative then check it is valid from the path of the file it belongs
             link = file.getParent() + "/" + link;
         }
