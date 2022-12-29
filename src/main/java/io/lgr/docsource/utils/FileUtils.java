@@ -22,6 +22,11 @@ public abstract class FileUtils {
     private static final String HREF_LINK_REGEX = "href=\\\"(.*?)\\\"";
 
     /**
+     * Markdown title regex.
+     */
+    private static final String MARKDOWN_TITLE_REGEX = "#+ .*";
+
+    /**
      * Constructor
      */
     private FileUtils() { }
@@ -56,5 +61,41 @@ public abstract class FileUtils {
         }
 
         return links;
+    }
+
+    /**
+     * Extract titles from a Markdown file
+     * @param file The file
+     * @return A list of titles
+     * @throws IOException Any IO exception during file reading
+     */
+    public static List<String> getTitles(Path file) throws IOException {
+        String fileContent = Files.readString(file);
+        final List<String> titles = new ArrayList<>();
+
+        Pattern pattern = Pattern.compile(MARKDOWN_TITLE_REGEX);
+        Matcher matcher = pattern.matcher(fileContent);
+
+        while (matcher.find()) {
+            titles.add(matcher.group(0));
+        }
+
+        return titles;
+    }
+
+    public static List<String> getTitleIds(Path file) throws IOException {
+        return getTitles(file)
+                .stream()
+                .map(title -> title
+                        .trim()
+                        .replace("# ", "#")
+                        .replace("'", "")
+                        .replace("[", "")
+                        .replace("]", "")
+                        .replaceAll("\\(.*?\\)", "")
+                        .replaceAll("\\#+", "#")
+                        .replace(" ", "-")
+                        .toLowerCase())
+                .toList();
     }
 }

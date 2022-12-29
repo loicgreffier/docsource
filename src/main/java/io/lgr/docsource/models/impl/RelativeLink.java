@@ -1,6 +1,7 @@
 package io.lgr.docsource.models.impl;
 
 import io.lgr.docsource.models.Link;
+import io.lgr.docsource.utils.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
@@ -74,15 +75,10 @@ public class RelativeLink extends Link {
 
         if (link.contains("#")) {
             try {
-                String fileContent = Files.readString(path)
-                        .toLowerCase()
-                        .replace("# ", "#");
-
                 String linkSection = link.substring(link.indexOf("#"))
-                        .toLowerCase()
-                        .replace("-", " ");
+                        .toLowerCase();
 
-                if (!fileContent.contains(linkSection)) {
+                if (!FileUtils.getTitleIds(path).contains(linkSection)) {
                     status = BROKEN;
                     details = "section not found";
                     return;

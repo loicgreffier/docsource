@@ -51,6 +51,8 @@ For those links, Docsource checks the linked resource actually exists:
 - the link is broken if the linked resource does not exist.
 - the link is valid if the linked resource exist.
 
+In addition, if the link points to a section, Docsource checks the section exists in the target file.
+
 A relative link can be:
 - absolute: the link is checked from the user current directory. That's why it is important to run Docsource from the root folder of your documentation.
 It can be overridden with `--current-dir` option.

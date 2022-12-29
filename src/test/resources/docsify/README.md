@@ -28,6 +28,8 @@ This is a relative link to a section [./folderTwo/page.md#another-page](./folder
 
 This is a relative link to a section [./folderTwo/page.md#a-subtitle](./folderTwo/page.md#a-subtitle).
 
+This is a relative link to a section [./folderTwo/page.md#this-subtitles-a-link](./folderTwo/page.md#this-subtitles-a-link).
+
 ![This is a relative link to an image](images/spring-boot-logo.png).
 
 ### Broken

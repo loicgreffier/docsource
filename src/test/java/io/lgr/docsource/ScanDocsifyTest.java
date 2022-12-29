@@ -20,8 +20,8 @@ class ScanDocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(23);
-        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(13);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(25);
+        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(15);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
@@ -38,7 +38,7 @@ class ScanDocsifyTest {
                 "mailto:testgmail"));
 
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(18);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(20);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 
@@ -48,8 +48,8 @@ class ScanDocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(16);
-        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(9);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(17);
+        assertThat(scanSubCommand.getScannedLinksByStatus(SUCCESS)).hasSize(10);
         assertThat(scanSubCommand.getScannedLinksByStatus(REDIRECT)).hasSize(1);
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
@@ -63,7 +63,7 @@ class ScanDocsifyTest {
                 "mailto:testgmail"));
 
         assertThat(scanSubCommand.getScannedLinksByType(ExternalLink.class)).hasSize(3);
-        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(11);
+        assertThat(scanSubCommand.getScannedLinksByType(RelativeLink.class)).hasSize(12);
         assertThat(scanSubCommand.getScannedLinksByType(MailtoLink.class)).hasSize(2);
     }
 
