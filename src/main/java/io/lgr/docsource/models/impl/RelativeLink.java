@@ -5,6 +5,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,7 +32,11 @@ public class RelativeLink extends Link {
     public void validate() {
         Path path = Path.of(link);
 
-        if (pathPrefix != null && !path.subpath(0, 1).startsWith(pathPrefix)) {
+        if (path.toString().contains("#")) {
+            path = Path.of(path.toString().substring(0, path.toString().indexOf("#")));
+        }
+
+        if (pathPrefix != null && !path.getName(0).startsWith(pathPrefix)) {
             path = Path.of(File.separator + pathPrefix + File.separator + path);
         }
 
@@ -53,12 +58,43 @@ public class RelativeLink extends Link {
             path = Path.of(file.getParent() + File.separator + path);
         }
 
-        if (Files.exists(path)) {
-            status = SUCCESS;
-            details = "OK";
-        } else {
+        computeLinkStatus(path);
+    }
+
+    /**
+     * Compute the link status
+     * @param path The link as path
+     */
+    private void computeLinkStatus(Path path) {
+        if (!Files.exists(path)) {
             status = BROKEN;
             details = "file not found";
+            return;
         }
+
+        if (link.contains("#")) {
+            try {
+                String fileContent = Files.readString(path)
+                        .toLowerCase()
+                        .replace("# ", "#");
+
+                String linkSection = link.substring(link.indexOf("#"))
+                        .toLowerCase()
+                        .replace("-", " ");
+
+                if (!fileContent.contains(linkSection)) {
+                    status = BROKEN;
+                    details = "section not found";
+                    return;
+                }
+            } catch (IOException e) {
+                status = BROKEN;
+                details = "error checking section";
+                return;
+            }
+        }
+
+        status = SUCCESS;
+        details = "OK";
     }
 }
