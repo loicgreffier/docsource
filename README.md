@@ -17,6 +17,7 @@
   * [Mailto Links](#mailto-links)
 * [Usage](#usage)
   * [Scan](#scan)
+* [FAQ](#frequently-asked-questions-faq)
 * [Motivation](#motivation)
 
 # Download
@@ -115,6 +116,22 @@ E.g., your link is `[link](./folderTwo/README)`. The actual path is `/content/fo
 For these cases:
 - `--all-absolute` checks relative link paths as absolute paths
 - `--path-prefix` allows to add a partial path at the beginning of each relative links
+
+# Frequently Asked Questions (FAQ)
+
+[How can Docsource trust my SSL certificates](#how-can-docsource-trust-my-ssl-certificates)
+
+## How can Docsource trust my SSL certificates
+
+You can make Docsource trust your SSL certificates if you need it.
+
+If you use the JAR, add your SSL certificates in the JVM cacerts.
+
+If you use the native executables, you can load a trust store dynamically at runtime as [specified by GraalVM](https://www.graalvm.org/22.1/reference-manual/native-image/CertificateManagement/).
+
+```console
+docsource scan . -Djavax.net.ssl.trustStore=pathToTheTrustStore -Djavax.net.ssl.trustStorePassword=trustStorePassword
+```
 
 # Motivation
 
