@@ -19,6 +19,8 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static io.lgr.docsource.commands.DocsourceCommand.VERBOSE;
@@ -75,7 +77,9 @@ public class ScanSubCommand implements Callable<Integer> {
                 try {
                     List<String> links = FileUtils.getLinks(file);
                     if (links.isEmpty()) {
-                        System.out.println(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
+                        if (VERBOSE) {
+                            System.out.println(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
+                        }
                         return;
                     }
 
@@ -123,11 +127,16 @@ public class ScanSubCommand implements Callable<Integer> {
         System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalBroken + "|@ broken link(s)"));
 
         if (totalBroken > 0) {
-            brokenLinks.forEach(brokenLink ->
-                    System.out.println(CommandLine.Help.Ansi.AUTO.string("  - " + brokenLink.toAnsiString() + " in file @|bold " + brokenLink.getFile().toAbsolutePath() + "|@")));
+            brokenLinks
+                    .stream()
+                    .collect(Collectors.groupingBy(Link::getFile))
+                    .forEach((key, value) -> {
+                        System.out.println(CommandLine.Help.Ansi.AUTO.string("  @|bold " + key.toAbsolutePath() + "|@"));
+                        value.forEach(brokenLink -> System.out.println(CommandLine.Help.Ansi.AUTO.string("    - " + brokenLink.toAnsiString())));
+                    });
         }
 
-        System.out.println("\nEnd scanning... It's been an honour!");
+        System.out.println("\nEnd scanning... It's been an honour!\n");
         return totalBroken == 0 ? 0 : 1;
     }
 
