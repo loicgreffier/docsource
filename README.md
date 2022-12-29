@@ -38,9 +38,9 @@ Docsource can check the 3 kinds of Markdown links:
 External links are links pointing to an external domain.
 
 For those links, Docsource sends an HTTP request and checks the HTTP return code:
-- the link is broken when the return code is 400 and higher.
-- the link is valid when the return code is strictly lower than 400.
-  As it can be complicated to verify redirected links (code 3xx) because of several reasons (e.g. authentication before accessing the resource), they are always considered as valid.
+- the link is broken when the return code is 400 and higher (except 401 and 403).
+- the link is valid when the return code is strictly lower than 400, 401 or 403.
+As it can be complicated to verify redirected links (code 3xx) because of several reasons (e.g. authentication before accessing the resource), they are always considered as valid.
 
 ## Relative Links
 

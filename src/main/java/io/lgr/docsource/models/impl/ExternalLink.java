@@ -11,8 +11,10 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.time.Duration;
+import java.util.List;
 
 import static io.lgr.docsource.models.Link.Status.*;
+import static java.net.HttpURLConnection.*;
 
 public class ExternalLink extends Link {
     public ExternalLink(String link, Path file) {
@@ -36,15 +38,16 @@ public class ExternalLink extends Link {
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
-            if (response.statusCode() >= HttpURLConnection.HTTP_BAD_REQUEST) {
+            int code = response.statusCode();
+            if (code >= HTTP_BAD_REQUEST && !List.of(HTTP_UNAUTHORIZED, HTTP_FORBIDDEN).contains(code)) {
                 status = BROKEN;
-            } else if (response.statusCode() >= HttpURLConnection.HTTP_MULT_CHOICE) {
+            } else if (code >= HTTP_MULT_CHOICE && code < HTTP_BAD_REQUEST) {
                 status = REDIRECT;
             } else {
                 status = SUCCESS;
             }
 
-            details = String.valueOf(response.statusCode());
+            details = String.valueOf(code);
         } catch (IllegalArgumentException | URISyntaxException e) {
             status = BROKEN;
             details = e.getMessage();
