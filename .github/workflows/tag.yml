@@ -1,5 +1,8 @@
 name: Tag
 
+on:
+  workflow_dispatch:
+
 jobs:
   tag:
     runs-on: ubuntu-latest
