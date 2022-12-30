@@ -16,21 +16,12 @@
 	<name>docsource</name>
 	<description>Documentation analyzer</description>
 
-	<repositories>
-		<repository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/release</url>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<id>spring-release</id>
-			<name>Spring release</name>
-			<url>https://repo.spring.io/release</url>
-		</pluginRepository>
-	</pluginRepositories>
+	<scm>
+		<connection>scm:git:https://github.com/loicgreffier/docsource.git</connection>
+		<url>scm:git:https://github.com/loicgreffier/docsource.git</url>
+		<developerConnection>scm:git:https://github.com/loicgreffier/docsource.git</developerConnection>
+		<tag>HEAD</tag>
+	</scm>
 
 	<properties>
 		<commons-io.version>2.11.0</commons-io.version>
@@ -95,6 +86,7 @@
 	</dependencies>
 
 	<build>
+		<finalName>${project.name}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.graalvm.buildtools</groupId>

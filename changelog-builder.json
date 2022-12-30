@@ -1,0 +1,22 @@
+{
+  "categories": [
+    {
+      "title": "# :sparkles: New",
+      "labels": ["new feature"]
+    },
+    {
+      "title": "# :zap: Improvements",
+      "labels": ["enhancement"]
+    },
+    {
+      "title": "# :bug: Bugfixes",
+      "labels": ["bug"]
+    },
+    {
+      "title": "# :memo: Documentation",
+      "labels": ["documentation"]
+    }
+  ],
+  "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
+  "pr_template": "- ${{TITLE}} #${{NUMBER}}"
+}
