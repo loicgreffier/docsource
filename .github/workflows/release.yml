@@ -104,14 +104,14 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Update release
-          uses: ncipollo/release-action@v1
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            body: ${{ steps.build_changelog.outputs.changelog }}
-            artifacts: ${{ github.workspace }}/target/docsource
-            draft: true
-            prerelease: true
-            allowUpdates: true
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          artifacts: ${{ github.workspace }}/target/docsource
+          draft: true
+          prerelease: true
+          allowUpdates: true
 
   build-windows:
     runs-on: windows-latest
