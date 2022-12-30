@@ -52,11 +52,8 @@ For those links, Docsource checks the linked resource actually exists:
 - the link is broken if the linked resource does not exist.
 - the link is valid if the linked resource exist.
 
-In addition, if the link points to a section, Docsource checks the section exists in the target file.
-
 A relative link can be:
-- absolute: the link is checked from the user current directory. That's why it is important to run Docsource from the root folder of your documentation.
-It can be overridden with `--current-dir` option.
+- absolute: the link is checked from the user current directory.
 - relative: the link is checked from the file it belongs, unless the `--all-absolute` has been enabled.
 
 ## Mailto Links
@@ -114,7 +111,7 @@ Depending on how your documentation is built (e.g., a custom Angular/React proje
 - consider relative link paths as absolute paths. 
 E.g., you may want `[link](./folderTwo/README)` to be checked from your current directory rather than the "folderTwo" directory.
 - add a prefix to your relative paths. 
-E.g., your link is `[link](./folderTwo/README)`. The actual path is `/content/folderTwo/README` where `content` is handled automatically by your parser.
+E.g., your link is `[link](./folderTwo/README)` but the actual path is `/content/folderTwo/README` where `content` is handled automatically by your parser.
 
 For these cases:
 - `--all-absolute` checks relative link paths as absolute paths

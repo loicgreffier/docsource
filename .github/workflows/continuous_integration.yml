@@ -60,6 +60,7 @@ jobs:
           version: '22.3.0'
           java-version: '17'
           components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Test
         run: mvn clean package -Pnative -DskipTests
@@ -99,6 +100,7 @@ jobs:
           version: '22.3.0'
           java-version: '17'
           components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Test
         run: mvn clean package -Pnative -DskipTests
