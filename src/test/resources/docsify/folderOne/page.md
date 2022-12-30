@@ -1,27 +1,19 @@
-# Relative Link
+# Relative
 
-## Relative
+## Success
 
-### Success
+[../README](../README).
 
-This is a relative link to [../README](../README).
+[../folderTwo/page](../folderTwo/page).
 
-This is a relative link to [../folderTwo/page](../folderTwo/page).
+[/README](/README).
 
-### Broken
+[/](/).
 
-This is a broken relative link to [./folderTwo/page](./folderTwo/page).
+## Broken
+
+[./folderTwo/page](./folderTwo/page).
 
 ![This is a broken relative link to an image](images/spring-boot-logo.png)
 
-## Absolute 
-
-### Success
-
-This is a relative link to [/README](/README).
-
-This is a relative link to [/](/).
-
-### Broken
-
-This is a broken absolute link to [/doesNotExist/folder/page](/doesNotExist/folder/page).
+[/doesNotExist/folder/page](/doesNotExist/folder/page).

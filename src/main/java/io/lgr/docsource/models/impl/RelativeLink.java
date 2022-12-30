@@ -59,35 +59,10 @@ public class RelativeLink extends Link {
             path = Path.of(file.getParent() + File.separator + path);
         }
 
-        computeLinkStatus(path);
-    }
-
-    /**
-     * Compute the link status
-     * @param path The link as path
-     */
-    private void computeLinkStatus(Path path) {
         if (!Files.exists(path)) {
             status = BROKEN;
             details = "file not found";
             return;
-        }
-
-        if (link.contains("#")) {
-            try {
-                String linkSection = link.substring(link.indexOf("#"))
-                        .toLowerCase();
-
-                if (!FileUtils.getTitleIds(path).contains(linkSection)) {
-                    status = BROKEN;
-                    details = "section not found";
-                    return;
-                }
-            } catch (IOException e) {
-                status = BROKEN;
-                details = "error checking section";
-                return;
-            }
         }
 
         status = SUCCESS;

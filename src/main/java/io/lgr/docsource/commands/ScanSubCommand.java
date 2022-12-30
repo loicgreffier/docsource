@@ -129,9 +129,9 @@ public class ScanSubCommand implements Callable<Integer> {
         if (totalBroken > 0) {
             brokenLinks
                     .stream()
-                    .collect(Collectors.groupingBy(Link::getFile))
+                    .collect(Collectors.groupingBy(link -> link.getFile().toAbsolutePath().toString()))
                     .forEach((key, value) -> {
-                        System.out.println(CommandLine.Help.Ansi.AUTO.string("  @|bold " + key.toAbsolutePath() + "|@"));
+                        System.out.println(CommandLine.Help.Ansi.AUTO.string("  @|bold " + key + "|@"));
                         value.forEach(brokenLink -> System.out.println(CommandLine.Help.Ansi.AUTO.string("    - " + brokenLink.toAnsiString())));
                     });
         }
