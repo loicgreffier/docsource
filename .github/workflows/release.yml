@@ -148,11 +148,11 @@ jobs:
           path: target/docsource.exe
 
       - name: Update release
-          uses: ncipollo/release-action@v1
-          with:
-            token: ${{ secrets.GITHUB_TOKEN }}
-            body: ${{ steps.build_changelog.outputs.changelog }}
-            artifacts: ${{ github.workspace }}/target/docsource.exe
-            draft: true
-            prerelease: true
-            allowUpdates: true
+        uses: ncipollo/release-action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          body: ${{ steps.build_changelog.outputs.changelog }}
+          artifacts: ${{ github.workspace }}/target/docsource.exe
+          draft: true
+          prerelease: true
+          allowUpdates: true
