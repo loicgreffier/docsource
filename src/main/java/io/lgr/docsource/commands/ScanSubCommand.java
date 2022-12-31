@@ -137,7 +137,7 @@ public class ScanSubCommand implements Callable<Integer> {
      * @param file The file
      * @return A list of files
      */
-    public List<File> findFiles(File file) throws IOException {
+    public List<File> findFiles(File file) {
         if (file.isFile()) {
             if (!FileUtils.isAuthorized(file)) {
                 log.error("The format of the {} file is not supported.", file);
@@ -148,7 +148,6 @@ public class ScanSubCommand implements Callable<Integer> {
 
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + System.getProperty("user.dir") + "|@"));
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + new File(".") + "|@"));
-        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.getCanonicalPath() + "|@"));
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.toURI() + "|@"));
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file + "|@"));
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.getAbsolutePath() + "|@"));
