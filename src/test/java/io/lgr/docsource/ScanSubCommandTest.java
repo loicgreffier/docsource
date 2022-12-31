@@ -29,7 +29,6 @@ class ScanSubCommandTest {
     @Test
     void shouldGetFilesFromDirectory() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        System.out.println(new File("src/test/resources/docsify").getAbsolutePath());
         List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
         assertThat(files).hasSize(1);
@@ -40,7 +39,6 @@ class ScanSubCommandTest {
     void shouldGetFilesRecursivelyFromDirectory() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         scanSubCommand.recursive = true;
-        System.out.println(new File("src/test/resources/docsify").getAbsolutePath());
         List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
         assertThat(files).hasSize(3);
