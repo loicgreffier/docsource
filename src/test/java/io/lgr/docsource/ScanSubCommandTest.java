@@ -4,7 +4,6 @@ import io.lgr.docsource.commands.ScanSubCommand;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
-import java.nio.file.Path;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,6 +29,7 @@ class ScanSubCommandTest {
     @Test
     void shouldGetFilesFromDirectory() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
+        System.out.println(new File("src/test/resources/docsify").getAbsolutePath());
         List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
         assertThat(files).hasSize(1);
@@ -37,9 +37,10 @@ class ScanSubCommandTest {
     }
 
     @Test
-    void shouldGetFilesRecursivelyFromFolder() {
+    void shouldGetFilesRecursivelyFromDirectory() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         scanSubCommand.recursive = true;
+        System.out.println(new File("src/test/resources/docsify").getAbsolutePath());
         List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
         assertThat(files).hasSize(3);
