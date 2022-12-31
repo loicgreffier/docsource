@@ -145,11 +145,7 @@ public class ScanSubCommand implements Callable<Integer> {
             }
             return List.of(file);
         }
-
-        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + System.getProperty("user.dir") + "|@"));
-        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + new File(".") + "|@"));
-        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.toURI() + "|@"));
-        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file + "|@"));
+        
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.getAbsolutePath() + "|@"));
 
         try {
