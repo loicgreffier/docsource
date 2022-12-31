@@ -56,7 +56,6 @@ class ScanSubCommandTest {
 
     @Test
     void shouldGetSystemUserDirCurrentDirectory() {
-        System.setProperty("user.dir", "test");
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         String currentDirectory = scanSubCommand.getCurrentDirectory();
 
