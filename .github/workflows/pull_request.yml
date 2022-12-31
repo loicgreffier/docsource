@@ -1,7 +1,7 @@
-name: Continuous integration
+name: Pull request
 
 on:
-  push:
+  pull_request:
     branches: [ main ]
 
 jobs:
@@ -12,14 +12,14 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-          
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-        
+
       - name: Build
         run: mvn clean package -DskipTests
 
@@ -38,12 +38,6 @@ jobs:
           name: docsource-jar
           path: target/docsource.jar
 
-      - name: Docker
-        run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -51,7 +45,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
-        
+
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
@@ -60,7 +54,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build & Test
         run: mvn clean package -Pnative -DskipTests
 
       - name: Test
@@ -78,12 +72,6 @@ jobs:
           name: docsource-linux
           path: target/docsource
 
-      - name: Docker
-        run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Dproject.target-platform=linux
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-
   build-windows:
     runs-on: windows-latest
     steps:
@@ -100,7 +88,7 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build
+      - name: Build & Test
         run: mvn clean package -Pnative -DskipTests
 
       - name: Test
