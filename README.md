@@ -68,19 +68,20 @@ For those links, Docsource checks the format of the linked email address:
 ## Scan 
 
 ```console
- ____   __    ___  ____   __   _  _  ____   ___  ____
-(    \ /  \  / __)/ ___) /  \ / )( \(  _ \ / __)(  __)
- ) D ((  O )( (__ \___ \(  O )) \/ ( )   /( (__  ) _)
-(____/ \__/  \___)(____/ \__/ \____/(__\_) \___)(____)
+   ____
+  (|   \
+   |    | __   __   ,   __          ,_    __   _
+  _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
+ (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
-Usage: docsource scan [-AhrvV] [-c=<currentDir>] [-p=<pathPrefix>] [<paths>...]
+Usage: scan [-AhrV] [-c=<currentDir>] [-p=<pathPrefix>] [files...]
 
 Description:
 
 Scan documentation.
 
 Parameters:
-      [<paths>...]     Directory or file(s) to scan.
+      [files...]       Directories or files to scan.
 
 Options:
   -A, --all-absolute   Consider relative link paths as absolute paths.
@@ -90,7 +91,6 @@ Options:
   -p, --path-prefix=<pathPrefix>
                        Prefix the beginning of relative links with a partial path.
   -r, --recursive      Scan directories recursively.
-  -v, --verbose        Enable the verbose mode.
   -V, --version        Print version information and exit.
 ```
 
