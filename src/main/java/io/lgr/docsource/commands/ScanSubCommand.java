@@ -1,31 +1,26 @@
 package io.lgr.docsource.commands;
 
 import io.lgr.docsource.models.Link;
+import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.models.impl.MailtoLink;
 import io.lgr.docsource.models.impl.RelativeLink;
-import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.utils.FileUtils;
 import io.lgr.docsource.utils.VersionProvider;
 import lombok.Getter;
-import org.apache.commons.io.FilenameUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static io.lgr.docsource.commands.DocsourceCommand.VERBOSE;
 import static io.lgr.docsource.models.Link.Status.*;
 
+@Slf4j
 @Component
 @CommandLine.Command(name = "scan",
         headerHeading = "@|bold Usage|@:",
@@ -39,8 +34,8 @@ import static io.lgr.docsource.models.Link.Status.*;
         versionProvider = VersionProvider.class,
         mixinStandardHelpOptions = true)
 public class ScanSubCommand implements Callable<Integer> {
-    @CommandLine.Parameters(description = "Directory or file(s) to scan.")
-    public List<File> paths;
+    @CommandLine.Parameters(paramLabel = "files", description = "Directories or files to scan.")
+    public List<File> inputFiles;
 
     @CommandLine.Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
     public boolean allAbsolute;
@@ -63,48 +58,47 @@ public class ScanSubCommand implements Callable<Integer> {
      */
     @Override
     public Integer call() {
-        if (paths == null) {
+        if (inputFiles == null) {
             CommandLine docsourceScan = new CommandLine(this);
             docsourceScan.usage(System.out);
             return 0;
         }
 
-        paths.forEach(path -> {
-            List<Path> filesToScan = getFilesFromPath(path);
-            filesToScan.forEach(file -> {
-                System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning file @|bold " + file.toAbsolutePath() + "|@"));
+        inputFiles.forEach(inputFile -> {
+            List<File> files = findFiles(inputFile);
+
+            files.forEach(file -> {
+                log.info(CommandLine.Help.Ansi.AUTO.string("Scanning file @|bold " + file.getAbsolutePath() + "|@"));
 
                 try {
-                    List<String> links = FileUtils.getLinks(file);
+                    List<String> links = FileUtils.findLinks(file);
                     if (links.isEmpty()) {
-                        if (VERBOSE) {
-                            System.out.println(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
-                        }
+                        log.debug(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;
                     }
 
-                    links.forEach(link -> {
-                        Link linkToScan;
-                        if (link.contains("://")) {
-                            linkToScan = new ExternalLink(link, file);
-                        } else if (link.contains("mailto:")) {
-                            linkToScan = new MailtoLink(link, file);
+                    links.forEach(markdownLink -> {
+                        Link link;
+                        if (markdownLink.contains("://")) {
+                            link = new ExternalLink(file, markdownLink);
+                        } else if (markdownLink.contains("mailto:")) {
+                            link = new MailtoLink(file, markdownLink);
                         } else {
-                            linkToScan = new RelativeLink(link, file, getCurrentDirectory(), pathPrefix, allAbsolute);
+                            link = new RelativeLink(file, markdownLink, getCurrentDirectory(), pathPrefix, allAbsolute);
                         }
-                        linkToScan.validate();
+                        link.validate();
 
-                        if (VERBOSE) {
-                            System.out.println(CommandLine.Help.Ansi.AUTO.string(linkToScan.toAnsiString()));
-                        }
-                        scannedLinks.add(linkToScan);
+                        log.debug(CommandLine.Help.Ansi.AUTO.string(link.toAnsiString()));
+
+                        scannedLinks.add(link);
                     });
 
-                    if (VERBOSE) System.out.println();
+                    log.debug("");
                 } catch (IOException e) {
-                    System.err.println("Cannot get links from file " + file + ".");
+                    log.error("Cannot get links from file {}.", file);
                 }
             });
+            if (!log.isDebugEnabled()) log.info("");
         });
 
         long totalExternal = getScannedLinksByType(ExternalLink.class).size();
@@ -116,58 +110,50 @@ public class ScanSubCommand implements Callable<Integer> {
         List<Link> brokenLinks = getScannedLinksByStatus(BROKEN);
         long totalBroken = brokenLinks.size();
 
-        if (!VERBOSE) System.out.println();
+        log.info(CommandLine.Help.Ansi.AUTO.string("Summary"));
+        int hyphenCount = 59 + String.valueOf(total).length() + String.valueOf(totalExternal).length()
+                + String.valueOf(totalRelative).length() + String.valueOf(totalMailto).length();
+        log.info(CommandLine.Help.Ansi.AUTO.string(new String(new char[hyphenCount]).replace("\0", "-")));
+        log.info(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalRelative + "|@ relative / @|bold " + totalExternal + "|@ external / @|bold " + totalMailto + "|@ mailto)"));
+        log.info(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
+        log.info(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
+        log.info(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalBroken + "|@ broken link(s)"));
 
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("Summary"));
-        int numberOfHyphens = 30 + String.valueOf(total).length();
-        System.out.println(CommandLine.Help.Ansi.AUTO.string(new String(new char[numberOfHyphens]).replace("\0", "-")));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + total + "|@ link(s) scanned in total (@|bold " + totalRelative + "|@ relative / @|bold " + totalExternal + "|@ external / @|bold " + totalMailto + "|@ mailto)"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalSuccess + "|@ success link(s)"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalRedirect + "|@ redirected link(s)"));
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("@|bold " + totalBroken + "|@ broken link(s)"));
+        brokenLinks
+                .stream()
+                .collect(Collectors.groupingBy(link -> link.getFile().getAbsolutePath()))
+                .forEach((key, value) -> {
+                    log.info(CommandLine.Help.Ansi.AUTO.string("  @|bold " + key + "|@"));
+                    value.forEach(brokenLink -> System.out.println(CommandLine.Help.Ansi.AUTO.string("    - " + brokenLink.toAnsiString())));
+                });
 
-        if (totalBroken > 0) {
-            brokenLinks
-                    .stream()
-                    .collect(Collectors.groupingBy(link -> link.getFile().toAbsolutePath().toString()))
-                    .forEach((key, value) -> {
-                        System.out.println(CommandLine.Help.Ansi.AUTO.string("  @|bold " + key + "|@"));
-                        value.forEach(brokenLink -> System.out.println(CommandLine.Help.Ansi.AUTO.string("    - " + brokenLink.toAnsiString())));
-                    });
-        }
-
-        System.out.println("\nEnd scanning... It's been an honour!\n");
+        log.info("\nEnd scanning... It's been an honour!\n");
         return totalBroken == 0 ? 0 : 1;
     }
 
     /**
-     * Get all the files at the given path.
-     * The path may be a file itself or a folder.
-     * @param path The path to get the files
+     * Find all files in the given file.
+     * The file can be any regular file or a directory.
+     * @param file The file
      * @return A list of files
      */
-    public List<Path> getFilesFromPath(File path) {
-        if (path.isFile()) {
-            String fileExtension = FilenameUtils.getExtension(path.toString());
-            if (!FileUtils.authorizedFileExtensions().contains(fileExtension)) {
-                System.err.println("Cannot scan file with extension " + fileExtension);
+    public List<File> findFiles(File file) {
+        if (file.isFile()) {
+            if (!FileUtils.isAuthorized(file)) {
+                log.error("The format of the {} file is not supported.", file);
                 return List.of();
             }
-            return List.of(path.toPath());
+            return List.of(file);
         }
 
-        System.out.println(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + path.getAbsolutePath() + "|@"));
+        log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.getAbsolutePath() + "|@"));
 
         try {
-            try (Stream<Path> filesStream = Files.find(Paths.get(path.toURI()), recursive ? Integer.MAX_VALUE : 1,
-                            (filePath, fileAttr) -> fileAttr.isRegularFile() && FileUtils.authorizedFileExtensions()
-                                    .contains(FilenameUtils.getExtension(filePath.toString())))) {
-                List<Path> files = filesStream.toList();
-                System.out.println(CommandLine.Help.Ansi.AUTO.string("Found @|bold " + files.size() + " file(s)|@ to scan\n"));
-                return files;
-            }
+            List<File> files = FileUtils.findFiles(file, recursive);
+            log.info(CommandLine.Help.Ansi.AUTO.string("Found @|bold " + files.size() + " file(s)|@ to scan"));
+            return files;
         } catch (IOException e) {
-            System.err.println("Cannot retrieve files from directory " + path.getAbsolutePath());
+            log.error("Cannot retrieve files from directory " + file.getAbsolutePath());
         }
 
         return List.of();

@@ -14,6 +14,6 @@
 
 [./folderTwo/page](./folderTwo/page).
 
-![This is a broken relative link to an image](images/spring-boot-logo.png)
+![This is a broken relative link to an image](images/image.jpg)
 
 [/doesNotExist/folder/page](/doesNotExist/folder/page).

@@ -1,15 +1,13 @@
 package io.lgr.docsource.models.impl;
 
 import io.lgr.docsource.models.Link;
-import io.lgr.docsource.utils.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 
 import static io.lgr.docsource.models.Link.Status.BROKEN;
 import static io.lgr.docsource.models.Link.Status.SUCCESS;
@@ -19,8 +17,8 @@ public class RelativeLink extends Link {
     private final String pathPrefix;
     private final boolean allAbsolute;
 
-    public RelativeLink(String link, Path file, String currentDir, String pathPrefix, boolean allAbsolute) {
-        super(link, file);
+    public RelativeLink(File file, String markdown, String currentDir, String pathPrefix, boolean allAbsolute) {
+        super(file, markdown);
         this.currentDir = currentDir;
         this.pathPrefix = pathPrefix;
         this.allAbsolute = allAbsolute;
@@ -31,41 +29,50 @@ public class RelativeLink extends Link {
      */
     @Override
     public void validate() {
-        Path path = Path.of(link);
+        // If it's an image, delete the potential title
+        Path checkPath = isImage() ? Path.of(path.split("\\s+")[0]) : Path.of(path);
 
-        if (path.toString().contains("#")) {
-            path = Path.of(path.toString().substring(0, path.toString().indexOf("#")));
+        // If it's a link to a section, delete it
+        if (checkPath.toString().contains("#")) {
+            checkPath = Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
         }
 
-        if (pathPrefix != null && !path.getName(0).startsWith(pathPrefix)) {
-            path = Path.of(File.separator + pathPrefix + File.separator + path);
+        // Add the path prefix if not present already
+        if (pathPrefix != null && !checkPath.getName(0).startsWith(pathPrefix)) {
+            checkPath = Path.of(File.separator + pathPrefix + File.separator + checkPath);
         }
 
-        // Absolute link to root folder looking for a README.md
-        if (path.toString().equals(File.separator)) {
-            path = Path.of(File.separator + "README.md");
+        // If the link is "/", look for a README file
+        if (checkPath.toString().equals(File.separator)) {
+            checkPath = Path.of(File.separator + "README.md");
         }
 
-        // Markdown links can work without extension. Adding ".md" extension
-        // before checking if the link exists
-        if (!StringUtils.hasText(FilenameUtils.getExtension(path.toString()))) {
-            path = Path.of(path + ".md");
+        // Add Markdown extension if not present already
+        if (!StringUtils.hasText(FilenameUtils.getExtension(checkPath.toString()))) {
+            checkPath = Path.of(checkPath + ".md");
         }
 
         // If the link is absolute
-        if (path.startsWith(File.separator) || allAbsolute) {
-            path = Path.of(currentDir + File.separator + path);
+        if (checkPath.startsWith(File.separator) || allAbsolute) {
+            checkPath = Path.of(currentDir + File.separator + checkPath);
         } else { // If the link is relative then check it is valid from the file it belongs
-            path = Path.of(file.getParent() + File.separator + path);
+            checkPath = Path.of(file.getParent() + File.separator + checkPath);
         }
 
-        if (!Files.exists(path)) {
+        if (Files.exists(checkPath)) {
+            status = SUCCESS;
+            details = "found";
+        } else {
             status = BROKEN;
-            details = "file not found";
-            return;
+            details = isImage() ? "image not found" : "file not found";
         }
+    }
 
-        status = SUCCESS;
-        details = "OK";
+    /**
+     * Is a link to an image or not
+     * @return true if it is, false otherwise
+     */
+    public boolean isImage() {
+        return markdown.startsWith("!");
     }
 }

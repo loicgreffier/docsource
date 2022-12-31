@@ -1,24 +1,25 @@
 package io.lgr.docsource.models;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.nio.file.Path;
 
 import static org.fusesource.jansi.Ansi.Color.*;
 
 @Getter
-@RequiredArgsConstructor
 public abstract class Link {
-    protected final String link;
-    protected final Path file;
+    protected final File file;
+    protected final String path;
+    protected final String markdown;
     protected Status status;
     protected String details;
+
+    protected Link(File file, String markdown) {
+        this.file = file;
+        this.markdown = markdown;
+        this.path = markdown.substring(markdown.indexOf("(") + 1, markdown.indexOf(")"));
+    }
 
     /**
      * Validate the status of a link
@@ -30,7 +31,7 @@ public abstract class Link {
      * @return A string with Ansi format
      */
     public String toAnsiString() {
-        return "@|bold,cyan " + link + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
+        return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
     }
 
     /**

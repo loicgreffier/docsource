@@ -24,7 +24,11 @@
 
 [/folderOne/page](/folderOne/page).
 
-![This is a relative link to an image](images/spring-boot-logo.png).
+![Image](images/image.jpg)
+
+![Image with title 1](images/image.jpg "Image 1")
+
+![Image with title 2](images/image.jpg 'Image 2')
 
 ## Broken
 

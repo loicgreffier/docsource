@@ -20,17 +20,18 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(20);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(22);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes).hasSize(11);
-        assertThat(successes.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
                 "/folderOne/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
+                "images/image.jpg \"Image 1\"",
+                "images/image.jpg 'Image 2'",
                 "mailto:test@gmail",
                 "../README",
                 "../folderTwo/page",
@@ -38,15 +39,13 @@ class DocsifyTest {
                 "/"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects).hasSize(1);
-        assertThat(redirects.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens).hasSize(8);
-        assertThat(brokens.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "./folderTwo/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
                 "/doesNotExist/folder/page",
                 "https://www.gogle.fr/",
                 "./does-not-exist",
@@ -55,20 +54,20 @@ class DocsifyTest {
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals).hasSize(3);
-        assertThat(externals.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives).hasSize(15);
-        assertThat(relatives.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
                 "/folderOne/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
+                "images/image.jpg \"Image 1\"",
+                "images/image.jpg 'Image 2'",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README",
@@ -77,12 +76,11 @@ class DocsifyTest {
                 "/README",
                 "/",
                 "./folderTwo/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
                 "/doesNotExist/folder/page"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos).hasSize(2);
-        assertThat(mailTos.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
@@ -93,27 +91,26 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(13);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(15);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes).hasSize(7);
-        assertThat(successes.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
                 "/folderOne/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
+                "images/image.jpg \"Image 1\"",
+                "images/image.jpg 'Image 2'",
                 "mailto:test@gmail"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects).hasSize(1);
-        assertThat(redirects.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens).hasSize(5);
-        assertThat(brokens.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.gogle.fr/",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
@@ -121,27 +118,24 @@ class DocsifyTest {
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals).hasSize(3);
-        assertThat(externals.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives).hasSize(8);
-        assertThat(relatives.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
                 "/folderOne/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos).hasSize(2);
-        assertThat(mailTos.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
@@ -155,8 +149,7 @@ class DocsifyTest {
         assertThat(scanSubCommand.getScannedLinks()).hasSize(7);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes).hasSize(4);
-        assertThat(successes.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "../README",
                 "../folderTwo/page",
                 "/README",
@@ -166,24 +159,22 @@ class DocsifyTest {
         assertThat(redirects).isEmpty();
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens).hasSize(3);
-        assertThat(brokens.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "./folderTwo/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
                 "/doesNotExist/folder/page"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
         assertThat(externals).isEmpty();
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives).hasSize(7);
-        assertThat(relatives.stream().map(Link::getLink).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "../README",
                 "../folderTwo/page",
                 "/README",
                 "/",
                 "./folderTwo/page",
-                "images/spring-boot-logo.png",
+                "images/image.jpg",
                 "/doesNotExist/folder/page"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);

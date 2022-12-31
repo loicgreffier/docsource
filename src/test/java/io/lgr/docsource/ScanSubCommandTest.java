@@ -13,37 +13,37 @@ class ScanSubCommandTest {
     @Test
     void shouldGetFile() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify/README.md"));
+        List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify/README.md"));
 
-        assertThat(paths).hasSize(1);
-        assertThat(paths.get(0).getFileName().toString()).hasToString("README.md");
+        assertThat(files).hasSize(1);
+        assertThat(files.get(0).getName()).hasToString("README.md");
     }
 
     @Test
     void shouldNotGetFileIfFormatNotSupported() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify/index.html"));
+        List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify/index.html"));
 
-        assertThat(paths).isEmpty();
+        assertThat(files).isEmpty();
     }
 
     @Test
-    void shouldGetFilesFromFolder() {
+    void shouldGetFilesFromDirectory() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
-        List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify"));
+        List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
-        assertThat(paths).hasSize(1);
-        assertThat(paths.get(0).getFileName().toString()).hasToString("README.md");
+        assertThat(files).hasSize(1);
+        assertThat(files.get(0).getName()).hasToString("README.md");
     }
 
     @Test
     void shouldGetFilesRecursivelyFromFolder() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         scanSubCommand.recursive = true;
-        List<Path> paths = scanSubCommand.getFilesFromPath(new File("src/test/resources/docsify"));
+        List<File> files = scanSubCommand.findFiles(new File("src/test/resources/docsify"));
 
-        assertThat(paths).hasSize(3);
-        assertThat(paths.stream().map(path -> path.getFileName().toString()).toList()).containsAll(List.of("page.md", "README.md"));
+        assertThat(files).hasSize(3);
+        assertThat(files.stream().map(File::getName).toList()).containsAll(List.of("page.md", "README.md"));
     }
 
     @Test

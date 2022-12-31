@@ -27,9 +27,13 @@
 
 [/folderTwo/page](/folderTwo/page).
 
-![This is a relative link to an image](content/folderOne/images/spring-boot-logo.png).
+![Image relative](content/folderOne/images/image.jpg)
 
-![This is a relative link to an image](/content/folderOne/images/spring-boot-logo.png)
+![Image absolute](/content/folderOne/images/image.jpg)
+
+![Image with title 1](/content/folderOne/images/image.jpg "Image 1")
+
+![Image with title 2](/content/folderOne/images/image.jpg 'Image 2')
 
 ## Broken
 
