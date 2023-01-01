@@ -32,6 +32,8 @@
 
 ![Image with title 2](images/image.jpg 'Image 2')
 
+![Image with space](images/image%20with%20spaces.jpg "Image with spaces")
+
 ## Broken
 
 [./does-not-exist](./does-not-exist).

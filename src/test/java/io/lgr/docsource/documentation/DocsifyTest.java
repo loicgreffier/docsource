@@ -20,10 +20,10 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(23);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(24);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "./folderOne/page",
@@ -33,6 +33,7 @@ class DocsifyTest {
                 "images/image.jpg",
                 "images/image.jpg \"Image 1\"",
                 "images/image.jpg 'Image 2'",
+                "images/image%20with%20spaces.jpg \"Image with spaces\"",
                 "mailto:test@gmail",
                 "../README",
                 "../folderTwo/page",
@@ -40,11 +41,11 @@ class DocsifyTest {
                 "/"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderTwo/page",
                 "images/image.jpg",
                 "/doesNotExist/folder/page",
@@ -55,14 +56,14 @@ class DocsifyTest {
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
@@ -70,6 +71,7 @@ class DocsifyTest {
                 "images/image.jpg",
                 "images/image.jpg \"Image 1\"",
                 "images/image.jpg 'Image 2'",
+                "images/image%20with%20spaces.jpg \"Image with spaces\"",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README",
@@ -82,7 +84,7 @@ class DocsifyTest {
                 "/doesNotExist/folder/page"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
@@ -93,12 +95,12 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(16);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(17);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
-                "https://www.google.fr/",
+                "https://www.google.com",
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
@@ -106,14 +108,15 @@ class DocsifyTest {
                 "images/image.jpg",
                 "images/image.jpg \"Image 1\"",
                 "images/image.jpg 'Image 2'",
+                "images/image%20with%20spaces.jpg \"Image with spaces\"",
                 "mailto:test@gmail"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.gogle.fr/",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
@@ -121,24 +124,28 @@ class DocsifyTest {
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
+                "https://www.google.com",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
                 "/folderOne/page",
                 "images/image.jpg",
+                "images/image.jpg \"Image 1\"",
+                "images/image.jpg 'Image 2'",
+                "images/image%20with%20spaces.jpg \"Image with spaces\"",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
@@ -152,7 +159,7 @@ class DocsifyTest {
         assertThat(scanSubCommand.getScannedLinks()).hasSize(7);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "../README",
                 "../folderTwo/page",
                 "/README",
@@ -162,7 +169,7 @@ class DocsifyTest {
         assertThat(redirects).isEmpty();
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderTwo/page",
                 "images/image.jpg",
                 "/doesNotExist/folder/page"));
@@ -171,7 +178,7 @@ class DocsifyTest {
         assertThat(externals).isEmpty();
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "../README",
                 "../folderTwo/page",
                 "/README",

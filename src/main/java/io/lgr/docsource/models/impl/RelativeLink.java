@@ -4,6 +4,7 @@ import io.lgr.docsource.models.Link;
 import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
+import org.yaml.snakeyaml.util.UriEncoder;
 
 import java.io.File;
 import java.nio.file.Files;
@@ -27,7 +28,7 @@ public class RelativeLink extends Link {
     @Override
     public void validate() {
         // If it's an image, delete the potential title
-        Path checkPath = isImage() ? Path.of(path.split("\\s+")[0]) : Path.of(path);
+        Path checkPath = isImage() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) : Path.of(UriEncoder.decode(path));
 
         // If it's a link to a section, delete it
         if (checkPath.toString().contains("#")) {

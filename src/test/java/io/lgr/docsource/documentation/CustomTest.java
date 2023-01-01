@@ -23,7 +23,7 @@ class CustomTest {
         assertThat(scanSubCommand.getScannedLinks()).hasSize(15);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "./folderTwo/page",
@@ -37,24 +37,24 @@ class CustomTest {
                 "mailto:test@gmail"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.gogle.fr/",
                 "./folderTwo/does-not-exist",
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderTwo/page",
                 "folderTwo/page",
                 "./folderTwo/page.md",
@@ -66,7 +66,7 @@ class CustomTest {
                 "./folderTwo/does-not-exist"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
@@ -80,8 +80,9 @@ class CustomTest {
         assertThat(scanSubCommand.getScannedLinks()).hasSize(15);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
-        assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
+                "https://www.google.com",
                 "./folderTwo/page",
                 "folderTwo/page",
                 "./folderTwo/page.md",
@@ -93,23 +94,24 @@ class CustomTest {
                 "mailto:test@gmail"));
 
         List<Link> redirects = scanSubCommand.getScannedLinksByStatus(REDIRECT);
-        assertThat(redirects.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(redirects.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://google.fr/"));
 
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
-        assertThat(brokens.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.gogle.fr/",
                 "./folderTwo/does-not-exist",
                 "mailto:testgmail"));
 
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
-        assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(externals.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.google.fr/",
+                "https://www.google.com",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
-        assertThat(relatives.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(relatives.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "./folderTwo/page",
                 "folderTwo/page",
                 "./folderTwo/page.md",
@@ -121,7 +123,7 @@ class CustomTest {
                 "./folderTwo/does-not-exist"));
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
-        assertThat(mailTos.stream().map(Link::getPath).toList()).containsAll(List.of(
+        assertThat(mailTos.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "mailto:test@gmail",
                 "mailto:testgmail"));
     }
