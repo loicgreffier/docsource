@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.Duration;
 
 import static io.lgr.docsource.models.Link.Status.*;
 import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
@@ -33,7 +32,6 @@ public class ExternalLink extends Link {
                     .build();
 
             HttpResponse<String> response = HttpClient.newBuilder()
-                    .connectTimeout(Duration.ofSeconds(3))
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
