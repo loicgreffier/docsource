@@ -50,7 +50,7 @@ public class ExternalLink extends Link {
             details = e.getMessage();
         } catch (IOException e) {
             status = BROKEN;
-            details = "invalid URL";
+            details = e.getMessage() != null ? e.getMessage() : "invalid URL";
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             status = BROKEN;
