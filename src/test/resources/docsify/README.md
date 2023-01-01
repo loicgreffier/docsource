@@ -4,6 +4,8 @@
 
 [Google](https://www.google.fr/).
 
+<a href="https://www.google.com"> Google </a>.
+
 ## Broken
 
 [Gogle](https://www.gogle.fr/).

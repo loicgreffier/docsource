@@ -71,25 +71,19 @@ public class ScanSubCommand implements Callable<Integer> {
                 log.info(CommandLine.Help.Ansi.AUTO.string("Scanning file @|bold " + file.getAbsolutePath() + "|@"));
 
                 try {
-                    List<String> links = FileUtils.findLinks(file);
+                    List<Link> links = FileUtils.findLinks(file, Link.ValidationOptions.builder()
+                                    .currentDir(getCurrentDirectory())
+                                    .pathPrefix(pathPrefix)
+                                    .allAbsolute(allAbsolute)
+                            .build());
                     if (links.isEmpty()) {
                         log.debug(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;
                     }
 
-                    links.forEach(markdownLink -> {
-                        Link link;
-                        if (markdownLink.contains("://")) {
-                            link = new ExternalLink(file, markdownLink);
-                        } else if (markdownLink.contains("mailto:")) {
-                            link = new MailtoLink(file, markdownLink);
-                        } else {
-                            link = new RelativeLink(file, markdownLink, getCurrentDirectory(), pathPrefix, allAbsolute);
-                        }
+                    links.forEach(link -> {
                         link.validate();
-
                         log.debug(CommandLine.Help.Ansi.AUTO.string(link.toAnsiString()));
-
                         scannedLinks.add(link);
                     });
 
@@ -145,7 +139,7 @@ public class ScanSubCommand implements Callable<Integer> {
             }
             return List.of(file);
         }
-        
+
         log.info(CommandLine.Help.Ansi.AUTO.string("Scanning directory @|bold " + file.getAbsolutePath() + "|@"));
 
         try {

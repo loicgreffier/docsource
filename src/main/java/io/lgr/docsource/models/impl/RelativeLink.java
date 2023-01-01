@@ -1,11 +1,11 @@
 package io.lgr.docsource.models.impl;
 
 import io.lgr.docsource.models.Link;
+import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 
 import java.io.File;
-import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -13,15 +13,12 @@ import static io.lgr.docsource.models.Link.Status.BROKEN;
 import static io.lgr.docsource.models.Link.Status.SUCCESS;
 
 public class RelativeLink extends Link {
-    private final String currentDir;
-    private final String pathPrefix;
-    private final boolean allAbsolute;
+    @NonNull
+    private final ValidationOptions validationOptions;
 
-    public RelativeLink(File file, String markdown, String currentDir, String pathPrefix, boolean allAbsolute) {
-        super(file, markdown);
-        this.currentDir = currentDir;
-        this.pathPrefix = pathPrefix;
-        this.allAbsolute = allAbsolute;
+    public RelativeLink(File file, String path, String markdown, ValidationOptions validationOptions) {
+        super(file, path, markdown);
+        this.validationOptions = validationOptions;
     }
 
     /**
@@ -38,8 +35,11 @@ public class RelativeLink extends Link {
         }
 
         // Add the path prefix if not present already
-        if (pathPrefix != null && !checkPath.getName(0).startsWith(pathPrefix)) {
-            checkPath = Path.of(File.separator + pathPrefix + File.separator + checkPath);
+        if (validationOptions.getPathPrefix() != null && !checkPath.getName(0).startsWith(validationOptions.getPathPrefix())) {
+            checkPath = Path.of(File.separator
+                    + validationOptions.getPathPrefix()
+                    + File.separator
+                    + checkPath);
         }
 
         // If the link is "/", look for a README file
@@ -53,8 +53,8 @@ public class RelativeLink extends Link {
         }
 
         // If the link is absolute
-        if (checkPath.startsWith(File.separator) || allAbsolute) {
-            checkPath = Path.of(currentDir + File.separator + checkPath);
+        if (checkPath.startsWith(File.separator) || validationOptions.isAllAbsolute()) {
+            checkPath = Path.of(validationOptions.getCurrentDir() + File.separator + checkPath);
         } else { // If the link is relative then check it is valid from the file it belongs
             checkPath = Path.of(file.getParent() + File.separator + checkPath);
         }

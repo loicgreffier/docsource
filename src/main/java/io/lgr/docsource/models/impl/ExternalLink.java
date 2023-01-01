@@ -8,7 +8,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Path;
 import java.time.Duration;
 
 import static io.lgr.docsource.models.Link.Status.*;
@@ -16,8 +15,8 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_MULT_CHOICE;
 
 public class ExternalLink extends Link {
-    public ExternalLink(File file, String markdown) {
-        super(file, markdown);
+    public ExternalLink(File file, String path, String markdown) {
+        super(file, path, markdown);
     }
 
     /**

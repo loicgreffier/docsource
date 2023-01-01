@@ -20,11 +20,12 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(22);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(23);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
         assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
+                "https://www.google.com",
                 "./folderOne/page",
                 "folderOne/page",
                 "./folderOne/page.md",
@@ -56,6 +57,7 @@ class DocsifyTest {
         List<Link> externals = scanSubCommand.getScannedLinksByType(ExternalLink.class);
         assertThat(externals.stream().map(Link::getPath).toList()).containsAll(List.of(
                 "https://www.google.fr/",
+                "https://www.google.com",
                 "https://www.gogle.fr/",
                 "https://google.fr/"));
 
@@ -91,10 +93,11 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(15);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(16);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
         assertThat(successes.stream().map(Link::getPath).toList()).containsAll(List.of(
+                "https://www.google.fr/",
                 "https://www.google.fr/",
                 "./folderOne/page",
                 "folderOne/page",

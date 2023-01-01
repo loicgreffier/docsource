@@ -1,9 +1,12 @@
 package io.lgr.docsource.utils;
 
 
+import io.lgr.docsource.models.Link;
+import io.lgr.docsource.models.impl.ExternalLink;
+import io.lgr.docsource.models.impl.MailtoLink;
+import io.lgr.docsource.models.impl.RelativeLink;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
-import picocli.CommandLine;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,7 +14,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,9 +67,9 @@ public abstract class FileUtils {
      * @return A list of links
      * @throws IOException Any IO exception during file reading
      */
-    public static List<String> findLinks(File file) throws IOException {
+    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions) throws IOException {
         String fileContent = Files.readString(file.toPath());
-        final List<String> links = new ArrayList<>();
+        final List<Link> links = new ArrayList<>();
 
         for (String regex : List.of(MARKDOWN_LINK_REGEX, HREF_LINK_REGEX)) {
             Pattern pattern = Pattern.compile(regex);
@@ -76,7 +78,13 @@ public abstract class FileUtils {
             while (matcher.find()) {
                 // .group(0) matches all: [](...),
                 // .group(1) matches the link
-                links.add(matcher.group(0));
+                if (matcher.group(0).contains("://")) {
+                    links.add(new ExternalLink(file, matcher.group(1), matcher.group(0)));
+                } else if (matcher.group(0).contains("mailto:")) {
+                    links.add(new MailtoLink(file, matcher.group(1), matcher.group(0)));
+                } else {
+                    links.add(new RelativeLink(file, matcher.group(1), matcher.group(0), validationOptions));
+                }
             }
         }
 
