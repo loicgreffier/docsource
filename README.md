@@ -11,7 +11,7 @@
 # Table of Contents
 
 * [Download](#download)
-* [Functioning](#functioning)
+* [Overview](#overview)
   * [External Links](#external-links)
   * [Relative Links](#relative-links)
   * [Mailto Links](#mailto-links)
@@ -27,7 +27,7 @@ Docsource can be downloaded at https://github.com/loicgreffier/docsource/release
 - Windows
 - Linux
 
-# Functioning
+# Overview
 
 Docsource can check the 3 kinds of Markdown links:
 - External links
