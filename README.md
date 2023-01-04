@@ -74,24 +74,30 @@ For those links, Docsource checks the format of the linked email address:
   _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
  (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
-Usage: scan [-AhrV] [-c=<currentDir>] [-p=<pathPrefix>] [files...]
+
+Usage: scan [-AhrV] [--skip-external] [--skip-mailto] [--skip-relative]
+      [-c=<currentDir>] [-p=<pathPrefix>] [files...]
 
 Description:
 
 Scan documentation.
 
 Parameters:
-      [files...]       Directories or files to scan.
+      [files...]        Directories or files to scan.
 
 Options:
-  -A, --all-absolute   Consider relative link paths as absolute paths.
+  -A, --all-absolute    Consider relative link paths as absolute paths.
   -c, --current-dir=<currentDir>
-                       Override the current directory.
-  -h, --help           Show this help message and exit.
+                        Override the current directory.
+  -h, --help            Show this help message and exit.
   -p, --path-prefix=<pathPrefix>
-                       Prefix the beginning of relative links with a partial path.
-  -r, --recursive      Scan directories recursively.
-  -V, --version        Print version information and exit.
+                        Prefix the beginning of relative links with a partial
+                          path.
+  -r, --recursive       Scan directories recursively.
+      --skip-external   Skip external links.
+      --skip-mailto     Skip mailto links.
+      --skip-relative   Skip relative links.
+  -V, --version         Print version information and exit.
 ```
 
 Scan needs to be run at the root folder of your documentation.

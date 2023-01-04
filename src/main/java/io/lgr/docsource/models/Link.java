@@ -49,6 +49,9 @@ public abstract class Link {
         private String currentDir;
         private String pathPrefix;
         private boolean allAbsolute;
+        private boolean skipExternal;
+        private boolean skipRelative;
+        private boolean skipMailto;
     }
 
     public enum Status {

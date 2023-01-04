@@ -3,15 +3,14 @@ package io.lgr.docsource.commands;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.LoggerContext;
 import io.lgr.docsource.utils.VersionProvider;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
+@Slf4j
 @Component
 @CommandLine.Command(name = "docsource",
         headerHeading = "@|bold Usage|@:",
@@ -44,8 +43,7 @@ public class DocsourceCommand implements Callable<Integer> {
      */
     @Override
     public Integer call() {
-        CommandLine docsource = new CommandLine(this);
-        docsource.usage(System.out);
+        log.info(new CommandLine(this).getUsageMessage());
         return 0;
     }
 }

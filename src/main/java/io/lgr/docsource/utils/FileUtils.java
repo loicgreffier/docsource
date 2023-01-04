@@ -78,11 +78,11 @@ public abstract class FileUtils {
             while (matcher.find()) {
                 // .group(0) matches all: [](...),
                 // .group(1) matches the link
-                if (matcher.group(0).contains("://")) {
+                if (matcher.group(0).contains("://") && !validationOptions.isSkipExternal()) {
                     links.add(new ExternalLink(file, matcher.group(1), matcher.group(0)));
-                } else if (matcher.group(0).contains("mailto:")) {
+                } else if (matcher.group(0).contains("mailto:") && !validationOptions.isSkipMailto()) {
                     links.add(new MailtoLink(file, matcher.group(1), matcher.group(0)));
-                } else {
+                } else if (!validationOptions.isSkipRelative()) {
                     links.add(new RelativeLink(file, matcher.group(1), matcher.group(0), validationOptions));
                 }
             }

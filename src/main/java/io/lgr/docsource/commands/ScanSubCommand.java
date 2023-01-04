@@ -49,6 +49,15 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
 
+    @CommandLine.Option(names = {"--skip-external"}, description = "Skip external links.")
+    public boolean skipExternal;
+
+    @CommandLine.Option(names = {"--skip-relative"}, description = "Skip relative links.")
+    public boolean skipRelative;
+
+    @CommandLine.Option(names = {"--skip-mailto"}, description = "Skip mailto links.")
+    public boolean skipMailto;
+
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
 
@@ -59,10 +68,13 @@ public class ScanSubCommand implements Callable<Integer> {
     @Override
     public Integer call() {
         if (inputFiles == null) {
-            CommandLine docsourceScan = new CommandLine(this);
-            docsourceScan.usage(System.out);
+            log.info(new CommandLine(this).getUsageMessage());
             return 0;
         }
+
+        if (skipExternal) log.debug("Skip external links requested.");
+        if (skipRelative) log.debug("Skip relative links requested.");
+        if (skipMailto) log.debug("Skip mailto links requested.");
 
         inputFiles.forEach(inputFile -> {
             List<File> files = findFiles(inputFile);
@@ -72,10 +84,8 @@ public class ScanSubCommand implements Callable<Integer> {
 
                 try {
                     List<Link> links = FileUtils.findLinks(file, Link.ValidationOptions.builder()
-                                    .currentDir(getCurrentDirectory())
-                                    .pathPrefix(pathPrefix)
-                                    .allAbsolute(allAbsolute)
-                            .build());
+                            .currentDir(getCurrentDirectory()).pathPrefix(pathPrefix).allAbsolute(allAbsolute)
+                            .skipExternal(skipExternal).skipMailto(skipMailto).skipRelative(skipRelative).build());
                     if (links.isEmpty()) {
                         log.debug(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;

@@ -90,6 +90,19 @@ class DocsifyTest {
     }
 
     @Test
+    void shouldScanWholeDocumentationSkippingAllLinks() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify",
+                "--skip-external",
+                "--skip-relative",
+                "--skip-mailto",
+                "src/test/resources/docsify");
+
+        assertThat(code).isZero();
+        assertThat(scanSubCommand.getScannedLinks()).isEmpty();
+    }
+
+    @Test
     void shouldScanReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
