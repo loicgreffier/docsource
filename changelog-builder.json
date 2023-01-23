@@ -1,8 +1,8 @@
 {
   "categories": [
     {
-      "title": "# :sparkles: New",
-      "labels": ["new feature"]
+      "title": "# :sparkles: News",
+      "labels": ["feature"]
     },
     {
       "title": "# :zap: Improvements",
@@ -15,6 +15,14 @@
     {
       "title": "# :memo: Documentation",
       "labels": ["documentation"]
+    },
+    {
+      "title": "# :arrow_up: Dependency Updates",
+      "labels": ["dependencies"]
+    },
+    {
+      "title": "# :speech_balloon: Other",
+      "labels": ["security"]
     }
   ],
   "template": "${{CHANGELOG}}\n\n<details>\n<summary>Uncategorized</summary>\n\n${{UNCATEGORIZED}}\n</details>",
