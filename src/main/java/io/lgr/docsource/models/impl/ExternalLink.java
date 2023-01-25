@@ -2,6 +2,7 @@ package io.lgr.docsource.models.impl;
 
 import io.lgr.docsource.models.Link;
 
+import javax.net.ssl.SSLParameters;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -25,13 +26,17 @@ public class ExternalLink extends Link {
     public void validate() {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .setHeader("User-Agent", "PostmanRuntime/7.29.2") // Modify user-agent for websites with protection against Java HTTP clients
+                    .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36") // Modify user-agent for websites with protection against Java HTTP clients
                     .setHeader("Accept", "*/*")
                     .uri(URI.create(path))
                     .GET()
                     .build();
 
+            SSLParameters sslParameters = new SSLParameters();
+            sslParameters.setUseCipherSuitesOrder(false);
+            
             HttpResponse<String> response = HttpClient.newBuilder()
+                    .sslParameters(sslParameters)
                     .build()
                     .send(request, HttpResponse.BodyHandlers.ofString());
 
