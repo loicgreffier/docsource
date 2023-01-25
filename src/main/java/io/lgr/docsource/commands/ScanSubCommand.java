@@ -58,6 +58,9 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"--skip-mailto"}, description = "Skip mailto links.")
     public boolean skipMailto;
 
+    @CommandLine.Option(names = {"-t", "--trust-all-certificates"}, description = "Trust all certificates.")
+    public boolean trustAllCertificates;
+
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
 
@@ -85,7 +88,8 @@ public class ScanSubCommand implements Callable<Integer> {
                 try {
                     List<Link> links = FileUtils.findLinks(file, Link.ValidationOptions.builder()
                             .currentDir(getCurrentDirectory()).pathPrefix(pathPrefix).allAbsolute(allAbsolute)
-                            .skipExternal(skipExternal).skipMailto(skipMailto).skipRelative(skipRelative).build());
+                            .skipExternal(skipExternal).skipMailto(skipMailto).skipRelative(skipRelative)
+                            .trustAllCertificates(trustAllCertificates).build());
                     if (links.isEmpty()) {
                         log.debug(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;

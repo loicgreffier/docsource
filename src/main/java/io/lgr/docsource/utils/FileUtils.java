@@ -80,11 +80,11 @@ public abstract class FileUtils {
                 // .group(1) matches the link
                 if (matcher.group(0).contains("://")) {
                     if (!validationOptions.isSkipExternal()) {
-                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0)));
+                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0), validationOptions));
                     }
                 } else if (matcher.group(0).contains("mailto:")) {
                     if (!validationOptions.isSkipMailto()) {
-                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0)));
+                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0), validationOptions));
                     }
                 } else if (!validationOptions.isSkipRelative()) {
                     links.add(new RelativeLink(file, matcher.group(1), matcher.group(0), validationOptions));

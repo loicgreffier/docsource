@@ -15,8 +15,8 @@ import static java.net.HttpURLConnection.HTTP_BAD_REQUEST;
 import static java.net.HttpURLConnection.HTTP_MULT_CHOICE;
 
 public class ExternalLink extends Link {
-    public ExternalLink(File file, String path, String markdown) {
-        super(file, path, markdown);
+    public ExternalLink(File file, String path, String markdown, ValidationOptions validationOptions) {
+        super(file, path, markdown, validationOptions);
     }
 
     /**
@@ -25,6 +25,10 @@ public class ExternalLink extends Link {
     @Override
     public void validate() {
         try {
+            if (validationOptions.isTrustAllCertificates()) {
+                System.setProperty("jdk.internal.httpclient.disableHostnameVerification", Boolean.TRUE.toString());
+            }
+
             HttpRequest request = HttpRequest.newBuilder()
                     .setHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36") // Modify user-agent for websites with protection against Java HTTP clients
                     .setHeader("Accept", "*/*")
@@ -34,7 +38,7 @@ public class ExternalLink extends Link {
 
             SSLParameters sslParameters = new SSLParameters();
             sslParameters.setUseCipherSuitesOrder(false);
-            
+
             HttpResponse<String> response = HttpClient.newBuilder()
                     .sslParameters(sslParameters)
                     .build()

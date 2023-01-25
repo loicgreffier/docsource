@@ -1,7 +1,6 @@
 package io.lgr.docsource.models.impl;
 
 import io.lgr.docsource.models.Link;
-import lombok.NonNull;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -14,12 +13,8 @@ import static io.lgr.docsource.models.Link.Status.BROKEN;
 import static io.lgr.docsource.models.Link.Status.SUCCESS;
 
 public class RelativeLink extends Link {
-    @NonNull
-    private final ValidationOptions validationOptions;
-
     public RelativeLink(File file, String path, String markdown, ValidationOptions validationOptions) {
-        super(file, path, markdown);
-        this.validationOptions = validationOptions;
+        super(file, path, markdown, validationOptions);
     }
 
     /**

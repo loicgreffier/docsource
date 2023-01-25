@@ -74,9 +74,7 @@ For those links, Docsource checks the format of the linked email address:
   _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
  (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
-
-Usage: scan [-AhrV] [--skip-external] [--skip-mailto] [--skip-relative]
-      [-c=<currentDir>] [-p=<pathPrefix>] [files...]
+Usage: scan [-AhrtV] [--skip-external] [--skip-mailto] [--skip-relative] [-c=<currentDir>] [-p=<pathPrefix>] [files...]
 
 Description:
 
@@ -91,12 +89,13 @@ Options:
                         Override the current directory.
   -h, --help            Show this help message and exit.
   -p, --path-prefix=<pathPrefix>
-                        Prefix the beginning of relative links with a partial
-                          path.
+                        Prefix the beginning of relative links with a partial path.
   -r, --recursive       Scan directories recursively.
       --skip-external   Skip external links.
       --skip-mailto     Skip mailto links.
       --skip-relative   Skip relative links.
+  -t, --trust-all-certificates
+                        Trust all certificates.
   -V, --version         Print version information and exit.
 ```
 

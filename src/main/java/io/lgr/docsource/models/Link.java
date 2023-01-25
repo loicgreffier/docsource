@@ -2,6 +2,7 @@ package io.lgr.docsource.models;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
@@ -17,6 +18,8 @@ public abstract class Link {
     protected final String markdown;
     protected Status status;
     protected String details;
+    @NonNull
+    protected final ValidationOptions validationOptions;
 
     /**
      * Validate the status of a link
@@ -52,6 +55,7 @@ public abstract class Link {
         private boolean skipExternal;
         private boolean skipRelative;
         private boolean skipMailto;
+        private boolean trustAllCertificates;
     }
 
     public enum Status {
