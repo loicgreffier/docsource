@@ -103,6 +103,17 @@ class DocsifyTest {
     }
 
     @Test
+    void shouldScanWholeDocumentationTrustingAllCertificates() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify",
+                "--trust-all-certificates",
+                "src/test/resources/docsify");
+
+        assertThat(code).isNotZero();
+        assertThat(System.getProperty("jdk.internal.httpclient.disableHostnameVerification")).isEqualTo(Boolean.TRUE.toString());
+    }
+
+    @Test
     void shouldScanReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
