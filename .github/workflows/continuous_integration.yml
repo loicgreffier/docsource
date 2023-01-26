@@ -39,7 +39,7 @@ jobs:
           path: target/docsource.jar
 
       - name: Docker
-        run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest-snapshot-jar
+        run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest-SNAPSHOT-jar
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
@@ -79,7 +79,7 @@ jobs:
           path: target/docsource
 
       - name: Docker
-        run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest-snapshot
+        run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest-SNAPSHOT
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
