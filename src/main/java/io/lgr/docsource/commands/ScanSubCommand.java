@@ -43,6 +43,9 @@ public class ScanSubCommand implements Callable<Integer> {
     @CommandLine.Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
     public String currentDir;
 
+    @CommandLine.Option(names = {"-k", "--insecure"}, description = "Turn off hostname and certificate verification.")
+    public boolean insecure;
+
     @CommandLine.Option(names = {"-p", "--path-prefix"}, description = "Prefix the beginning of relative links with a partial path.")
     public String pathPrefix;
 
@@ -57,9 +60,6 @@ public class ScanSubCommand implements Callable<Integer> {
 
     @CommandLine.Option(names = {"--skip-mailto"}, description = "Skip mailto links.")
     public boolean skipMailto;
-
-    @CommandLine.Option(names = {"-t", "--trust-all-certificates"}, description = "Trust all certificates.")
-    public boolean trustAllCertificates;
 
     @Getter
     private final List<Link> scannedLinks = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ScanSubCommand implements Callable<Integer> {
                     List<Link> links = FileUtils.findLinks(file, Link.ValidationOptions.builder()
                             .currentDir(getCurrentDirectory()).pathPrefix(pathPrefix).allAbsolute(allAbsolute)
                             .skipExternal(skipExternal).skipMailto(skipMailto).skipRelative(skipRelative)
-                            .trustAllCertificates(trustAllCertificates).build());
+                            .insecure(insecure).build());
                     if (links.isEmpty()) {
                         log.debug(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;

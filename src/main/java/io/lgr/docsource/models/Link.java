@@ -55,7 +55,7 @@ public abstract class Link {
         private boolean skipExternal;
         private boolean skipRelative;
         private boolean skipMailto;
-        private boolean trustAllCertificates;
+        private boolean insecure;
     }
 
     public enum Status {

@@ -2,9 +2,9 @@ package io.lgr.docsource.documentation;
 
 import io.lgr.docsource.commands.ScanSubCommand;
 import io.lgr.docsource.models.Link;
+import io.lgr.docsource.models.impl.ExternalLink;
 import io.lgr.docsource.models.impl.MailtoLink;
 import io.lgr.docsource.models.impl.RelativeLink;
-import io.lgr.docsource.models.impl.ExternalLink;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
@@ -20,7 +20,7 @@ class DocsifyTest {
         int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify", "src/test/resources/docsify");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(24);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(25);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
         assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
@@ -50,6 +50,7 @@ class DocsifyTest {
                 "images/image.jpg",
                 "/doesNotExist/folder/page",
                 "https://www.gogle.fr/",
+                "https://www.testingmcafeesites.com/",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README",
@@ -60,6 +61,7 @@ class DocsifyTest {
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "https://www.gogle.fr/",
+                "https://www.testingmcafeesites.com/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
@@ -90,25 +92,12 @@ class DocsifyTest {
     }
 
     @Test
-    void shouldScanWholeDocumentationSkippingAllLinks() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify",
-                "--skip-external",
-                "--skip-relative",
-                "--skip-mailto",
-                "src/test/resources/docsify");
-
-        assertThat(code).isZero();
-        assertThat(scanSubCommand.getScannedLinks()).isEmpty();
-    }
-
-    @Test
     void shouldScanReadme() {
         ScanSubCommand scanSubCommand = new ScanSubCommand();
         int code = new CommandLine(scanSubCommand).execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
-        assertThat(scanSubCommand.getScannedLinks()).hasSize(17);
+        assertThat(scanSubCommand.getScannedLinks()).hasSize(18);
 
         List<Link> successes = scanSubCommand.getScannedLinksByStatus(SUCCESS);
         assertThat(successes.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
@@ -131,6 +120,7 @@ class DocsifyTest {
         List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
         assertThat(brokens.stream().map(Link::getPath).toList()).containsExactlyInAnyOrderElementsOf(List.of(
                 "https://www.gogle.fr/",
+                "https://www.testingmcafeesites.com/",
                 "./does-not-exist",
                 "/doesNotExist/folderOne/page",
                 "/docsify/README",
@@ -141,6 +131,7 @@ class DocsifyTest {
                 "https://www.google.fr/",
                 "https://www.google.com",
                 "https://www.gogle.fr/",
+                "https://www.testingmcafeesites.com/",
                 "https://google.fr/"));
 
         List<Link> relatives = scanSubCommand.getScannedLinksByType(RelativeLink.class);
@@ -202,5 +193,48 @@ class DocsifyTest {
 
         List<Link> mailTos = scanSubCommand.getScannedLinksByType(MailtoLink.class);
         assertThat(mailTos).isEmpty();
+    }
+
+    @Test
+    void shouldScanWholeDocumentationSkippingAllLinks() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify",
+                "--skip-external",
+                "--skip-relative",
+                "--skip-mailto",
+                "src/test/resources/docsify");
+
+        assertThat(code).isZero();
+        assertThat(scanSubCommand.getScannedLinks()).isEmpty();
+    }
+
+    @Test
+    void shouldDisableHostnameAndCertificateVerification() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        int code = new CommandLine(scanSubCommand).execute("-rkc=src/test/resources/docsify",
+                "src/test/resources/docsify/README.md");
+
+        assertThat(code).isNotZero();
+
+        List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
+        assertThat(brokens
+                .stream()
+                .anyMatch(link -> link.getPath().equals("https://www.testingmcafeesites.com/") &&
+                        link.getDetails().equals("404"))).isTrue();
+    }
+
+    @Test
+    void shouldNotDisableHostnameAndCertificateVerification() {
+        ScanSubCommand scanSubCommand = new ScanSubCommand();
+        int code = new CommandLine(scanSubCommand).execute("-rc=src/test/resources/docsify",
+                "src/test/resources/docsify/README.md");
+
+        assertThat(code).isNotZero();
+
+        List<Link> brokens = scanSubCommand.getScannedLinksByStatus(BROKEN);
+        assertThat(brokens
+                .stream()
+                .anyMatch(link -> link.getPath().equals("https://www.testingmcafeesites.com/") &&
+                        link.getDetails().equals("No subject alternative DNS name matching www.testingmcafeesites.com found."))).isTrue();
     }
 }
