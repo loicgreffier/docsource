@@ -11,7 +11,7 @@
 
 	<groupId>io.docsource</groupId>
 	<artifactId>docsource</artifactId>
-	<version>1.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>docsource</name>
 	<description>Documentation analyzer</description>
 
