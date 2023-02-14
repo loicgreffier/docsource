@@ -6,6 +6,9 @@
 
 [../folder-two/page](../folder-two/page).
 
+<!-- Should be ignored -->
+[#broken](#broken).
+
 [/README](/README).
 
 [/](/).
