@@ -26,6 +26,8 @@
 
 [/folder-one/page](/folder-one/page).
 
+[/folder-one/page#success](/folder-one/page#success).
+
 ![Image](images/image.jpg)
 
 ![Image with title 1](images/image.jpg "Image 1")

@@ -34,9 +34,9 @@ class ScanSubCommandTest {
         assertThat(code).isNotZero();
 
         assertThat(sw.toString()).contains("Found 3 file(s) to scan");
-        assertThat(sw.toString()).contains("Success  12        3         1     16");
+        assertThat(sw.toString()).contains("Success  13        3         1     17");
         assertThat(sw.toString()).contains("Broken   6         2         1     9");
-        assertThat(sw.toString()).contains("Total    18        5         2     25");
+        assertThat(sw.toString()).contains("Total    19        5         2     26");
         assertThat(sw.toString()).contains("  - ./folder-two/page (file not found)");
         assertThat(sw.toString()).contains("  - images/image.jpg (image not found)");
         assertThat(sw.toString()).contains("  - /doesNotExist/folder/page (file not found)");
@@ -60,9 +60,9 @@ class ScanSubCommandTest {
 
         assertThat(code).isNotZero();
 
-        assertThat(sw.toString()).contains("Success  8         3         1     12");
+        assertThat(sw.toString()).contains("Success  9         3         1     13");
         assertThat(sw.toString()).contains("Broken   3         2         1     6");
-        assertThat(sw.toString()).contains("Total    11        5         2     18");
+        assertThat(sw.toString()).contains("Total    12        5         2     19");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
         assertThat(sw.toString()).contains("  - https://www.testingmcafeesites.com/ (No subject alternative DNS name matching www.testingmcafeesites.com found.)");
         assertThat(sw.toString()).contains("  - ./does-not-exist (file not found)");
@@ -124,9 +124,9 @@ class ScanSubCommandTest {
 
         assertThat(code).isNotZero();
 
-        assertThat(sw.toString()).contains("Success  8         3         1     12");
+        assertThat(sw.toString()).contains("Success  9         3         1     13");
         assertThat(sw.toString()).contains("Broken   3         2         1     6");
-        assertThat(sw.toString()).contains("Total    11        5         2     18");
+        assertThat(sw.toString()).contains("Total    12        5         2     19");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
         assertThat(sw.toString()).contains("  - https://www.testingmcafeesites.com/ (404)");
         assertThat(sw.toString()).contains("  - ./does-not-exist (file not found)");
