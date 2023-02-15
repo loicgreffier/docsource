@@ -8,6 +8,10 @@
 
 <a href="https://www.google.com"> Google </a>.
 
+<a target="_blank" href="https://www.google.com"> Google </a>.
+
+<a href="https://www.google.com" target="_blank"> Google </a>.
+
 ## Broken
 
 [Gogle](https://www.gogle.fr/).
