@@ -24,13 +24,13 @@ public abstract class FileUtils {
      * Match groups like: [](http), [](https), [](/)
      * except [](#) that is not handled already
      */
-    private static final String MARKDOWN_LINK_REGEX = "!?\\[.*\\]\\(([^#].*)\\)";
+    private static final String MARKDOWN_LINK_REGEX = "!?\\[.*?\\]\\(([^#].*?)\\)";
 
     /**
      * Href link regex.
      * Match groups like: href=""
      */
-    private static final String HREF_LINK_REGEX = "href=\\\"(.*)\\\"";
+    private static final String HREF_LINK_REGEX = "<a.*href=\"(.*?)\"";
 
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
