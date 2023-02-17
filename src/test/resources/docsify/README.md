@@ -40,6 +40,12 @@
 
 ![Image with space](images/image%20with%20spaces.jpg "Image with spaces")
 
+<img src="images/image.jpg"/>
+
+<img src="images/image.jpg" title="Image with title 1" alt="Image with title 1"/>
+
+<img title="Image with title 2" src="images/image.jpg" alt="Image with title 2"/>
+
 ## Broken
 
 [./does-not-exist](./does-not-exist).
