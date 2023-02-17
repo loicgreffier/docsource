@@ -32,6 +32,12 @@ public abstract class FileUtils {
      */
     private static final String HREF_LINK_REGEX = "<a.*href=\"(.*?)\"";
 
+    /**
+     * Img link regex.
+     * Match groups like: src=""
+     */
+    private static final String IMG_LINK_REGEX = "<img.*src=\"(.*?)\"";
+
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
     private FileUtils() { }
@@ -70,7 +76,7 @@ public abstract class FileUtils {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
-        for (String regex : List.of(MARKDOWN_LINK_REGEX, HREF_LINK_REGEX)) {
+        for (String regex : List.of(MARKDOWN_LINK_REGEX, HREF_LINK_REGEX, IMG_LINK_REGEX)) {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(fileContent);
 
