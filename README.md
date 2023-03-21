@@ -6,7 +6,7 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/loicgreffier/docsource?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource/tags)
 [![Docker Stars](https://img.shields.io/docker/stars/loicgreffier/docsource?label=Stars&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource)
 
-**Docsource** is a CLI that detects broken links inside Markdown documentations from the source code.
+Docsource is a command-line interface (CLI) tool that detects broken links within Markdown documentation files in your source code.
 
 ![](.readme/demo.gif)
 
@@ -26,45 +26,36 @@
 
 # Download
 
-Docsource can be downloaded at https://github.com/loicgreffier/docsource/releases and is available in 3 different formats:
-- JAR (Java 17 required)
+You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases). It is available in three different formats:
+- JAR (requires Java 17)
 - Windows
 - Linux
 
 # Overview
 
-Docsource can check the 3 kinds of Markdown links:
-- External links
-- Relative links
-- Mailto links
+Docsource can check three types of Markdown links: external links, relative links, and mailto links.
 
 ## External Links
 
-External links are links pointing to an external domain.
-
-For those links, Docsource sends an HTTP request and checks the HTTP return code:
-- the link is broken when the return code is 404.
-- the link is valid when the return code is different from 404.
+External links are links that point to an external domain. Docsource sends an HTTP request to check the HTTP return code:
+- The link is considered broken if the return code is 404.
+- The link is considered valid if the return code is anything other than 404.
 
 ## Relative Links
 
-Relative links are used for links within the same domain.
+Relative links are used for links within the same domain. Docsource checks whether the linked resource actually exists:
+- The link is considered broken if the linked resource does not exist.
+- The link is considered valid if the linked resource exists.
 
-For those links, Docsource checks the linked resource actually exists:
-- the link is broken if the linked resource does not exist.
-- the link is valid if the linked resource exist.
-
-A relative link can be:
-- absolute: the link is checked from the user current directory.
-- relative: the link is checked from the file it belongs, unless the `--all-absolute` has been enabled.
+A relative link can be either absolute or relative:
+- Absolute links are checked from the user's current directory.
+- Relative links are checked from the file to which the link belongs, unless the `--all-absolute` flag is enabled.
 
 ## Mailto Links
 
-Mailto links are used to include a link with an email address.
-
-For those links, Docsource checks the format of the linked email address:
-- the link is broken if the format is wrong.
-- the link is valid if the format is good.
+Mailto links are used to include a link with an email address. Docsource checks the format of the linked email address:
+- The link is considered broken if the format is incorrect.
+- The link is considered valid if the format is correct.
 
 # Usage
 
@@ -100,11 +91,11 @@ Options:
   -V, --version         Print version information and exit.
 ```
 
-Scan needs to be run at the root folder of your documentation.
+`Scan` is used to scan Markdown files in your documentation to detect broken links. The command should be run at the root folder of your documentation.
 
 ### Multiple folders/files
 
-Multiple folders or files can be given in input.
+You can provide multiple folders or files as input to `Scan` by specifying them after the command:
 
 ```console
 docsource scan directory1 directory2 file1.md file2.md
@@ -112,15 +103,13 @@ docsource scan directory1 directory2 file1.md file2.md
 
 ### All absolute and Path prefix
 
-Depending on how your documentation is built (e.g., a custom Angular/React project that parses Markdown files) you may need to:
-- consider relative link paths as absolute paths. 
-E.g., you may want `[link](./folder-two/README)` to be checked from your current directory rather than the "folderTwo" directory.
-- add a prefix to your relative paths. 
-E.g., your link is `[link](./folder-two/README)` but the actual path is `/content/folderTwo/README` where `content` is handled automatically by your parser.
+Depending on how your documentation is built (e.g., a custom Angular/React project that parses Markdown files), you may need to consider relative link paths as absolute paths or add a prefix to your relative paths.
+- E.g., you may want `[link](./folder-two/README)` to be checked from your current directory rather than the "folder-two" directory.
+- E.g., your link is `[link](./folder-two/README)` but the actual path is `/content/folder-two/README` where `content` is handled automatically by your parser.
 
-For these cases:
-- `--all-absolute` checks relative link paths as absolute paths
-- `--path-prefix` allows to add a partial path at the beginning of each relative links
+To handle such cases, you can use the following options:
+- `--all-absolute` to check relative link paths as absolute paths
+- `--path-prefix` to add a partial path at the beginning of each relative link
 
 # Continuous Integration
 
@@ -154,9 +143,6 @@ docsource scan . -Djavax.net.ssl.trustStore=pathToTheTrustStore -Djavax.net.ssl.
 
 # Motivation
 
-Maintaining a documentation made of tens or hundreds of pages can be painful. 
-And nothing more frustrating for readers than falling onto a broken link.
+Maintaining documentation with tens or hundreds of pages can be a pain, and there's nothing more frustrating for readers than encountering broken links. Docsource helps keep documentation up-to-date and detects broken links. 
 
-Docsource is helping to maintain a documentation up-to-date and detect links that may be broken.
-
-It was also an opportunity to test [Spring Native](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/)!
+It was also an opportunity to test out [Spring Native](https://docs.spring.io/spring-native/docs/current/reference/htmlsingle/)!
