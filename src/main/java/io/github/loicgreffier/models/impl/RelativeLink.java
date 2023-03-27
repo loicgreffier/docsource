@@ -1,6 +1,6 @@
-package io.lgr.docsource.models.impl;
+package io.github.loicgreffier.models.impl;
 
-import io.lgr.docsource.models.Link;
+import io.github.loicgreffier.models.Link;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -8,9 +8,6 @@ import org.yaml.snakeyaml.util.UriEncoder;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
-
-import static io.lgr.docsource.models.Link.Status.BROKEN;
-import static io.lgr.docsource.models.Link.Status.SUCCESS;
 
 public class RelativeLink extends Link {
     public RelativeLink(File file, String path, String markdown, ValidationOptions validationOptions) {
@@ -56,10 +53,10 @@ public class RelativeLink extends Link {
         }
 
         if (Files.exists(checkPath)) {
-            status = SUCCESS;
+            status = Status.SUCCESS;
             details = "OK";
         } else {
-            status = BROKEN;
+            status = Status.BROKEN;
             details = isImage() ? "image not found" : "file not found";
         }
     }

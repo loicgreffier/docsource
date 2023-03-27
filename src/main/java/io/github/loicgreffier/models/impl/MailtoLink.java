@@ -1,11 +1,11 @@
-package io.lgr.docsource.models.impl;
+package io.github.loicgreffier.models.impl;
 
-import io.lgr.docsource.models.Link;
+import io.github.loicgreffier.models.Link;
 
 import java.io.File;
 
-import static io.lgr.docsource.models.Link.Status.BROKEN;
-import static io.lgr.docsource.models.Link.Status.SUCCESS;
+import static io.github.loicgreffier.models.Link.Status.BROKEN;
+import static io.github.loicgreffier.models.Link.Status.SUCCESS;
 
 public class MailtoLink extends Link {
     private static final String EMAIL_REGEX = "(.+)@(.+)";

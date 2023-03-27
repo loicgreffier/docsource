@@ -1,4 +1,4 @@
-package io.lgr.docsource.commands;
+package io.github.loicgreffier.commands;
 
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;

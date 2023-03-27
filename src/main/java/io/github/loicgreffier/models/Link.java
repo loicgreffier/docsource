@@ -1,4 +1,4 @@
-package io.lgr.docsource.models;
+package io.github.loicgreffier.models;
 
 import lombok.Builder;
 import lombok.Getter;

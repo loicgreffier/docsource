@@ -1,6 +1,6 @@
-package io.lgr.docsource.models.impl;
+package io.github.loicgreffier.models.impl;
 
-import io.lgr.docsource.models.Link;
+import io.github.loicgreffier.models.Link;
 
 import javax.net.ssl.*;
 import java.io.File;
@@ -15,7 +15,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import static io.lgr.docsource.models.Link.Status.*;
+import static io.github.loicgreffier.models.Link.Status.*;
 import static java.net.HttpURLConnection.*;
 
 public class ExternalLink extends Link {

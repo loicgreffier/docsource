@@ -1,6 +1,6 @@
-package io.lgr.docsource.utils;
+package io.github.loicgreffier.utils;
 
-import io.lgr.docsource.properties.AppProperties;
+import io.github.loicgreffier.properties.AppProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

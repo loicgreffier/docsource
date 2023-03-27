@@ -1,6 +1,6 @@
-package io.lgr.docsource.commands;
+package io.github.loicgreffier.commands;
 
-import io.lgr.docsource.utils.VersionProvider;
+import io.github.loicgreffier.utils.VersionProvider;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 

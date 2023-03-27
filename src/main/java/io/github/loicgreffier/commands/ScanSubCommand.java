@@ -1,11 +1,11 @@
-package io.lgr.docsource.commands;
+package io.github.loicgreffier.commands;
 
-import io.lgr.docsource.models.Link;
-import io.lgr.docsource.models.impl.ExternalLink;
-import io.lgr.docsource.models.impl.MailtoLink;
-import io.lgr.docsource.models.impl.RelativeLink;
-import io.lgr.docsource.utils.FileUtils;
-import io.lgr.docsource.utils.VersionProvider;
+import io.github.loicgreffier.models.Link;
+import io.github.loicgreffier.models.impl.ExternalLink;
+import io.github.loicgreffier.models.impl.MailtoLink;
+import io.github.loicgreffier.models.impl.RelativeLink;
+import io.github.loicgreffier.utils.FileUtils;
+import io.github.loicgreffier.utils.VersionProvider;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
 
@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 
-import static io.lgr.docsource.models.Link.Status.BROKEN;
-import static io.lgr.docsource.models.Link.Status.SUCCESS;
+import static io.github.loicgreffier.models.Link.Status.BROKEN;
+import static io.github.loicgreffier.models.Link.Status.SUCCESS;
 
 @Component
 @CommandLine.Command(name = "scan",

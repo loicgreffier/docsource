@@ -1,4 +1,4 @@
-package io.lgr.docsource.properties;
+package io.github.loicgreffier.properties;
 
 import lombok.Getter;
 import lombok.Setter;

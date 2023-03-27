@@ -1,10 +1,10 @@
-package io.lgr.docsource.utils;
+package io.github.loicgreffier.utils;
 
 
-import io.lgr.docsource.models.Link;
-import io.lgr.docsource.models.impl.ExternalLink;
-import io.lgr.docsource.models.impl.MailtoLink;
-import io.lgr.docsource.models.impl.RelativeLink;
+import io.github.loicgreffier.models.Link;
+import io.github.loicgreffier.models.impl.ExternalLink;
+import io.github.loicgreffier.models.impl.MailtoLink;
+import io.github.loicgreffier.models.impl.RelativeLink;
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;

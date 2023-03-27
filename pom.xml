@@ -9,7 +9,7 @@
 		<relativePath />
 	</parent>
 
-	<groupId>io.docsource</groupId>
+	<groupId>io.github.loicgreffier</groupId>
 	<artifactId>docsource</artifactId>
 	<version>1.0.2-SNAPSHOT</version>
 	<name>docsource</name>

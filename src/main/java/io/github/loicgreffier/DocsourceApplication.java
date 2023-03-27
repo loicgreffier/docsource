@@ -1,6 +1,6 @@
-package io.lgr.docsource;
+package io.github.loicgreffier;
 
-import io.lgr.docsource.commands.DocsourceCommand;
+import io.github.loicgreffier.commands.DocsourceCommand;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
