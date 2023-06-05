@@ -40,7 +40,7 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@v4
         id: build_changelog
         with:
           configuration: "changelog-builder.json"
@@ -92,7 +92,7 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@v4
         id: build_changelog
         with:
           configuration: "changelog-builder.json"
@@ -138,7 +138,7 @@ jobs:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
       - name: Changelog
-        uses: mikepenz/release-changelog-builder-action@v3
+        uses: mikepenz/release-changelog-builder-action@v4
         id: build_changelog
         with:
           configuration: "changelog-builder.json"
