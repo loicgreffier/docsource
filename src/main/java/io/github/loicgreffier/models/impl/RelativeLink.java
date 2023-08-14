@@ -1,38 +1,46 @@
 package io.github.loicgreffier.models.impl;
 
 import io.github.loicgreffier.models.Link;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
 
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-
+/**
+ * This class represents a relative link.
+ */
 public class RelativeLink extends Link {
-    public RelativeLink(File file, String path, String markdown, ValidationOptions validationOptions) {
+    public RelativeLink(File file, String path, String markdown,
+                        ValidationOptions validationOptions) {
         super(file, path, markdown, validationOptions);
     }
 
     /**
-     * {@inheritDoc}
+     * Validate the link.
+     * If the link leads to an existing file, the link is valid.
+     * If the link leads to a non-existing file, the link is broken.
      */
     @Override
     public void validate() {
         // If it's an image, delete the potential title
-        Path checkPath = isImage() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) : Path.of(UriEncoder.decode(path));
+        Path checkPath = isImage() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) :
+            Path.of(UriEncoder.decode(path));
 
         // If it's a link to a section, delete it
         if (checkPath.toString().contains("#")) {
-            checkPath = Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
+            checkPath =
+                Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
         }
 
         // Add the path prefix if not present already
-        if (validationOptions.getPathPrefix() != null && !checkPath.getName(0).startsWith(validationOptions.getPathPrefix())) {
+        if (validationOptions.getPathPrefix() != null
+            && !checkPath.getName(0).startsWith(validationOptions.getPathPrefix())) {
             checkPath = Path.of(File.separator
-                    + validationOptions.getPathPrefix()
-                    + File.separator
-                    + checkPath);
+                + validationOptions.getPathPrefix()
+                + File.separator
+                + checkPath);
         }
 
         // If the link is "/", look for a README file
@@ -62,8 +70,9 @@ public class RelativeLink extends Link {
     }
 
     /**
-     * Is a link to an image or not
-     * @return true if it is, false otherwise
+     * Check if the link is an image.
+     *
+     * @return true if the link is an image, false otherwise.
      */
     public boolean isImage() {
         return markdown.startsWith("!");

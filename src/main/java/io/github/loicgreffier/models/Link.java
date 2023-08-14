@@ -1,15 +1,18 @@
 package io.github.loicgreffier.models;
 
+import static org.fusesource.jansi.Ansi.Color.GREEN;
+import static org.fusesource.jansi.Ansi.Color.RED;
+
+import java.io.File;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
-import java.io.File;
-
-import static org.fusesource.jansi.Ansi.Color.*;
-
+/**
+ * This class represents a link.
+ */
 @Getter
 @RequiredArgsConstructor
 public abstract class Link {
@@ -22,29 +25,34 @@ public abstract class Link {
     protected final ValidationOptions validationOptions;
 
     /**
-     * Validate the status of a link
+     * Validate the link.
      */
     public abstract void validate();
 
     /**
-     * Print a link as Ansi string
-     * @return A string with Ansi format
+     * Get the Ansi string representation of the link.
+     *
+     * @return The Ansi string representation of the link.
      */
     public String toAnsiString() {
         return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
     }
 
     /**
-     * Get an Ansi color by status
-     * @return An Ansi color
+     * Get the Ansi color of the link.
+     *
+     * @return The Ansi color of the link.
      */
     private Ansi.Color getAnsiColor() {
-        return switch(status) {
+        return switch (status) {
             case SUCCESS -> GREEN;
             case BROKEN -> RED;
         };
     }
 
+    /**
+     * This class represents the validation options.
+     */
     @Getter
     @Builder
     public static class ValidationOptions {
@@ -57,6 +65,9 @@ public abstract class Link {
         private boolean insecure;
     }
 
+    /**
+     * This enum represents the link status.
+     */
     public enum Status {
         SUCCESS,
         BROKEN

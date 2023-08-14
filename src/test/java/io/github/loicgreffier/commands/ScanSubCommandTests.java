@@ -1,14 +1,16 @@
 package io.github.loicgreffier.commands;
 
-import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
+import picocli.CommandLine;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class ScanSubCommandTest {
+/**
+ * This class represents the tests of the {@link DocsourceCommand} class.
+ */
+class ScanSubCommandTests {
     @Test
     void shouldDisplayUsageMessage() {
         CommandLine cmd = new CommandLine(new ScanSubCommand());
@@ -41,7 +43,8 @@ class ScanSubCommandTest {
         assertThat(sw.toString()).contains("  - images/image.jpg (image not found)");
         assertThat(sw.toString()).contains("  - /doesNotExist/folder/page (file not found)");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
-        assertThat(sw.toString()).contains("  - https://www.testingmcafeesites.com/ (No subject alternative DNS name matching www.testingmcafeesites.com found.)");
+        assertThat(sw.toString()).contains(
+            "  - https://www.testingmcafeesites.com/ (No subject alternative DNS name matching www.testingmcafeesites.com found.)");
         assertThat(sw.toString()).contains("  - ./does-not-exist (file not found)");
         assertThat(sw.toString()).contains("  - /doesNotExist/folder-one/page (file not found)");
         assertThat(sw.toString()).contains("  - /docsify/README (file not found)");
@@ -56,7 +59,8 @@ class ScanSubCommandTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
+        int code =
+            cmd.execute("-c=src/test/resources/docsify", "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
 
@@ -64,7 +68,8 @@ class ScanSubCommandTest {
         assertThat(sw.toString()).contains("Broken   3         2         1     6");
         assertThat(sw.toString()).contains("Total    15        7         2     24");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
-        assertThat(sw.toString()).contains("  - https://www.testingmcafeesites.com/ (No subject alternative DNS name matching www.testingmcafeesites.com found.)");
+        assertThat(sw.toString()).contains(
+            "  - https://www.testingmcafeesites.com/ (No subject alternative DNS name matching www.testingmcafeesites.com found.)");
         assertThat(sw.toString()).contains("  - ./does-not-exist (file not found)");
         assertThat(sw.toString()).contains("  - /doesNotExist/folder-one/page (file not found)");
         assertThat(sw.toString()).contains("  - /docsify/README (file not found)");
@@ -79,7 +84,8 @@ class ScanSubCommandTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-c=src/test/resources/docsify", "src/test/resources/docsify/folder-one/page.md");
+        int code = cmd.execute("-c=src/test/resources/docsify",
+            "src/test/resources/docsify/folder-one/page.md");
 
         assertThat(code).isNotZero();
 
@@ -100,8 +106,8 @@ class ScanSubCommandTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute("-r", "-c=src/test/resources/docsify",
-                "--skip-external", "--skip-relative", "--skip-mailto",
-                "src/test/resources/docsify");
+            "--skip-external", "--skip-relative", "--skip-mailto",
+            "src/test/resources/docsify");
 
         assertThat(code).isZero();
 
@@ -120,7 +126,7 @@ class ScanSubCommandTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute("-r", "-k", "-c=src/test/resources/docsify",
-                "src/test/resources/docsify/README.md");
+            "src/test/resources/docsify/README.md");
 
         assertThat(code).isNotZero();
 
@@ -143,7 +149,8 @@ class ScanSubCommandTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-r", "-A", "-c=src/test/resources/custom", "-p=content", "src/test/resources/custom");
+        int code = cmd.execute("-r", "-A", "-c=src/test/resources/custom", "-p=content",
+            "src/test/resources/custom");
 
         assertThat(code).isNotZero();
 
@@ -164,7 +171,8 @@ class ScanSubCommandTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-A", "-c=src/test/resources/custom", "-p=content", "src/test/resources/custom/content/folder-one/page.md");
+        int code = cmd.execute("-A", "-c=src/test/resources/custom", "-p=content",
+            "src/test/resources/custom/content/folder-one/page.md");
 
         assertThat(code).isNotZero();
 

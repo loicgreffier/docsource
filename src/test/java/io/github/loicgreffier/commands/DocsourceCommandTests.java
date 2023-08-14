@@ -1,14 +1,16 @@
 package io.github.loicgreffier.commands;
 
-import org.junit.jupiter.api.Test;
-import picocli.CommandLine;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import org.junit.jupiter.api.Test;
+import picocli.CommandLine;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-class DocsourceCommandTest {
+/**
+ * This class contains unit tests for the {@link DocsourceCommand} class.
+ */
+class DocsourceCommandTests {
 
     @Test
     void shouldDisplayUsageMessage() {

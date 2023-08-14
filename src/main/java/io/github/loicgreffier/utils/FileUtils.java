@@ -5,8 +5,6 @@ import io.github.loicgreffier.models.Link;
 import io.github.loicgreffier.models.impl.ExternalLink;
 import io.github.loicgreffier.models.impl.MailtoLink;
 import io.github.loicgreffier.models.impl.RelativeLink;
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,12 +15,19 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import org.apache.commons.io.FilenameUtils;
 
+/**
+ * This class represents a file utils.
+ */
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class FileUtils {
     /**
      * Markdown link regex.
-     * Match groups like: [](http), [](https), [](/)
-     * except [](#) that is not handled already
+     * Match groups like: [](http), [](https) or [](/)
+     * but not like: [](#) that is not handled already.
      */
     private static final String MARKDOWN_LINK_REGEX = "!?\\[.*?\\]\\(([^#].*?)\\)";
 
@@ -40,39 +45,44 @@ public abstract class FileUtils {
 
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
-    private FileUtils() { }
-
     /**
-     * Check if the format of the given file is supported
-     * @param file The file
-     * @return true if it is, false otherwise
+     * Check if the given file extension is authorized to be processed by the application.
+     *
+     * @param file The file.
+     * @return True if the file extension is authorized, false otherwise.
      */
     public static boolean isAuthorized(File file) {
         return AUTHORIZED_EXTENSIONS.contains(FilenameUtils.getExtension(file.toString()));
     }
 
     /**
-     * Find all files in the given directory
-     * @param file The file
-     * @param recursive Find files recursively or not
-     * @return A list of files
+     * Find files from a directory.
+     *
+     * @param file      The directory.
+     * @param recursive True to find files recursively, false otherwise.
+     * @return A list of files.
+     * @throws IOException Any IO exception during file reading.
      */
     public static List<File> findFiles(File file, boolean recursive) throws IOException {
-        try (Stream<Path> fileStream = Files.find(Paths.get(file.toURI()), recursive ? Integer.MAX_VALUE : 1,
-                (filePath, fileAttr) -> fileAttr.isRegularFile() && isAuthorized(filePath.toFile()))) {
+        try (Stream<Path> fileStream = Files.find(Paths.get(file.toURI()),
+            recursive ? Integer.MAX_VALUE : 1,
+            (filePath, fileAttr) -> fileAttr.isRegularFile() && isAuthorized(filePath.toFile()))) {
             return fileStream
-                    .map(Path::toFile)
-                    .toList();
+                .map(Path::toFile)
+                .toList();
         }
     }
 
     /**
-     * Find links from a Markdown file
-     * @param file The file
-     * @return A list of links
-     * @throws IOException Any IO exception during file reading
+     * Find links from a file.
+     *
+     * @param file              The file.
+     * @param validationOptions The validation options.
+     * @return A list of links.
+     * @throws IOException Any IO exception during file reading.
      */
-    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions) throws IOException {
+    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions)
+        throws IOException {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
@@ -85,14 +95,17 @@ public abstract class FileUtils {
                 // .group(1) matches the link
                 if (matcher.group(0).contains("://")) {
                     if (!validationOptions.isSkipExternal()) {
-                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0), validationOptions));
+                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0),
+                            validationOptions));
                     }
                 } else if (matcher.group(0).contains("mailto:")) {
                     if (!validationOptions.isSkipMailto()) {
-                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0), validationOptions));
+                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0),
+                            validationOptions));
                     }
                 } else if (!validationOptions.isSkipRelative()) {
-                    links.add(new RelativeLink(file, matcher.group(1), matcher.group(0), validationOptions));
+                    links.add(new RelativeLink(file, matcher.group(1), matcher.group(0),
+                        validationOptions));
                 }
             }
         }
