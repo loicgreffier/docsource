@@ -12,6 +12,11 @@
 
 <a href="https://www.google.com" target="_blank"> Google </a>.
 
+<!-- Specific use-cases. Should be ignored by regex -->
+<a href="${variable.name}"> Google </a>.
+<a href="${variable.name"> Google </a>.
+<a href="variable.name}"> Google </a>.
+
 ## Broken
 
 [Gogle](https://www.gogle.fr/).
@@ -45,6 +50,11 @@
 <img src="images/image.jpg" title="Image with title 1" alt="Image with title 1"/>
 
 <img title="Image with title 2" src="images/image.jpg" alt="Image with title 2"/>
+
+<!-- Specific use-cases. Should be ignored by regex -->
+<img src="${variable.name}"/>
+<img src="${variable.name"/>
+<img src="variable.name}"/>
 
 ## Broken
 

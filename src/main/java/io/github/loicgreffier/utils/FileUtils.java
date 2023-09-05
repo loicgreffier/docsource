@@ -34,14 +34,16 @@ public abstract class FileUtils {
     /**
      * Href link regex.
      * Match groups like: href=""
+     * Ignore href attribute containing template examples: href="${...}"
      */
-    private static final String HREF_LINK_REGEX = "<a.*href=\"(.*?)\"";
+    private static final String HREF_LINK_REGEX = "<a.*href=\"(?!\\$\\{)([^}]*?)(?!\\})\"";
 
     /**
      * Img link regex.
      * Match groups like: src=""
+     * Ignore src attribute containing template examples: src="${...}"
      */
-    private static final String IMG_LINK_REGEX = "<img.*src=\"(.*?)\"";
+    private static final String IMG_LINK_REGEX = "<img.*src=\"(?!\\$\\{)([^\\}]*?)(?!\\})\"";
 
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
