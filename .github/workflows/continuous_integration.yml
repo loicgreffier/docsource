@@ -12,14 +12,17 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          
+
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
-        
+
+      - name: Check Style
+        run: mvn checkstyle:check
+
       - name: Build
         run: mvn clean package -DskipTests
 
@@ -51,7 +54,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-        
+
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
@@ -59,6 +62,9 @@ jobs:
           java-version: '17'
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Style
+        run: mvn checkstyle:check
 
       - name: Build
         run: mvn clean package -Pnative -DskipTests
@@ -100,6 +106,9 @@ jobs:
           components: 'native-image'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check Style
+        run: mvn checkstyle:check
+        
       - name: Build
         run: mvn clean package -Pnative -DskipTests
 
