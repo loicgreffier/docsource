@@ -65,7 +65,7 @@ jobs:
       - name: Build & Test
         run: mvn clean package -Pnative -PnativeTest
 
-      - name: Publish Test Report
+      - name: Publish Native Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
         with:
@@ -104,7 +104,7 @@ jobs:
       - name: Build
         run: mvn clean package -Pnative -PnativeTest
 
-      - name: Publish Test Report
+      - name: Publish Native Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
         with:
