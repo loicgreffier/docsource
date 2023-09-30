@@ -20,11 +20,11 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build
-        run: mvn clean compile
+      - name: Check Style
+        run: mvn checkstyle:check
 
-      - name: Test
-        run: mvn test
+      - name: Build & Test
+        run: mvn clean package
 
       - name: Publish Test Report
         if: always()
@@ -52,6 +52,9 @@ jobs:
           distribution: 'graalvm'
           java-version: '17.0.8'
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check Style
+        run: mvn checkstyle:check
 
       - name: Build & Test
         run: mvn clean package -Pnative -PnativeTest
@@ -83,6 +86,9 @@ jobs:
           java-version: '17.0.8'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Check Style
+        run: mvn checkstyle:check
+        
       - name: Build & Test
         run: mvn clean package -Pnative -PnativeTest
 

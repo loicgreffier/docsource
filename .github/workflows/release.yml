@@ -21,11 +21,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Build
-        run: mvn clean compile
-
-      - name: Test
-        run: mvn test
+      - name: Build & Test
+        run: mvn clean package
 
       - name: Publish Test Report
         if: always()
