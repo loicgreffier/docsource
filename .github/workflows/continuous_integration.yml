@@ -24,7 +24,7 @@ jobs:
         run: mvn checkstyle:check
 
       - name: Build
-        run: mvn clean package -DskipTests
+        run: mvn clean compile
 
       - name: Test
         run: mvn test
@@ -65,11 +65,8 @@ jobs:
       - name: Check Style
         run: mvn checkstyle:check
 
-      - name: Build
-        run: mvn clean package -Pnative -DskipTests
-
-      - name: Test
-        run: mvn test -PnativeTest
+      - name: Build & Test
+        run: mvn clean package -Pnative -PnativeTest
 
       - name: Publish Test Report
         if: always()
@@ -106,12 +103,9 @@ jobs:
 
       - name: Check Style
         run: mvn checkstyle:check
-        
-      - name: Build
-        run: mvn clean package -Pnative -DskipTests
 
-      - name: Test
-        run: mvn test -PnativeTest
+      - name: Build
+        run: mvn clean package -Pnative -PnativeTest
 
       - name: Publish Test Report
         if: always()

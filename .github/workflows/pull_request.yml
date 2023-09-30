@@ -21,7 +21,7 @@ jobs:
           cache: maven
 
       - name: Build
-        run: mvn clean package -DskipTests
+        run: mvn clean compile
 
       - name: Test
         run: mvn test
@@ -54,10 +54,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Test
-        run: mvn clean package -Pnative -DskipTests
-
-      - name: Test
-        run: mvn test -PnativeTest
+        run: mvn clean package -Pnative -PnativeTest
 
       - name: Publish Test Report
         if: always()
@@ -87,10 +84,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build & Test
-        run: mvn clean package -Pnative -DskipTests
-
-      - name: Test
-        run: mvn test -PnativeTest
+        run: mvn clean package -Pnative -PnativeTest
 
       - name: Publish Test Report
         if: always()
