@@ -23,11 +23,8 @@ jobs:
       - name: Check Style
         run: mvn checkstyle:check
 
-      - name: Build
-        run: mvn clean package -DskipTests
-
-      - name: Test
-        run: mvn test
+      - name: Build & Test
+        run: mvn clean package
 
       - name: Publish Test Report
         if: always()
@@ -58,21 +55,17 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.0'
-          java-version: '17'
-          components: 'native-image'
+          distribution: 'graalvm'
+          java-version: '17.0.8'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check Style
         run: mvn checkstyle:check
 
-      - name: Build
-        run: mvn clean package -Pnative -DskipTests
+      - name: Build & Test
+        run: mvn clean package -Pnative -PnativeTest
 
-      - name: Test
-        run: mvn test -PnativeTest
-
-      - name: Publish Test Report
+      - name: Publish Native Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
         with:
@@ -101,21 +94,17 @@ jobs:
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.0'
-          java-version: '17'
-          components: 'native-image'
+          distribution: 'graalvm'
+          java-version: '17.0.8'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Check Style
         run: mvn checkstyle:check
-        
+
       - name: Build
-        run: mvn clean package -Pnative -DskipTests
+        run: mvn clean package -Pnative -PnativeTest
 
-      - name: Test
-        run: mvn test -PnativeTest
-
-      - name: Publish Test Report
+      - name: Publish Native Test Report
         if: always()
         uses: mikepenz/action-junit-report@v4
         with:
