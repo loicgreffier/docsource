@@ -24,7 +24,7 @@
     </scm>
 
     <properties>
-        <checkstyle.version>10.12.3</checkstyle.version>
+        <checkstyle.version>10.12.4</checkstyle.version>
         <commons-io.version>2.13.0</commons-io.version>
         <jansi.version>2.4.0</jansi.version>
         <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
