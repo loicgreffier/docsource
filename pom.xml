@@ -106,7 +106,7 @@
                 <version>${jib-maven-plugin.version}</version>
                 <configuration>
                     <from>
-                        <image>loicgreffier/docsource-base:1.1.0-jar</image>
+                        <image>loicgreffier/docsource-base:1.0.1-jar</image>
                     </from>
                     <to>
                         <image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
