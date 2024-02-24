@@ -38,6 +38,9 @@ jobs:
           name: docsource-jar
           path: target/docsource.jar
 
+      - name: Docker
+        run: mvn clean package -DskipTests jib:dockerBuild
+
   build-linux:
     runs-on: ubuntu-latest
     steps:
@@ -70,6 +73,9 @@ jobs:
         with:
           name: docsource-linux
           path: target/docsource
+
+      - name: Docker
+        run: mvn clean package -DskipTests -Pnative jib:dockerBuild
 
   build-windows:
     runs-on: windows-latest
