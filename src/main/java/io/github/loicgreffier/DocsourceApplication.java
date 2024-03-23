@@ -1,6 +1,6 @@
 package io.github.loicgreffier;
 
-import io.github.loicgreffier.commands.DocsourceCommand;
+import io.github.loicgreffier.command.Docsource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -17,7 +17,7 @@ public class DocsourceApplication implements CommandLineRunner {
     private CommandLine.IFactory factory;
 
     @Autowired
-    private DocsourceCommand docsourceCommand;
+    private Docsource docsource;
 
     /**
      * The main entry point of the Docsource application.
@@ -39,7 +39,7 @@ public class DocsourceApplication implements CommandLineRunner {
         try (
             // Colors on Windows CMD (including for native)
             AnsiConsole ansi = AnsiConsole.windowsInstall()) {
-            exitCode = new CommandLine(docsourceCommand, factory).execute(args);
+            exitCode = new CommandLine(docsource, factory).execute(args);
         }
         System.exit(exitCode);
     }

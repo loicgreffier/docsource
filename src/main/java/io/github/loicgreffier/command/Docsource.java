@@ -1,6 +1,6 @@
-package io.github.loicgreffier.commands;
+package io.github.loicgreffier.command;
 
-import io.github.loicgreffier.utils.VersionProvider;
+import io.github.loicgreffier.util.VersionProvider;
 import java.util.concurrent.Callable;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
@@ -17,11 +17,11 @@ import picocli.CommandLine;
     parameterListHeading = "%n@|bold Parameters|@:%n",
     optionListHeading = "%n@|bold Options|@:%n",
     commandListHeading = "%n@|bold Commands|@:%n",
-    subcommands = {ScanSubCommand.class},
+    subcommands = {Scan.class},
     usageHelpAutoWidth = true,
     versionProvider = VersionProvider.class,
     mixinStandardHelpOptions = true)
-public class DocsourceCommand implements Callable<Integer> {
+public class Docsource implements Callable<Integer> {
     @CommandLine.Spec
     public CommandLine.Model.CommandSpec commandSpec;
 

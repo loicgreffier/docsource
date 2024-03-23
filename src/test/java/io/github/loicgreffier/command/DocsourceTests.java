@@ -1,4 +1,4 @@
-package io.github.loicgreffier.commands;
+package io.github.loicgreffier.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,13 +8,13 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 /**
- * This class contains unit tests for the {@link DocsourceCommand} class.
+ * This class contains unit tests for the {@link Docsource} class.
  */
-class DocsourceCommandTests {
+class DocsourceTests {
 
     @Test
     void shouldDisplayUsageMessage() {
-        CommandLine cmd = new CommandLine(new DocsourceCommand());
+        CommandLine cmd = new CommandLine(new Docsource());
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -26,14 +26,14 @@ class DocsourceCommandTests {
 
     @Test
     void shouldEnableVerboseMode() {
-        DocsourceCommand docsourceCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(docsourceCommand);
+        Docsource docsource = new Docsource();
+        CommandLine cmd = new CommandLine(docsource);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute("-v");
 
         assertThat(code).isZero();
-        assertThat(docsourceCommand.verbose).isTrue();
+        assertThat(docsource.verbose).isTrue();
     }
 }

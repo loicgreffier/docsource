@@ -1,14 +1,14 @@
-package io.github.loicgreffier.commands;
+package io.github.loicgreffier.command;
 
-import static io.github.loicgreffier.models.Link.Status.BROKEN;
-import static io.github.loicgreffier.models.Link.Status.SUCCESS;
+import static io.github.loicgreffier.model.Link.Status.BROKEN;
+import static io.github.loicgreffier.model.Link.Status.SUCCESS;
 
-import io.github.loicgreffier.models.Link;
-import io.github.loicgreffier.models.impl.ExternalLink;
-import io.github.loicgreffier.models.impl.MailtoLink;
-import io.github.loicgreffier.models.impl.RelativeLink;
-import io.github.loicgreffier.utils.FileUtils;
-import io.github.loicgreffier.utils.VersionProvider;
+import io.github.loicgreffier.model.Link;
+import io.github.loicgreffier.model.impl.ExternalLink;
+import io.github.loicgreffier.model.impl.MailtoLink;
+import io.github.loicgreffier.model.impl.RelativeLink;
+import io.github.loicgreffier.util.FileUtils;
+import io.github.loicgreffier.util.VersionProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,11 +33,11 @@ import picocli.CommandLine;
     usageHelpAutoWidth = true,
     versionProvider = VersionProvider.class,
     mixinStandardHelpOptions = true)
-public class ScanSubCommand implements Callable<Integer> {
+public class Scan implements Callable<Integer> {
     private static final String SKIPPED = "Skipped";
 
     @CommandLine.ParentCommand
-    public DocsourceCommand parentCommand;
+    public Docsource docsource;
 
     @CommandLine.Spec
     public CommandLine.Model.CommandSpec commandSpec;
@@ -90,13 +90,13 @@ public class ScanSubCommand implements Callable<Integer> {
             return 0;
         }
 
-        if (skipExternal && parentCommand.verbose) {
+        if (skipExternal && docsource.verbose) {
             commandSpec.commandLine().getOut().println("Skip external links requested.");
         }
-        if (skipRelative && parentCommand.verbose) {
+        if (skipRelative && docsource.verbose) {
             commandSpec.commandLine().getOut().println("Skip relative links requested.");
         }
-        if (skipMailto && parentCommand.verbose) {
+        if (skipMailto && docsource.verbose) {
             commandSpec.commandLine().getOut().println("Skip mailto links requested.");
         }
 
@@ -114,7 +114,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         .skipExternal(skipExternal).skipMailto(skipMailto)
                         .skipRelative(skipRelative)
                         .insecure(insecure).build());
-                    if (links.isEmpty() && parentCommand.verbose) {
+                    if (links.isEmpty() && docsource.verbose) {
                         commandSpec.commandLine().getOut()
                             .println(CommandLine.Help.Ansi.AUTO.string("No link found.\n"));
                         return;
@@ -122,14 +122,14 @@ public class ScanSubCommand implements Callable<Integer> {
 
                     links.forEach(link -> {
                         link.validate();
-                        if (parentCommand.verbose) {
+                        if (docsource.verbose) {
                             commandSpec.commandLine().getOut()
                                 .println(CommandLine.Help.Ansi.AUTO.string(link.toAnsiString()));
                         }
                         scannedLinks.add(link);
                     });
 
-                    if (parentCommand.verbose) {
+                    if (docsource.verbose) {
                         commandSpec.commandLine().getOut().println();
                     }
                 } catch (IOException e) {
@@ -137,7 +137,7 @@ public class ScanSubCommand implements Callable<Integer> {
                         .println("Cannot get links from file " + file + ".");
                 }
             });
-            if (!parentCommand.verbose) {
+            if (!docsource.verbose) {
                 commandSpec.commandLine().getOut().println();
             }
         });

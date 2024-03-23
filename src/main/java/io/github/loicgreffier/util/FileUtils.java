@@ -1,10 +1,10 @@
-package io.github.loicgreffier.utils;
+package io.github.loicgreffier.util;
 
 
-import io.github.loicgreffier.models.Link;
-import io.github.loicgreffier.models.impl.ExternalLink;
-import io.github.loicgreffier.models.impl.MailtoLink;
-import io.github.loicgreffier.models.impl.RelativeLink;
+import io.github.loicgreffier.model.Link;
+import io.github.loicgreffier.model.impl.ExternalLink;
+import io.github.loicgreffier.model.impl.MailtoLink;
+import io.github.loicgreffier.model.impl.RelativeLink;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;

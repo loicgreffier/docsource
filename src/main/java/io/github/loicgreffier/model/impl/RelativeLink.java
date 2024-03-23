@@ -1,6 +1,6 @@
-package io.github.loicgreffier.models.impl;
+package io.github.loicgreffier.model.impl;
 
-import io.github.loicgreffier.models.Link;
+import io.github.loicgreffier.model.Link;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;

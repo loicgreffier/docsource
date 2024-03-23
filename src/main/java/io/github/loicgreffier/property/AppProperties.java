@@ -1,4 +1,4 @@
-package io.github.loicgreffier.properties;
+package io.github.loicgreffier.property;
 
 import lombok.Getter;
 import lombok.Setter;

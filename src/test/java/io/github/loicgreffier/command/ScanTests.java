@@ -1,4 +1,4 @@
-package io.github.loicgreffier.commands;
+package io.github.loicgreffier.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -8,12 +8,12 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 /**
- * This class represents the tests of the {@link DocsourceCommand} class.
+ * This class represents the tests of the {@link Docsource} class.
  */
-class ScanSubCommandTests {
+class ScanTests {
     @Test
     void shouldDisplayUsageMessage() {
-        CommandLine cmd = new CommandLine(new ScanSubCommand());
+        CommandLine cmd = new CommandLine(new Scan());
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -25,9 +25,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanDocsify() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -53,9 +53,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanDocsifyReadme() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -78,9 +78,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanDocsifyPageOfFolderOne() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -99,9 +99,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanDocsifySkippingAllLinks() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -119,9 +119,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanDocsifyReadmeInsecure() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -143,9 +143,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanCustom() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
@@ -165,9 +165,9 @@ class ScanSubCommandTests {
 
     @Test
     void shouldScanCustomPageOfFolderOne() {
-        ScanSubCommand scanSubCommand = new ScanSubCommand();
-        scanSubCommand.parentCommand = new DocsourceCommand();
-        CommandLine cmd = new CommandLine(scanSubCommand);
+        Scan scan = new Scan();
+        scan.docsource = new Docsource();
+        CommandLine cmd = new CommandLine(scan);
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
