@@ -4,12 +4,17 @@ import io.github.loicgreffier.util.VersionProvider;
 import java.util.concurrent.Callable;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Model.CommandSpec;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.ScopeType;
+import picocli.CommandLine.Spec;
 
 /**
  * This class represents the "docsource" command.
  */
 @Component
-@CommandLine.Command(name = "docsource",
+@Command(name = "docsource",
     headerHeading = "@|bold Usage|@:",
     synopsisHeading = " ",
     descriptionHeading = "%n@|bold Description|@:%n%n",
@@ -22,11 +27,11 @@ import picocli.CommandLine;
     versionProvider = VersionProvider.class,
     mixinStandardHelpOptions = true)
 public class Docsource implements Callable<Integer> {
-    @CommandLine.Spec
-    public CommandLine.Model.CommandSpec commandSpec;
+    @Spec
+    public CommandSpec commandSpec;
 
-    @CommandLine.Option(names = {"-v", "--verbose"},
-        description = "Enable the verbose mode.", scope = CommandLine.ScopeType.INHERIT)
+    @Option(names = {"-v", "--verbose"},
+        description = "Enable the verbose mode.", scope = ScopeType.INHERIT)
     public boolean verbose;
 
     /**
