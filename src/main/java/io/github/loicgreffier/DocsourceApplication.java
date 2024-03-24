@@ -6,6 +6,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import picocli.CommandLine;
+import picocli.CommandLine.IFactory;
 import picocli.jansi.graalvm.AnsiConsole;
 
 /**
@@ -14,7 +15,7 @@ import picocli.jansi.graalvm.AnsiConsole;
 @SpringBootApplication
 public class DocsourceApplication implements CommandLineRunner {
     @Autowired
-    private CommandLine.IFactory factory;
+    private IFactory factory;
 
     @Autowired
     private Docsource docsource;
