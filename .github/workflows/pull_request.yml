@@ -1,8 +1,10 @@
-name: Pull request
+name: Pull Request
 
 on:
   pull_request:
-    branches: [ main ]
+    branches:
+      - 'main'
+      - 'hotfix/v*.*.*'
 
 jobs:
   build-jar:
@@ -20,13 +22,13 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Check Style
+      - name: Check style
         run: mvn checkstyle:check
 
-      - name: Build & Test
+      - name: Build and test
         run: mvn clean package
 
-      - name: Publish Test Report
+      - name: Publish test report
         if: always()
         uses: mikepenz/action-junit-report@v5
         with:
@@ -56,13 +58,13 @@ jobs:
           java-version: '21.0.1'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check Style
+      - name: Check style
         run: mvn checkstyle:check
 
-      - name: Build & Test
+      - name: Build and test
         run: mvn clean package -Pnative -PnativeTest
 
-      - name: Publish Native Test Report
+      - name: Publish native test report
         if: always()
         uses: mikepenz/action-junit-report@v5
         with:
@@ -92,13 +94,13 @@ jobs:
           java-version: '21.0.1'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Check Style
+      - name: Check style
         run: mvn checkstyle:check
 
-      - name: Build & Test
+      - name: Build and test
         run: mvn clean package -Pnative -PnativeTest
 
-      - name: Publish Native Test Report
+      - name: Publish native test report
         if: always()
         uses: mikepenz/action-junit-report@v5
         with:
