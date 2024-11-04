@@ -28,7 +28,7 @@ jobs:
 
       - name: Publish Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         with:
           report_paths: '**/target/surefire-reports/TEST-*.xml'
 
@@ -64,7 +64,7 @@ jobs:
 
       - name: Publish Native Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         with:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
@@ -100,7 +100,7 @@ jobs:
 
       - name: Publish Native Test Report
         if: always()
-        uses: mikepenz/action-junit-report@v4
+        uses: mikepenz/action-junit-report@v5
         with:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
