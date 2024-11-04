@@ -1,6 +1,6 @@
-name: Build Docker base image
+name: Build Docker Base Image
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       linux-version:
@@ -9,7 +9,7 @@ on:
       jar-version:
         description: 'Java image version'
         required: false
-        
+
 jobs:
   build-linux-base-image:
     runs-on: ubuntu-latest
@@ -26,7 +26,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build the Docker image
+      - name: Docker build
         run: |
           docker build . -f .docker/Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Build the Docker image
+      - name: Docker build
         run: |
           docker build . -f .docker/jar.Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
