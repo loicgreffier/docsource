@@ -90,12 +90,10 @@ Options:
   -A, --all-absolute    Consider relative link paths as absolute paths.
   -h, --help            Show this help message and exit.
   -i, --image-path-prefix=<imagePathPrefix>
-                        Prefix the beginning of images links with a partial
-                          path.
+                        Prefix the beginning of images links with a partial path.
   -k, --insecure        Turn off hostname and certificate chain verification.
   -p, --path-prefix=<pathPrefix>
-                        Prefix the beginning of relative links with a partial
-                          path.
+                        Prefix the beginning of relative links with a partial path.
   -r, --recursive       Scan directories recursively.
       --skip-external   Skip external links.
       --skip-mailto     Skip mailto links.
