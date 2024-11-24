@@ -7,10 +7,7 @@ import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-/**
- * This class contains unit tests for the {@link Docsource} class.
- */
-class DocsourceTests {
+class DocsourceTest {
 
     @Test
     void shouldDisplayUsageMessage() {

@@ -1,4 +1,4 @@
-package io.github.loicgreffier.model;
+package io.github.loicgreffier.model.link;
 
 import static org.fusesource.jansi.Ansi.Color.GREEN;
 import static org.fusesource.jansi.Ansi.Color.RED;

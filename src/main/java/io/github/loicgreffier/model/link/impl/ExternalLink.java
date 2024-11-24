@@ -1,10 +1,10 @@
-package io.github.loicgreffier.model.impl;
+package io.github.loicgreffier.model.link.impl;
 
-import static io.github.loicgreffier.model.Link.Status.BROKEN;
-import static io.github.loicgreffier.model.Link.Status.SUCCESS;
+import static io.github.loicgreffier.model.link.Link.Status.BROKEN;
+import static io.github.loicgreffier.model.link.Link.Status.SUCCESS;
 import static java.net.HttpURLConnection.HTTP_NOT_FOUND;
 
-import io.github.loicgreffier.model.Link;
+import io.github.loicgreffier.model.link.Link;
 import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
