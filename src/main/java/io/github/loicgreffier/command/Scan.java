@@ -56,9 +56,6 @@ public class Scan implements Callable<Integer> {
     @Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
     public boolean allAbsolute;
 
-    @Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
-    public String currentDir;
-
     @Option(names = {"-k", "--insecure"}, description = "Turn off hostname and certificate chain verification.")
     public boolean insecure;
 
@@ -351,10 +348,6 @@ public class Scan implements Callable<Integer> {
      * @return The current directory.
      */
     public String getCurrentDirectory() {
-        if (currentDir != null) {
-            return currentDir;
-        }
-
         return System.getProperty("user.dir");
     }
 }
