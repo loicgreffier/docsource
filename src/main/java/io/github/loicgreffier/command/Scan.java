@@ -190,21 +190,21 @@ public class Scan implements Callable<Integer> {
 
         if (FileUtils.isDocsify(file)) {
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut().println("Docsify framework detected.");
+                commandSpec.commandLine().getOut().println("Docsify framework detected.\n");
             }
             return; // No additional configuration needed for Docsify
         }
 
         if (FileUtils.isHugo(file)) {
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut().println("Hugo framework detected.");
+                commandSpec.commandLine().getOut().println("Hugo framework detected.\n");
             }
             imagePathPrefix = "static/";
             return;
         }
 
         if (docsource.verbose) {
-            commandSpec.commandLine().getOut().println("No framework detected.");
+            commandSpec.commandLine().getOut().println("No framework detected.\n");
         }
     }
 

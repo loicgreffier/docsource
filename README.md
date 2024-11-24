@@ -137,7 +137,7 @@ Docsource can be run in a GitLab pipeline using the [Docker image](https://hub.d
 ```yaml
 check links:
   stage: verify 🩺
-  image: loicgreffier/docsource:latest
+  image: loicgreffier/docsource
   script:
     - docsource scan --recursive .
 ```
