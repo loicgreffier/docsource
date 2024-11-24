@@ -30,7 +30,7 @@ source code.
 You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases). It is
 available in three different formats:
 
-- JAR (requires Java 21 since v1.0.3 and Java 17 before)
+- JAR (requires Java 21)
 - Windows
 - Linux
 

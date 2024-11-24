@@ -7,10 +7,7 @@ import java.io.StringWriter;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
-/**
- * This class represents the tests of the {@link Docsource} class.
- */
-class ScanTests {
+class ScanTest {
     @Test
     void shouldDisplayUsageMessage() {
         CommandLine cmd = new CommandLine(new Scan());
@@ -84,8 +81,7 @@ class ScanTests {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-c=src/test/resources/docsify",
-            "src/test/resources/docsify/folder-one/page.md");
+        int code = cmd.execute("-c=src/test/resources/docsify", "src/test/resources/docsify/folder-one/page.md");
 
         assertThat(code).isNotZero();
 

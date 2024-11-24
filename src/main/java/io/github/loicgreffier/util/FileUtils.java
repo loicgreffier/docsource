@@ -1,10 +1,10 @@
 package io.github.loicgreffier.util;
 
 
-import io.github.loicgreffier.model.Link;
-import io.github.loicgreffier.model.impl.ExternalLink;
-import io.github.loicgreffier.model.impl.MailtoLink;
-import io.github.loicgreffier.model.impl.RelativeLink;
+import io.github.loicgreffier.model.link.Link;
+import io.github.loicgreffier.model.link.impl.ExternalLink;
+import io.github.loicgreffier.model.link.impl.MailtoLink;
+import io.github.loicgreffier.model.link.impl.RelativeLink;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -83,8 +83,7 @@ public abstract class FileUtils {
      * @return A list of links.
      * @throws IOException Any IO exception during file reading.
      */
-    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions)
-        throws IOException {
+    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions) throws IOException {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
@@ -97,21 +96,60 @@ public abstract class FileUtils {
                 // .group(1) matches the link
                 if (matcher.group(0).contains("://")) {
                     if (!validationOptions.isSkipExternal()) {
-                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0),
-                            validationOptions));
+                        links.add(
+                            new ExternalLink(file,
+                                matcher.group(1),
+                                matcher.group(0),
+                                validationOptions
+                            )
+                        );
                     }
                 } else if (matcher.group(0).contains("mailto:")) {
                     if (!validationOptions.isSkipMailto()) {
-                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0),
-                            validationOptions));
+                        links.add(
+                            new MailtoLink(
+                                file,
+                                matcher.group(1),
+                                matcher.group(0),
+                                validationOptions
+                            )
+                        );
                     }
                 } else if (!validationOptions.isSkipRelative()) {
-                    links.add(new RelativeLink(file, matcher.group(1), matcher.group(0),
-                        validationOptions));
+                    links.add(
+                        new RelativeLink(
+                            file,
+                            matcher.group(1),
+                            matcher.group(0),
+                            validationOptions
+                        )
+                    );
                 }
             }
         }
 
         return links;
+    }
+
+    /**
+     * Is the given folder a Docsify folder.
+     *
+     * @param file The folder.
+     * @return True if the folder is a Docsify folder, false otherwise.
+     * @throws IOException Any IO exception during file reading.
+     */
+    public static boolean isDocsify(File file) throws IOException {
+        Path indexHtml = Path.of(file + "/index.html");
+        return Files.exists(indexHtml) && Files.readString(indexHtml).contains("window.$docsify");
+    }
+
+    /**
+     * Is the given folder a Hugo folder.
+     *
+     * @param file The folder.
+     * @return True if the folder is a Hugo folder, false otherwise.
+     */
+    public static boolean isHugo(File file) {
+        return Files.exists(Path.of(file + "/hugo.yaml")) || Files.exists(Path.of(file + "/hugo.toml"));
     }
 }

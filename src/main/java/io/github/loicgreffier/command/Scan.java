@@ -1,12 +1,13 @@
 package io.github.loicgreffier.command;
 
-import static io.github.loicgreffier.model.Link.Status.BROKEN;
-import static io.github.loicgreffier.model.Link.Status.SUCCESS;
+import static io.github.loicgreffier.model.link.Link.Status.BROKEN;
+import static io.github.loicgreffier.model.link.Link.Status.SUCCESS;
 
-import io.github.loicgreffier.model.Link;
-import io.github.loicgreffier.model.impl.ExternalLink;
-import io.github.loicgreffier.model.impl.MailtoLink;
-import io.github.loicgreffier.model.impl.RelativeLink;
+import io.github.loicgreffier.model.Summary;
+import io.github.loicgreffier.model.link.Link;
+import io.github.loicgreffier.model.link.impl.ExternalLink;
+import io.github.loicgreffier.model.link.impl.MailtoLink;
+import io.github.loicgreffier.model.link.impl.RelativeLink;
 import io.github.loicgreffier.util.FileUtils;
 import io.github.loicgreffier.util.VersionProvider;
 import java.io.File;
@@ -52,24 +53,24 @@ public class Scan implements Callable<Integer> {
     @Parameters(paramLabel = "files", description = "Directories or files to scan.")
     public List<File> inputFiles;
 
-    @Option(names = {"-A",
-        "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
+    @Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
     public boolean allAbsolute;
 
-    @Option(names = {"-c",
-        "--current-dir"}, description = "Override the current directory.")
+    @Option(names = {"-c", "--current-dir"}, description = "Override the current directory.")
     public String currentDir;
 
-    @Option(names = {"-k",
-        "--insecure"}, description = "Turn off hostname and certificate chain verification.")
+    @Option(names = {"-k", "--insecure"}, description = "Turn off hostname and certificate chain verification.")
     public boolean insecure;
 
-    @Option(names = {"-p", "--path-prefix"},
-        description = "Prefix the beginning of relative links with a partial path.")
+    @Option(names = {"-p",
+        "--path-prefix"}, description = "Prefix the beginning of relative links with a partial path.")
     public String pathPrefix;
 
-    @Option(names = {"-r",
-        "--recursive"}, description = "Scan directories recursively.")
+    @Option(names = {"-i", "--image-path-prefix"},
+        description = "Prefix the beginning of images links with a partial path.")
+    public String imagePathPrefix;
+
+    @Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
 
     @Option(names = {"--skip-external"}, description = "Skip external links.")
@@ -97,17 +98,15 @@ public class Scan implements Callable<Integer> {
             return 0;
         }
 
-        if (skipExternal && docsource.verbose) {
-            commandSpec.commandLine().getOut().println("Skip external links requested.");
-        }
-        if (skipRelative && docsource.verbose) {
-            commandSpec.commandLine().getOut().println("Skip relative links requested.");
-        }
-        if (skipMailto && docsource.verbose) {
-            commandSpec.commandLine().getOut().println("Skip mailto links requested.");
-        }
+        displaySkipInfo();
 
         inputFiles.forEach(inputFile -> {
+            try {
+                lookUpFramework(inputFile);
+            } catch (IOException e) {
+                commandSpec.commandLine().getErr().println("Error while looking up the framework.");
+            }
+
             List<File> files = findFiles(inputFile);
 
             files.forEach(file -> {
@@ -115,12 +114,19 @@ public class Scan implements Callable<Integer> {
                     .string("Scanning file @|bold " + file.getAbsolutePath() + "|@"));
 
                 try {
-                    List<Link> links = FileUtils.findLinks(file, Link.ValidationOptions.builder()
-                        .currentDir(getCurrentDirectory()).pathPrefix(pathPrefix)
-                        .allAbsolute(allAbsolute)
-                        .skipExternal(skipExternal).skipMailto(skipMailto)
-                        .skipRelative(skipRelative)
-                        .insecure(insecure).build());
+                    List<Link> links = FileUtils.findLinks(
+                        file,
+                        Link.ValidationOptions.builder()
+                            .currentDir(getCurrentDirectory())
+                            .pathPrefix(pathPrefix)
+                            .allAbsolute(allAbsolute)
+                            .skipExternal(skipExternal)
+                            .skipMailto(skipMailto)
+                            .skipRelative(skipRelative)
+                            .insecure(insecure)
+                            .build()
+                    );
+
                     if (links.isEmpty() && docsource.verbose) {
                         commandSpec.commandLine().getOut()
                             .println(Help.Ansi.AUTO.string("No link found.\n"));
@@ -140,16 +146,73 @@ public class Scan implements Callable<Integer> {
                         commandSpec.commandLine().getOut().println();
                     }
                 } catch (IOException e) {
-                    commandSpec.commandLine().getErr()
-                        .println("Cannot get links from file " + file + ".");
+                    commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
                 }
             });
+
             if (!docsource.verbose) {
                 commandSpec.commandLine().getOut().println();
             }
         });
 
-        // Display summary
+        Summary summary = displaySummary();
+
+        commandSpec.commandLine().getOut().println("\nEnd scanning... It's been an honour!");
+        return summary.countBrokenLinks() == 0 ? 0 : 1;
+    }
+
+    /**
+     * Display the skip information.
+     */
+    private void displaySkipInfo() {
+        if (skipExternal && docsource.verbose) {
+            commandSpec.commandLine().getOut().println("Skip external links requested.");
+        }
+        if (skipRelative && docsource.verbose) {
+            commandSpec.commandLine().getOut().println("Skip relative links requested.");
+        }
+        if (skipMailto && docsource.verbose) {
+            commandSpec.commandLine().getOut().println("Skip mailto links requested.");
+        }
+    }
+
+    /**
+     * Look up the framework of the given directory and apply the necessary configuration.
+     *
+     * @param file The file to look up.
+     * @throws IOException Any IO exception during file reading.
+     */
+    private void lookUpFramework(File file) throws IOException {
+        if (docsource.verbose) {
+            commandSpec.commandLine().getOut().println("Looking up framework...");
+        }
+
+        if (FileUtils.isDocsify(file)) {
+            if (docsource.verbose) {
+                commandSpec.commandLine().getOut().println("Docsify framework detected.");
+            }
+            return; // No additional configuration needed for Docsify
+        }
+
+        if (FileUtils.isHugo(file)) {
+            if (docsource.verbose) {
+                commandSpec.commandLine().getOut().println("Hugo framework detected.");
+            }
+            imagePathPrefix = "static/";
+            return;
+        }
+
+        if (docsource.verbose) {
+            commandSpec.commandLine().getOut().println("No framework detected.");
+        }
+    }
+
+    /**
+     * Display the summary of the scan.
+     *
+     * @return The summary of the scan.
+     */
+    private Summary displaySummary() {
         commandSpec.commandLine().getOut()
             .println(Help.Ansi.AUTO.string("@|bold Summary |@"));
         commandSpec.commandLine().getOut().println(
@@ -211,8 +274,14 @@ public class Scan implements Callable<Integer> {
                     Help.Ansi.AUTO.string("  - " + brokenLink.toAnsiString())));
             });
 
-        commandSpec.commandLine().getOut().println("\nEnd scanning... It's been an honour!");
-        return brokenRelative + brokenExternal + brokenMail == 0 ? 0 : 1;
+        return new Summary(
+            successRelative,
+            successExternal,
+            successMail,
+            brokenRelative,
+            brokenExternal,
+            brokenMail
+        );
     }
 
     /**
