@@ -4,15 +4,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 class ScanDocsifyTest {
+    String defaultUserDir = System.getProperty("user.dir");
 
-    @BeforeAll
-    static void setUp() {
-        System.setProperty("user.dir", "src/test/resources/docsify");
+    @BeforeEach
+    void setUp() {
+        System.setProperty("user.dir", defaultUserDir + "/src/test/resources/docsify");
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setProperty("user.dir", defaultUserDir);
     }
 
     @Test
@@ -23,7 +30,7 @@ class ScanDocsifyTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-r", "src/test/resources/docsify");
+        int code = cmd.execute("-r", ".");
 
         assertThat(code).isNotZero();
 
@@ -51,7 +58,7 @@ class ScanDocsifyTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("src/test/resources/docsify/README.md");
+        int code = cmd.execute("README.md");
 
         assertThat(code).isNotZero();
 
@@ -75,7 +82,7 @@ class ScanDocsifyTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("src/test/resources/docsify/folder-one/page.md");
+        int code = cmd.execute("folder-one/page.md");
 
         assertThat(code).isNotZero();
 
@@ -100,7 +107,7 @@ class ScanDocsifyTest {
             "--skip-external",
             "--skip-relative",
             "--skip-mailto",
-            "src/test/resources/docsify"
+            "."
         );
 
         assertThat(code).isZero();
@@ -119,7 +126,7 @@ class ScanDocsifyTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-r", "-k", "src/test/resources/docsify/README.md");
+        int code = cmd.execute("-r", "-k", "README.md");
 
         assertThat(code).isNotZero();
 

@@ -4,15 +4,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 class ScanCustomTest {
+    String defaultUserDir = System.getProperty("user.dir");
 
-    @BeforeAll
-    static void setUp() {
-        System.setProperty("user.dir", "src/test/resources/custom");
+    @BeforeEach
+    void setUp() {
+        System.setProperty("user.dir", defaultUserDir + "/src/test/resources/custom");
+    }
+
+    @AfterEach
+    void tearDown() {
+        System.setProperty("user.dir", defaultUserDir);
     }
 
     @Test
@@ -27,7 +34,7 @@ class ScanCustomTest {
             "-r",
             "-A",
             "-p=content",
-            "src/test/resources/custom"
+            "."
         );
 
         assertThat(code).isNotZero();
@@ -52,7 +59,7 @@ class ScanCustomTest {
         int code = cmd.execute(
             "-A",
             "-p=content",
-            "src/test/resources/custom/content/folder-one/page.md"
+            "content/folder-one/page.md"
         );
 
         assertThat(code).isNotZero();

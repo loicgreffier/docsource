@@ -12,6 +12,7 @@ import io.github.loicgreffier.util.FileUtils;
 import io.github.loicgreffier.util.VersionProvider;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -107,12 +108,15 @@ public class Scan implements Callable<Integer> {
             List<File> files = findFiles(inputFile);
 
             files.forEach(file -> {
+                Path scanFile =
+                    Path.of(file.isAbsolute() ? file.getAbsolutePath() : getCurrentDirectory() + File.separator + file);
+
                 commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
-                    .string("Scanning file @|bold " + file.getAbsolutePath() + "|@"));
+                    .string("Scanning file @|bold " + scanFile + "|@"));
 
                 try {
                     List<Link> links = FileUtils.findLinks(
-                        file,
+                        scanFile.toFile(),
                         Link.ValidationOptions.builder()
                             .currentDir(getCurrentDirectory())
                             .pathPrefix(pathPrefix)
@@ -297,17 +301,20 @@ public class Scan implements Callable<Integer> {
             return List.of(file);
         }
 
+        Path scanDirectory =
+            Path.of(file.isAbsolute() ? file.getAbsolutePath() : getCurrentDirectory() + File.separator + file);
+
         commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
-            "Scanning directory @|bold " + file.getAbsolutePath() + "|@"));
+            "Scanning directory @|bold " + scanDirectory + "|@"));
 
         try {
-            List<File> files = FileUtils.findFiles(file, recursive);
+            List<File> files = FileUtils.findFiles(scanDirectory.toFile(), recursive);
             commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
                 "Found @|bold " + files.size() + " file(s)|@ to scan"));
             return files;
         } catch (IOException e) {
             commandSpec.commandLine().getErr()
-                .println("Cannot retrieve files from directory " + file.getAbsolutePath());
+                .println("Cannot retrieve files from directory " + scanDirectory);
         }
 
         return List.of();
