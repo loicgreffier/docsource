@@ -70,12 +70,14 @@ Mailto links are used to include a link with an email address. Docsource checks 
 ### Scan
 
 ```console
-   ____
-  (|   \
-   |    | __   __   ,   __          ,_    __   _
-  _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
- (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
+  ____
+ (|   \
+  |    | __   __   ,   __          ,_    __   _
+ _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
+(/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
+Usage: docsource scan [-AhkrvV] [--skip-external] [--skip-mailto] [--skip-relative]
+                [-i=<imagePathPrefix>] [-p=<pathPrefix>] [files...]
 
 Description:
 
@@ -86,9 +88,9 @@ Parameters:
 
 Options:
   -A, --all-absolute    Consider relative link paths as absolute paths.
-  -c, --current-dir=<currentDir>
-                        Override the current directory.
   -h, --help            Show this help message and exit.
+  -i, --image-path-prefix=<imagePathPrefix>
+                        Prefix the beginning of images links with a partial path.
   -k, --insecure        Turn off hostname and certificate chain verification.
   -p, --path-prefix=<pathPrefix>
                         Prefix the beginning of relative links with a partial path.
@@ -96,6 +98,7 @@ Options:
       --skip-external   Skip external links.
       --skip-mailto     Skip mailto links.
       --skip-relative   Skip relative links.
+  -v, --verbose         Enable the verbose mode.
   -V, --version         Print version information and exit.
 ```
 
@@ -134,7 +137,7 @@ Docsource can be run in a GitLab pipeline using the [Docker image](https://hub.d
 ```yaml
 check links:
   stage: verify 🩺
-  image: loicgreffier/docsource:latest
+  image: loicgreffier/docsource
   script:
     - docsource scan --recursive .
 ```
