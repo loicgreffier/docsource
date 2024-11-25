@@ -4,6 +4,7 @@ import io.github.loicgreffier.model.link.Link;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -12,7 +13,9 @@ import org.yaml.snakeyaml.util.UriEncoder;
  * This class represents a relative link.
  */
 public class RelativeLink extends Link {
-    public RelativeLink(File file, String path, String markdown,
+    public RelativeLink(File file,
+                        String path,
+                        String markdown,
                         ValidationOptions validationOptions) {
         super(file, path, markdown, validationOptions);
     }
@@ -25,13 +28,12 @@ public class RelativeLink extends Link {
     @Override
     public void validate() {
         // If it's an image, delete the potential title
-        Path checkPath = isImage() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) :
+        Path checkPath = isImageInMarkdownFormat() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) :
             Path.of(UriEncoder.decode(path));
 
         // If it's a link to a section, delete it
         if (checkPath.toString().contains("#")) {
-            checkPath =
-                Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
+            checkPath = Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
         }
 
         // Add the path prefix if not present already
@@ -75,6 +77,16 @@ public class RelativeLink extends Link {
      * @return true if the link is an image, false otherwise.
      */
     public boolean isImage() {
-        return markdown.startsWith("!");
+        List<String> imageExtensions = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "svg");
+        return imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]));
+    }
+
+    /**
+     * Check if the link is an image in Markdown format.
+     *
+     * @return true if the link is an image in Markdown format, false otherwise.
+     */
+    public boolean isImageInMarkdownFormat() {
+        return isImage() && markdown.startsWith("!");
     }
 }
