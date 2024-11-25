@@ -29,6 +29,8 @@
 
 ![Image relative](content/folder-one/images/image.jpg)
 
+<img src="content/folder-one/images/image.jpg"/>
+
 ![Image absolute](/content/folder-one/images/image.jpg)
 
 ![Image with title 1](/content/folder-one/images/image.jpg "Image 1")
@@ -38,6 +40,10 @@
 ## Broken
 
 [./folder-two/does-not-exist](./folder-two/does-not-exist).
+
+![Image not found](content/folder-one/images/imageNotFound.jpg)
+
+<img src="content/folder-one/images/imageNotFound.jpg"/>
 
 # Mailto
 

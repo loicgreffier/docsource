@@ -25,7 +25,9 @@ import javax.net.ssl.X509ExtendedTrustManager;
  * This class represents an external link.
  */
 public class ExternalLink extends Link {
-    public ExternalLink(File file, String path, String markdown,
+    public ExternalLink(File file,
+                        String path,
+                        String markdown,
                         ValidationOptions validationOptions) {
         super(file, path, markdown, validationOptions);
     }

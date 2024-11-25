@@ -40,12 +40,14 @@ class ScanCustomTest {
         assertThat(code).isNotZero();
 
         assertThat(sw.toString()).contains("Found 2 file(s) to scan");
-        assertThat(sw.toString()).contains("Success  8         3         1     12");
-        assertThat(sw.toString()).contains("Broken   1         1         1     3");
-        assertThat(sw.toString()).contains("Total    9         4         2     15");
+        assertThat(sw.toString()).contains("Success  9         3         1     13");
+        assertThat(sw.toString()).contains("Broken   3         1         1     5");
+        assertThat(sw.toString()).contains("Total    12        4         2     18");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
         assertThat(sw.toString()).contains("  - ./folder-two/does-not-exist (file not found)");
+        assertThat(sw.toString()).contains("  - content/folder-one/images/imageNotFound.jpg (image not found)");
         assertThat(sw.toString()).contains("  - mailto:testgmail (bad format)");
+        assertThat(sw.toString()).contains("  - content/folder-one/images/imageNotFound.jpg (image not found)");
     }
 
     @Test
@@ -64,9 +66,9 @@ class ScanCustomTest {
 
         assertThat(code).isNotZero();
 
-        assertThat(sw.toString()).contains("Success  8         3         1     12");
-        assertThat(sw.toString()).contains("Broken   1         1         1     3");
-        assertThat(sw.toString()).contains("Total    9         4         2     15");
+        assertThat(sw.toString()).contains("Success  9         3         1     13");
+        assertThat(sw.toString()).contains("Broken   3         1         1     5");
+        assertThat(sw.toString()).contains("Total    12        4         2     18");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
         assertThat(sw.toString()).contains("  - ./folder-two/does-not-exist (file not found)");
         assertThat(sw.toString()).contains("  - mailto:testgmail (bad format)");
