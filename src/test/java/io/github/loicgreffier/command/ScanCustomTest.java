@@ -33,8 +33,8 @@ class ScanCustomTest {
         int code = cmd.execute(
             "-r",
             "-A",
-            "--content-path=src/content",
-            "--image-path=src",
+            "--content-directory=src/content",
+            "--image-directory=src",
             "."
         );
 
@@ -63,8 +63,8 @@ class ScanCustomTest {
 
         int code = cmd.execute(
             "-A",
-            "--content-path=src/content",
-            "--image-path=src",
+            "--content-directory=src/content",
+            "--image-directory=src",
             "src/content/folder-one/page.md"
         );
 
