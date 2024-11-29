@@ -57,7 +57,8 @@ public abstract class Link {
     @Builder
     public static class ValidationOptions {
         private String currentDir;
-        private String pathPrefix;
+        private String contentDirectory;
+        private String imageDirectory;
         private boolean allAbsolute;
         private boolean skipExternal;
         private boolean skipRelative;

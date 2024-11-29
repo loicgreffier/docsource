@@ -51,22 +51,24 @@ public class Scan implements Callable<Integer> {
     @Spec
     public CommandSpec commandSpec;
 
-    @Parameters(paramLabel = "files", description = "Directories or files to scan.")
+    @Parameters(paramLabel = "files", description = "Root directories or files to scan.")
     public List<File> inputFiles;
 
     @Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
     public boolean allAbsolute;
 
-    @Option(names = {"-k", "--insecure"}, description = "Turn off hostname and certificate chain verification.")
+    @Option(names = {"-k", "--insecure"},
+        description = "Turn off hostname and certificate chain verification.")
     public boolean insecure;
 
-    @Option(names = {"-p",
-        "--path-prefix"}, description = "Prefix the beginning of relative links with a partial path.")
-    public String pathPrefix;
+    @Option(names = {"--content-directory"},
+        description = "If different from the root directory, the directory containing the Markdown files. "
+            + "E.g., 'content' for Hugo.")
+    public String contentDirectory;
 
-    @Option(names = {"-i", "--image-path-prefix"},
-        description = "Prefix the beginning of images links with a partial path.")
-    public String imagePathPrefix;
+    @Option(names = {"--image-directory"},
+        description = "If existing, the root directory of the images. E.g., 'static' for Hugo.")
+    public String imageDirectory;
 
     @Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
@@ -109,7 +111,8 @@ public class Scan implements Callable<Integer> {
 
             files.forEach(file -> {
                 Path scanFile =
-                    Path.of(file.isAbsolute() ? file.getAbsolutePath() : getCurrentDirectory() + File.separator + file);
+                    Path.of(file.isAbsolute() ? file.getAbsolutePath() :
+                        getCurrentDirectory() + File.separator + file);
 
                 commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
                     .string("Scanning file @|bold " + scanFile + "|@"));
@@ -119,7 +122,8 @@ public class Scan implements Callable<Integer> {
                         scanFile.toFile(),
                         Link.ValidationOptions.builder()
                             .currentDir(getCurrentDirectory())
-                            .pathPrefix(pathPrefix)
+                            .contentDirectory(contentDirectory)
+                            .imageDirectory(imageDirectory)
                             .allAbsolute(allAbsolute)
                             .skipExternal(skipExternal)
                             .skipMailto(skipMailto)
@@ -129,16 +133,14 @@ public class Scan implements Callable<Integer> {
                     );
 
                     if (links.isEmpty() && docsource.verbose) {
-                        commandSpec.commandLine().getOut()
-                            .println(Help.Ansi.AUTO.string("No link found.\n"));
+                        commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found.\n"));
                         return;
                     }
 
                     links.forEach(link -> {
                         link.validate();
                         if (docsource.verbose) {
-                            commandSpec.commandLine().getOut()
-                                .println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
                         }
                         scannedLinks.add(link);
                     });
@@ -199,7 +201,7 @@ public class Scan implements Callable<Integer> {
             if (docsource.verbose) {
                 commandSpec.commandLine().getOut().println("Hugo framework detected.\n");
             }
-            imagePathPrefix = "static/";
+            imageDirectory = "static/";
             return;
         }
 
@@ -302,7 +304,8 @@ public class Scan implements Callable<Integer> {
         }
 
         Path scanDirectory =
-            Path.of(file.isAbsolute() ? file.getAbsolutePath() : getCurrentDirectory() + File.separator + file);
+            Path.of(file.isAbsolute() ? file.getAbsolutePath() :
+                getCurrentDirectory() + File.separator + file);
 
         commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
             "Scanning directory @|bold " + scanDirectory + "|@"));

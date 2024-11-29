@@ -37,13 +37,13 @@ public class RelativeLink extends Link {
         }
 
         // Add the path prefix if not present already
-        if (validationOptions.getPathPrefix() != null
-            && !checkPath.getName(0).startsWith(validationOptions.getPathPrefix())) {
+        /*if (validationOptions.getContentPath() != null
+            && !checkPath.getName(0).startsWith(validationOptions.getContentPath())) {
             checkPath = Path.of(File.separator
-                + validationOptions.getPathPrefix()
+                + validationOptions.getContentPath()
                 + File.separator
                 + checkPath);
-        }
+        }*/
 
         // If the link is "/", look for a README file
         if (checkPath.toString().equals(File.separator)) {
@@ -57,7 +57,20 @@ public class RelativeLink extends Link {
 
         // If the link is absolute
         if (checkPath.startsWith(File.separator) || validationOptions.isAllAbsolute()) {
-            checkPath = Path.of(validationOptions.getCurrentDir() + File.separator + checkPath);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(validationOptions.getCurrentDir());
+            stringBuilder.append(File.separator);
+            if (isImage() && validationOptions.getImageDirectory() != null) {
+                stringBuilder.append(validationOptions.getImageDirectory());
+                stringBuilder.append(File.separator);
+            } else {
+                if (validationOptions.getContentDirectory() != null) {
+                    stringBuilder.append(validationOptions.getContentDirectory());
+                    stringBuilder.append(File.separator);
+                }
+            }
+            stringBuilder.append(checkPath);
+            checkPath = Path.of(stringBuilder.toString());
         } else { // If the link is relative then check it is valid from the file it belongs
             checkPath = Path.of(file.getParent() + File.separator + checkPath);
         }

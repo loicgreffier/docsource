@@ -33,7 +33,8 @@ class ScanCustomTest {
         int code = cmd.execute(
             "-r",
             "-A",
-            "-p=content",
+            "--content-path=src/content",
+            "--image-path=src",
             "."
         );
 
@@ -45,9 +46,11 @@ class ScanCustomTest {
         assertThat(sw.toString()).contains("Total    12        4         2     18");
         assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
         assertThat(sw.toString()).contains("  - ./folder-two/does-not-exist (file not found)");
-        assertThat(sw.toString()).contains("  - content/folder-one/images/imageNotFound.jpg (image not found)");
+        assertThat(sw.toString()).contains(
+            "  - content/folder-one/images/imageNotFound.jpg (image not found)");
         assertThat(sw.toString()).contains("  - mailto:testgmail (bad format)");
-        assertThat(sw.toString()).contains("  - content/folder-one/images/imageNotFound.jpg (image not found)");
+        assertThat(sw.toString()).contains(
+            "  - content/folder-one/images/imageNotFound.jpg (image not found)");
     }
 
     @Test
@@ -60,8 +63,9 @@ class ScanCustomTest {
 
         int code = cmd.execute(
             "-A",
-            "-p=content",
-            "content/folder-one/page.md"
+            "--content-path=src/content",
+            "--image-path=src",
+            "src/content/folder-one/page.md"
         );
 
         assertThat(code).isNotZero();
