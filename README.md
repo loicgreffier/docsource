@@ -6,20 +6,23 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/loicgreffier/docsource?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource/tags)
 [![Docker Stars](https://img.shields.io/docker/stars/loicgreffier/docsource?label=Stars&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource)
 
-Docsource is a command-line interface (CLI) tool that detects broken links within Markdown documentation files in your
-source code.
+Docsource is a command-line interface (CLI) tool that detects broken links within Markdown documentation files.
 
 ![](.readme/demo.gif)
 
 ## Table of Contents
 
 * [Download](#download)
-* [Overview](#overview)
+* [Getting Started](#getting-started)
+    * [Supported Frameworks](#supported-frameworks)
+* [Links](#links)
     * [External Links](#external-links)
     * [Relative Links](#relative-links)
     * [Mailto Links](#mailto-links)
 * [Usage](#usage)
     * [Scan](#scan)
+        * [Multiple Folders or Files](#multiple-folders-or-files)
+        * [All Absolute](#all-absolute)
 * [Continuous Integration](#continuous-integration)
     * [GitLab CI/CD](#gitlab-cicd)
 * [FAQ](#frequently-asked-questions-faq)
@@ -34,7 +37,27 @@ available in three different formats:
 - Windows
 - Linux
 
-## Overview
+## Getting Started
+
+Docsource should be run from the root directory of your documentation.
+
+```bash
+docsource scan --recursive . 
+```
+
+### Supported Frameworks
+
+Docsource tries to detect the framework used to generate the documentation and applies the appropriate configuration.
+The supported frameworks are:
+
+- [Docsify](https://docsify.js.org)
+- [Hugo](https://gohugo.io)
+
+You can also provide the `--content-directory` and `--image-directory` flags manually to specify the directories
+containing the
+Markdown files and images, respectively.
+
+## Links
 
 Docsource can check three types of Markdown links: external links, relative links, and mailto links.
 
@@ -55,7 +78,8 @@ Relative links are used for links within the same domain. Docsource checks wheth
 
 A relative link can be either absolute or relative:
 
-- Absolute links are checked from the user's current directory.
+- Absolute links are checked from the root directory of the documentation concatenated with the content directory
+  provided by the `--content-directory` flag or with the image directory provided by the `--image-directory` flag.
 - Relative links are checked from the file to which the link belongs, unless the `--all-absolute` flag is enabled.
 
 ### Mailto Links
@@ -77,23 +101,24 @@ Mailto links are used to include a link with an email address. Docsource checks 
 (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
 Usage: docsource scan [-AhkrvV] [--skip-external] [--skip-mailto] [--skip-relative]
-                [-i=<imagePathPrefix>] [-p=<pathPrefix>] [files...]
+                [--content-directory=<contentDirectory>]
+                [--image-directory=<imageDirectory>] [files...]
 
 Description:
 
 Scan documentation.
 
 Parameters:
-      [files...]        Directories or files to scan.
+      [files...]        Root directories or files to scan.
 
 Options:
   -A, --all-absolute    Consider relative link paths as absolute paths.
+      --content-directory=<contentDirectory>
+                        If different from the root directory, the directory containing the Markdown files. E.g., 'content' for Hugo.
   -h, --help            Show this help message and exit.
-  -i, --image-path-prefix=<imagePathPrefix>
-                        Prefix the beginning of images links with a partial path.
+      --image-directory=<imageDirectory>
+                        If existing, the root directory of the images. E.g., 'static' for Hugo.
   -k, --insecure        Turn off hostname and certificate chain verification.
-  -p, --path-prefix=<pathPrefix>
-                        Prefix the beginning of relative links with a partial path.
   -r, --recursive       Scan directories recursively.
       --skip-external   Skip external links.
       --skip-mailto     Skip mailto links.
@@ -102,10 +127,10 @@ Options:
   -V, --version         Print version information and exit.
 ```
 
-`Scan` is used to scan Markdown files in your documentation to detect broken links. The command should be run at the
-root folder of your documentation.
+`Scan` is used to scan Markdown files in your documentation to detect broken links.
+The command should be run from the root folder of your documentation.
 
-#### Multiple folders/files
+#### Multiple Folders or Files
 
 You can provide multiple folders or files as input to `Scan` by specifying them after the command:
 
@@ -113,20 +138,15 @@ You can provide multiple folders or files as input to `Scan` by specifying them 
 docsource scan directory1 directory2 file1.md file2.md
 ```
 
-#### All absolute and Path prefix
+#### All Absolute
 
 Depending on how your documentation is built (e.g., a custom Angular/React project that parses Markdown files), you may
-need to consider relative link paths as absolute paths or add a prefix to your relative paths.
+need to consider relative link paths as absolute paths.
 
-- E.g., you may want `[link](./folder-two/README)` to be checked from your current directory rather than the "
+- E.g., you may want `[link](./folder-two/README)` to be checked from the content directory rather than the "
   folder-two" directory.
-- E.g., your link is `[link](./folder-two/README)` but the actual path is `/content/folder-two/README` where `content`
-  is handled automatically by your parser.
 
-To handle such cases, you can use the following options:
-
-- `--all-absolute` to check relative link paths as absolute paths
-- `--path-prefix` to add a partial path at the beginning of each relative link
+To handle such cases, you can use the `--all-absolute` option.
 
 ## Continuous Integration
 
