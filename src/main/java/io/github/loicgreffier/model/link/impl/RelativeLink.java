@@ -27,53 +27,7 @@ public class RelativeLink extends Link {
      */
     @Override
     public void validate() {
-        // If it's an image, delete the potential title
-        Path checkPath = isImageInMarkdownFormat() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) :
-            Path.of(UriEncoder.decode(path));
-
-        // If it's a link to a section, delete it
-        if (checkPath.toString().contains("#")) {
-            checkPath = Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
-        }
-
-        // Add the path prefix if not present already
-        /*if (validationOptions.getContentPath() != null
-            && !checkPath.getName(0).startsWith(validationOptions.getContentPath())) {
-            checkPath = Path.of(File.separator
-                + validationOptions.getContentPath()
-                + File.separator
-                + checkPath);
-        }*/
-
-        // If the link is "/", look for a README file
-        if (checkPath.toString().equals(File.separator)) {
-            checkPath = Path.of(File.separator + "README.md");
-        }
-
-        // Add Markdown extension if not present already
-        if (!StringUtils.hasText(FilenameUtils.getExtension(checkPath.toString()))) {
-            checkPath = Path.of(checkPath + ".md");
-        }
-
-        // If the link is absolute
-        if (checkPath.startsWith(File.separator) || validationOptions.isAllAbsolute()) {
-            StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append(validationOptions.getCurrentDir());
-            stringBuilder.append(File.separator);
-            if (isImage() && validationOptions.getImageDirectory() != null) {
-                stringBuilder.append(validationOptions.getImageDirectory());
-                stringBuilder.append(File.separator);
-            } else {
-                if (validationOptions.getContentDirectory() != null) {
-                    stringBuilder.append(validationOptions.getContentDirectory());
-                    stringBuilder.append(File.separator);
-                }
-            }
-            stringBuilder.append(checkPath);
-            checkPath = Path.of(stringBuilder.toString());
-        } else { // If the link is relative then check it is valid from the file it belongs
-            checkPath = Path.of(file.getParent() + File.separator + checkPath);
-        }
+        Path checkPath = isImage() ? computeImagePath() : computePagePath();
 
         if (Files.exists(checkPath)) {
             status = Status.SUCCESS;
@@ -85,11 +39,92 @@ public class RelativeLink extends Link {
     }
 
     /**
+     * Compute the image path with all the validation options.
+     *
+     * @return The image path.
+     */
+    private Path computeImagePath() {
+        // If it's an image, delete the potential title
+        Path checkPath = isImageInMarkdownFormat() ? Path.of(UriEncoder.decode(path.split("\\s+")[0])) :
+            Path.of(UriEncoder.decode(path));
+
+        // If the link is absolute
+        if (checkPath.startsWith(File.separator)
+            || validationOptions.isAllAbsolute()
+            || validationOptions.isImageAbsolute()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(validationOptions.getCurrentDir());
+            stringBuilder.append(File.separator);
+
+            if (validationOptions.getImageDirectory() != null) {
+                stringBuilder.append(validationOptions.getImageDirectory());
+                stringBuilder.append(File.separator);
+            }
+
+            stringBuilder.append(checkPath.toString()
+                .replace(".." + File.separator, "")
+                .replace("." + File.separator, "")
+            );
+            checkPath = Path.of(stringBuilder.toString());
+        } else { // If the link is relative then check it is valid from the file it belongs
+            checkPath = Path.of(file.getParent() + File.separator + checkPath);
+        }
+
+        return checkPath;
+    }
+
+    /**
+     * Compute the page path with all the validation options.
+     *
+     * @return The page path.
+     */
+    private Path computePagePath() {
+        Path checkPath = Path.of(UriEncoder.decode(path));
+
+        if (checkPath.toString().contains("#")) {
+            checkPath = Path.of(checkPath.toString().substring(0, checkPath.toString().indexOf("#")));
+        }
+
+        // If the link is "/", look for a README file
+        if (checkPath.toString().equals(File.separator)) {
+            checkPath = Path.of(File.separator + "README.md");
+        }
+
+        // If the link is absolute
+        if (checkPath.startsWith(File.separator) || validationOptions.isAllAbsolute()) {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(validationOptions.getCurrentDir());
+            stringBuilder.append(File.separator);
+
+            if (validationOptions.getContentDirectory() != null) {
+                stringBuilder.append(validationOptions.getContentDirectory());
+                stringBuilder.append(File.separator);
+            }
+
+            stringBuilder.append(checkPath);
+            checkPath = Path.of(stringBuilder.toString());
+        } else { // If the link is relative then check it is valid from the file it belongs
+            checkPath = Path.of(file.getParent() + File.separator + checkPath);
+        }
+
+        if (checkPath.toFile().isDirectory()) {
+            checkPath = Path.of(checkPath + File.separator + validationOptions.getIndexFilename());
+        }
+
+        // Add Markdown extension if not present already
+        if (!StringUtils.hasText(FilenameUtils.getExtension(checkPath.toString()))) {
+            checkPath = Path.of(checkPath + ".md");
+        }
+
+        return checkPath;
+    }
+
+    /**
      * Check if the link is an image.
      *
      * @return true if the link is an image, false otherwise.
      */
-    public boolean isImage() {
+    private boolean isImage() {
         List<String> imageExtensions = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "svg");
         return imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]));
     }
@@ -99,7 +134,7 @@ public class RelativeLink extends Link {
      *
      * @return true if the link is an image in Markdown format, false otherwise.
      */
-    public boolean isImageInMarkdownFormat() {
+    private boolean isImageInMarkdownFormat() {
         return isImage() && markdown.startsWith("!");
     }
 }

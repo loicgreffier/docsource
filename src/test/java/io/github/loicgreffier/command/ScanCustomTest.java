@@ -1,6 +1,7 @@
 package io.github.loicgreffier.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -38,19 +39,17 @@ class ScanCustomTest {
             "."
         );
 
-        assertThat(code).isNotZero();
+        assertEquals(0, code);
 
-        assertThat(sw.toString()).contains("Found 2 file(s) to scan");
-        assertThat(sw.toString()).contains("Success  9         3         1     13");
-        assertThat(sw.toString()).contains("Broken   3         1         1     5");
-        assertThat(sw.toString()).contains("Total    12        4         2     18");
-        assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
-        assertThat(sw.toString()).contains("  - ./folder-two/does-not-exist (file not found)");
-        assertThat(sw.toString()).contains(
-            "  - content/folder-one/images/imageNotFound.jpg (image not found)");
-        assertThat(sw.toString()).contains("  - mailto:testgmail (bad format)");
-        assertThat(sw.toString()).contains(
-            "  - content/folder-one/images/imageNotFound.jpg (image not found)");
+        assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
+        assertTrue(sw.toString().contains("Success  9         3         1     13"));
+        assertTrue(sw.toString().contains("Broken   3         1         1     5"));
+        assertTrue(sw.toString().contains("Total    12        4         2     18"));
+        assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
+        assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
+        assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
+        assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
+        assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
     }
 
     @Test
@@ -68,13 +67,13 @@ class ScanCustomTest {
             "src/content/folder-one/page.md"
         );
 
-        assertThat(code).isNotZero();
+        assertEquals(0, code);
 
-        assertThat(sw.toString()).contains("Success  9         3         1     13");
-        assertThat(sw.toString()).contains("Broken   3         1         1     5");
-        assertThat(sw.toString()).contains("Total    12        4         2     18");
-        assertThat(sw.toString()).contains("  - https://www.gogle.fr/ (invalid URL)");
-        assertThat(sw.toString()).contains("  - ./folder-two/does-not-exist (file not found)");
-        assertThat(sw.toString()).contains("  - mailto:testgmail (bad format)");
+        assertTrue(sw.toString().contains("Success  9         3         1     13"));
+        assertTrue(sw.toString().contains("Broken   3         1         1     5"));
+        assertTrue(sw.toString().contains("Total    12        4         2     18"));
+        assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
+        assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
+        assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
     }
 }

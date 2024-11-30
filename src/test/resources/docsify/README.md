@@ -23,7 +23,7 @@
 
 [https://www.testingmcafeesites.com/](https://www.testingmcafeesites.com/).
 
-# Relative 
+# Relative
 
 ## Success
 
@@ -63,6 +63,8 @@
 [/doesNotExist/folder-one/page](/doesNotExist/folder-one/page).
 
 [/docsify/README](/docsify/README).
+
+[/folder-one](/folder-one).
 
 # Mailto
 

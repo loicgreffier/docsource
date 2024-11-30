@@ -2,6 +2,8 @@ package io.github.loicgreffier.command;
 
 import static io.github.loicgreffier.model.link.Link.Status.BROKEN;
 import static io.github.loicgreffier.model.link.Link.Status.SUCCESS;
+import static io.github.loicgreffier.util.RegexUtils.hugoRegex;
+import static io.github.loicgreffier.util.RegexUtils.markdownRegex;
 
 import io.github.loicgreffier.model.Summary;
 import io.github.loicgreffier.model.link.Link;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;
@@ -54,21 +57,36 @@ public class Scan implements Callable<Integer> {
     @Parameters(paramLabel = "files", description = "Root directories or files to scan.")
     public List<File> inputFiles;
 
-    @Option(names = {"-A", "--all-absolute"}, description = "Consider relative link paths as absolute paths.")
+    @Option(names = {"-A", "--all-absolute"}, description = "Consider relative paths as absolute paths.")
     public boolean allAbsolute;
 
-    @Option(names = {"-k", "--insecure"},
-        description = "Turn off hostname and certificate chain verification.")
-    public boolean insecure;
-
-    @Option(names = {"--content-directory"},
-        description = "If different from the root directory, the directory containing the Markdown files. "
-            + "E.g., 'content' for Hugo.")
+    @Option(
+        names = {"--content-directory"},
+        description = "Specify a sub-directory of the root directory "
+            + "containing the Markdown files. E.g., 'content' for Hugo."
+    )
     public String contentDirectory;
 
-    @Option(names = {"--image-directory"},
-        description = "If existing, the root directory of the images. E.g., 'static' for Hugo.")
+    @Option(names = {"-I", "--image-absolute"}, description = "Consider relative image paths as absolute paths.")
+    public Boolean imageAbsolute;
+
+    @Option(
+        names = {"--image-directory"},
+        description = "Specify a sub-directory of the root directory containing the images. E.g., 'static' for Hugo."
+    )
     public String imageDirectory;
+
+    @Option(
+        names = {"--index-filename"},
+        description = "Specify the filename to use as an index file. E.g., '_index.md' for Hugo."
+    )
+    public String indexFilename;
+
+    @Option(
+        names = {"-k", "--insecure"},
+        description = "Turn off hostname and certificate chain verification."
+    )
+    public boolean insecure;
 
     @Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
     public boolean recursive;
@@ -76,11 +94,11 @@ public class Scan implements Callable<Integer> {
     @Option(names = {"--skip-external"}, description = "Skip external links.")
     public boolean skipExternal;
 
-    @Option(names = {"--skip-relative"}, description = "Skip relative links.")
-    public boolean skipRelative;
-
     @Option(names = {"--skip-mailto"}, description = "Skip mailto links.")
     public boolean skipMailto;
+
+    @Option(names = {"--skip-relative"}, description = "Skip relative links.")
+    public boolean skipRelative;
 
     private final List<Link> scannedLinks = new ArrayList<>();
 
@@ -102,59 +120,32 @@ public class Scan implements Callable<Integer> {
 
         inputFiles.forEach(inputFile -> {
             try {
-                lookUpFramework(inputFile);
-            } catch (IOException e) {
-                commandSpec.commandLine().getErr().println("Error while looking up the framework.");
-            }
+                List<String> regexs = lookUpFramework(getCurrentDirectory());
+                List<File> files = findFiles(inputFile);
 
-            List<File> files = findFiles(inputFile);
-
-            files.forEach(file -> {
-                Path scanFile =
-                    Path.of(file.isAbsolute() ? file.getAbsolutePath() :
+                files.forEach(file -> {
+                    Path scanFile = Path.of(file.isAbsolute() ? file.getAbsolutePath() :
                         getCurrentDirectory() + File.separator + file);
 
-                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
-                    .string("Scanning file @|bold " + scanFile + "|@"));
+                    commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
+                        .string("Scanning file @|bold " + scanFile + "|@"));
 
-                try {
-                    List<Link> links = FileUtils.findLinks(
-                        scanFile.toFile(),
-                        Link.ValidationOptions.builder()
-                            .currentDir(getCurrentDirectory())
-                            .contentDirectory(contentDirectory)
-                            .imageDirectory(imageDirectory)
-                            .allAbsolute(allAbsolute)
-                            .skipExternal(skipExternal)
-                            .skipMailto(skipMailto)
-                            .skipRelative(skipRelative)
-                            .insecure(insecure)
-                            .build()
-                    );
+                    try {
+                        findAndValidateLinks(scanFile.toFile(), regexs);
 
-                    if (links.isEmpty() && docsource.verbose) {
-                        commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found.\n"));
-                        return;
-                    }
-
-                    links.forEach(link -> {
-                        link.validate();
                         if (docsource.verbose) {
-                            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                            commandSpec.commandLine().getOut().println();
                         }
-                        scannedLinks.add(link);
-                    });
-
-                    if (docsource.verbose) {
-                        commandSpec.commandLine().getOut().println();
+                    } catch (IOException e) {
+                        commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
                     }
-                } catch (IOException e) {
-                    commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
-                }
-            });
+                });
 
-            if (!docsource.verbose) {
-                commandSpec.commandLine().getOut().println();
+                if (!docsource.verbose) {
+                    commandSpec.commandLine().getOut().println();
+                }
+            } catch (IOException e) {
+                commandSpec.commandLine().getErr().println("Error while looking up the framework.");
             }
         });
 
@@ -180,12 +171,13 @@ public class Scan implements Callable<Integer> {
     }
 
     /**
-     * Look up the framework of the given directory and apply the necessary configuration.
+     * Look up the framework of the given directory, apply the necessary configuration and return the regex to use.
      *
      * @param file The file to look up.
+     * @return The regex to use.
      * @throws IOException Any IO exception during file reading.
      */
-    private void lookUpFramework(File file) throws IOException {
+    private List<String> lookUpFramework(String file) throws IOException {
         if (docsource.verbose) {
             commandSpec.commandLine().getOut().println("Looking up framework...");
         }
@@ -194,20 +186,63 @@ public class Scan implements Callable<Integer> {
             if (docsource.verbose) {
                 commandSpec.commandLine().getOut().println("Docsify framework detected.\n");
             }
-            return; // No additional configuration needed for Docsify
+            return markdownRegex(); // No additional configuration needed for Docsify
         }
 
         if (FileUtils.isHugo(file)) {
             if (docsource.verbose) {
                 commandSpec.commandLine().getOut().println("Hugo framework detected.\n");
             }
-            imageDirectory = "static/";
-            return;
+            contentDirectory = Optional.ofNullable(contentDirectory).orElse("content");
+            imageDirectory = Optional.ofNullable(imageDirectory).orElse("static");
+            indexFilename = Optional.ofNullable(indexFilename).orElse("_index.md");
+            imageAbsolute = Optional.ofNullable(imageAbsolute).orElse(true);
+            return hugoRegex();
         }
 
         if (docsource.verbose) {
             commandSpec.commandLine().getOut().println("No framework detected.\n");
         }
+        return markdownRegex();
+    }
+
+    /**
+     * Find and validate links in a file.
+     *
+     * @param file   The file to scan.
+     * @param regexs The regex to look for.
+     * @throws IOException Any IO exception during file reading.
+     */
+    private void findAndValidateLinks(File file, List<String> regexs) throws IOException {
+        List<Link> links = FileUtils.findLinks(
+            file,
+            regexs,
+            Link.ValidationOptions.builder()
+                .currentDir(getCurrentDirectory())
+                .contentDirectory(contentDirectory)
+                .imageDirectory(imageDirectory)
+                .indexFilename(indexFilename)
+                .allAbsolute(allAbsolute)
+                .imageAbsolute(Optional.ofNullable(imageAbsolute).orElse(false))
+                .skipExternal(skipExternal)
+                .skipMailto(skipMailto)
+                .skipRelative(skipRelative)
+                .insecure(insecure)
+                .build()
+        );
+
+        if (links.isEmpty() && docsource.verbose) {
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found.\n"));
+            return;
+        }
+
+        links.forEach(link -> {
+            link.validate();
+            if (docsource.verbose) {
+                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
+            }
+            scannedLinks.add(link);
+        });
     }
 
     /**
@@ -245,27 +280,39 @@ public class Scan implements Callable<Integer> {
         String displayBrokenMail = skipMailto ? SKIPPED : String.valueOf(brokenMail);
 
         textTable.addRowValues("", "Relative", "External", "Mail", "Total");
-        textTable.addRowValues("Success", displaySuccessRelative, displaySuccessExternal,
+        textTable.addRowValues(
+            "Success",
+            displaySuccessRelative,
+            displaySuccessExternal,
             displaySuccessMail,
             String.valueOf(successRelative + successExternal + successMail));
-        textTable.addRowValues("Broken", displayBrokenRelative, displayBrokenExternal,
+
+        textTable.addRowValues(
+            "Broken",
+            displayBrokenRelative,
+            displayBrokenExternal,
             displayBrokenMail,
             String.valueOf(brokenRelative + brokenExternal + brokenMail));
-        textTable.addRowValues("Total", String.valueOf(successRelative + brokenRelative),
+
+        textTable.addRowValues(
+            "Total",
+            String.valueOf(successRelative + brokenRelative),
             String.valueOf(successExternal + brokenExternal),
             String.valueOf(successMail + brokenMail),
-            String.valueOf(
-                successRelative + successExternal + successMail + brokenRelative + brokenExternal
-                    + brokenMail));
+            String.valueOf(successRelative
+                + successExternal
+                + successMail
+                + brokenRelative
+                + brokenExternal
+                + brokenMail)
+        );
 
         commandSpec.commandLine().getOut().println(textTable);
 
         if (brokenRelative + brokenExternal + brokenMail > 0) {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
         } else {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
         }
 
         getScannedLinksByStatus(BROKEN)
@@ -296,16 +343,26 @@ public class Scan implements Callable<Integer> {
     public List<File> findFiles(File file) {
         if (file.isFile()) {
             if (!FileUtils.isAuthorized(file)) {
-                commandSpec.commandLine().getErr()
-                    .println("The format of the " + file + " file is not supported.");
+                commandSpec.commandLine().getErr().println("The format of the " + file + " file is not supported.");
                 return List.of();
             }
             return List.of(file);
         }
 
-        Path scanDirectory =
-            Path.of(file.isAbsolute() ? file.getAbsolutePath() :
-                getCurrentDirectory() + File.separator + file);
+        Path scanDirectory;
+        if (file.isAbsolute()) {
+            scanDirectory = Path.of(file.getAbsolutePath());
+        } else {
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(getCurrentDirectory());
+            stringBuilder.append(File.separator);
+            if (contentDirectory != null) {
+                stringBuilder.append(contentDirectory);
+                stringBuilder.append(File.separator);
+            }
+            stringBuilder.append(file);
+            scanDirectory = Path.of(stringBuilder.toString());
+        }
 
         commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
             "Scanning directory @|bold " + scanDirectory + "|@"));
@@ -316,8 +373,7 @@ public class Scan implements Callable<Integer> {
                 "Found @|bold " + files.size() + " file(s)|@ to scan"));
             return files;
         } catch (IOException e) {
-            commandSpec.commandLine().getErr()
-                .println("Cannot retrieve files from directory " + scanDirectory);
+            commandSpec.commandLine().getErr().println("Cannot retrieve files from directory " + scanDirectory);
         }
 
         return List.of();

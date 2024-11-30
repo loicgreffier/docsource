@@ -15,10 +15,10 @@ Docsource is a command-line interface (CLI) tool that detects broken links withi
 * [Download](#download)
 * [Getting Started](#getting-started)
     * [Supported Frameworks](#supported-frameworks)
-* [Links](#links)
-    * [External Links](#external-links)
-    * [Relative Links](#relative-links)
-    * [Mailto Links](#mailto-links)
+    * [Links](#links)
+        * [External Links](#external-links)
+        * [Relative Links](#relative-links)
+        * [Mailto Links](#mailto-links)
 * [Usage](#usage)
     * [Scan](#scan)
         * [Multiple Folders or Files](#multiple-folders-or-files)
@@ -53,15 +53,11 @@ The supported frameworks are:
 - [Docsify](https://docsify.js.org)
 - [Hugo](https://gohugo.io)
 
-You can also provide the `--content-directory` and `--image-directory` flags manually to specify the directories
-containing the
-Markdown files and images, respectively.
-
-## Links
+### Links
 
 Docsource can check three types of Markdown links: external links, relative links, and mailto links.
 
-### External Links
+#### External Links
 
 External links are links that point to an external domain. Docsource sends an HTTP request to check the HTTP return
 code:
@@ -69,7 +65,7 @@ code:
 - The link is considered broken if the return code is 404.
 - The link is considered valid if the return code is anything other than 404.
 
-### Relative Links
+#### Relative Links
 
 Relative links are used for links within the same domain. Docsource checks whether the linked resource actually exists:
 
@@ -78,11 +74,12 @@ Relative links are used for links within the same domain. Docsource checks wheth
 
 A relative link can be either absolute or relative:
 
-- Absolute links are checked from the root directory of the documentation concatenated with the content directory
-  provided by the `--content-directory` flag or with the image directory provided by the `--image-directory` flag.
-- Relative links are checked from the file to which the link belongs, unless the `--all-absolute` flag is enabled.
+- Absolute links are checked from the root directory of the documentation + the content directory if provided (
+  `--content-directory`)
+  or the image directory for images if provided (`--image-directory`).
+- Relative links are checked from the file to which the link belongs.
 
-### Mailto Links
+#### Mailto Links
 
 Mailto links are used to include a link with an email address. Docsource checks the format of the linked email address:
 
