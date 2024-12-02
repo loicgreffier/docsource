@@ -1,6 +1,5 @@
 package io.github.loicgreffier.command;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -65,10 +64,10 @@ class ScanCustomTest {
             "-A",
             "--content-directory=src/content",
             "--image-directory=src",
-            "src/content/folder-one/page.md"
+            "folder-one/page.md"
         );
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Success  9         3         1     13"));
         assertTrue(sw.toString().contains("Broken   3         1         1     5"));

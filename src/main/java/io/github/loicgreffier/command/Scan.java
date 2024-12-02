@@ -57,7 +57,8 @@ public class Scan implements Callable<Integer> {
     @Parameters(paramLabel = "files", description = "Root directories or files to scan.")
     public List<File> inputFiles;
 
-    @Option(names = {"-A", "--all-absolute"}, description = "Consider relative paths as absolute paths.")
+    @Option(names = {"-A",
+        "--all-absolute"}, description = "Consider relative paths as absolute paths.")
     public boolean allAbsolute;
 
     @Option(
@@ -67,7 +68,8 @@ public class Scan implements Callable<Integer> {
     )
     public String contentDirectory;
 
-    @Option(names = {"-I", "--image-absolute"}, description = "Consider relative image paths as absolute paths.")
+    @Option(names = {"-I",
+        "--image-absolute"}, description = "Consider relative image paths as absolute paths.")
     public Boolean imageAbsolute;
 
     @Option(
@@ -137,7 +139,8 @@ public class Scan implements Callable<Integer> {
                             commandSpec.commandLine().getOut().println();
                         }
                     } catch (IOException e) {
-                        commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
+                        commandSpec.commandLine().getErr()
+                            .println("Cannot get links from file " + file + ".");
                     }
                 });
 
@@ -239,7 +242,8 @@ public class Scan implements Callable<Integer> {
         links.forEach(link -> {
             link.validate();
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                commandSpec.commandLine().getOut()
+                    .println(Help.Ansi.AUTO.string(link.toAnsiString()));
             }
             scannedLinks.add(link);
         });
@@ -310,9 +314,11 @@ public class Scan implements Callable<Integer> {
         commandSpec.commandLine().getOut().println(textTable);
 
         if (brokenRelative + brokenExternal + brokenMail > 0) {
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
+            commandSpec.commandLine().getOut()
+                .println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
         } else {
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
+            commandSpec.commandLine().getOut()
+                .println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
         }
 
         getScannedLinksByStatus(BROKEN)
@@ -341,17 +347,9 @@ public class Scan implements Callable<Integer> {
      * @return A list of files to scan.
      */
     public List<File> findFiles(File file) {
-        if (file.isFile()) {
-            if (!FileUtils.isAuthorized(file)) {
-                commandSpec.commandLine().getErr().println("The format of the " + file + " file is not supported.");
-                return List.of();
-            }
-            return List.of(file);
-        }
-
-        Path scanDirectory;
+        Path scanFile;
         if (file.isAbsolute()) {
-            scanDirectory = Path.of(file.getAbsolutePath());
+            scanFile = Path.of(file.getAbsolutePath());
         } else {
             StringBuilder stringBuilder = new StringBuilder();
             stringBuilder.append(getCurrentDirectory());
@@ -361,19 +359,28 @@ public class Scan implements Callable<Integer> {
                 stringBuilder.append(File.separator);
             }
             stringBuilder.append(file);
-            scanDirectory = Path.of(stringBuilder.toString());
+            scanFile = Path.of(stringBuilder.toString());
+        }
+
+        if (scanFile.toFile().isFile()) {
+            if (!FileUtils.isAuthorized(scanFile.toFile())) {
+                commandSpec.commandLine().getErr().println("The format of the " + file + " file is not supported.");
+                return List.of();
+            }
+            return List.of(scanFile.toFile());
         }
 
         commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
-            "Scanning directory @|bold " + scanDirectory + "|@"));
+            "Scanning directory @|bold " + scanFile + "|@"));
 
         try {
-            List<File> files = FileUtils.findFiles(scanDirectory.toFile(), recursive);
+            List<File> files = FileUtils.findFiles(scanFile.toFile(), recursive);
             commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
                 "Found @|bold " + files.size() + " file(s)|@ to scan"));
             return files;
         } catch (IOException e) {
-            commandSpec.commandLine().getErr().println("Cannot retrieve files from directory " + scanDirectory);
+            commandSpec.commandLine().getErr()
+                .println("Cannot retrieve files from directory " + scanFile);
         }
 
         return List.of();

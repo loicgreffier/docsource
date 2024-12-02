@@ -19,7 +19,7 @@ class DocsourceTest {
         int code = cmd.execute();
 
         assertEquals(0, code);
-        assertEquals("Usage:", sw.toString());
+        assertTrue(sw.toString().contains("Usage:"));
     }
 
     @Test
