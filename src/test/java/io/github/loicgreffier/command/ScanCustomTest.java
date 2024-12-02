@@ -1,6 +1,7 @@
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
@@ -39,7 +40,7 @@ class ScanCustomTest {
             "."
         );
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  9         3         1     13"));

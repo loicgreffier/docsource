@@ -1,6 +1,7 @@
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
@@ -33,7 +34,7 @@ class ScanDocsifyTest {
 
         int code = cmd.execute("-r", ".");
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  16        5         1     22"));
@@ -62,7 +63,7 @@ class ScanDocsifyTest {
 
         int code = cmd.execute("README.md");
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Success  12        5         1     18"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
@@ -87,7 +88,7 @@ class ScanDocsifyTest {
 
         int code = cmd.execute("folder-one/page.md");
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Success  4         0         0     4"));
         assertTrue(sw.toString().contains("Broken   3         0         0     3"));
@@ -131,7 +132,7 @@ class ScanDocsifyTest {
 
         int code = cmd.execute("-r", "-k", "README.md");
 
-        assertEquals(0, code);
+        assertNotEquals(0, code);
 
         assertTrue(sw.toString().contains("Success  12        5         1     18"));
         assertTrue(sw.toString().contains("Broken   3         2         1     6"));
