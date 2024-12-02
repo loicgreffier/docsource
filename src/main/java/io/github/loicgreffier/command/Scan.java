@@ -126,14 +126,11 @@ public class Scan implements Callable<Integer> {
                 List<File> files = findFiles(inputFile);
 
                 files.forEach(file -> {
-                    Path scanFile = Path.of(file.isAbsolute() ? file.getAbsolutePath() :
-                        getCurrentDirectory() + File.separator + file);
-
                     commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
-                        .string("Scanning file @|bold " + scanFile + "|@"));
+                        .string("Scanning file @|bold " + file + "|@"));
 
                     try {
-                        findAndValidateLinks(scanFile.toFile(), regexs);
+                        findAndValidateLinks(file, regexs);
 
                         if (docsource.verbose) {
                             commandSpec.commandLine().getOut().println();
