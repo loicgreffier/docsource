@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
+@Slf4j
 class ScanCustomTest {
     String defaultUserDir = System.getProperty("user.dir");
 
@@ -42,10 +44,12 @@ class ScanCustomTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  9         3         1     13"));
+        assertTrue(sw.toString().contains("Success  10        3         1     14"));
         assertTrue(sw.toString().contains("Broken   3         1         1     5"));
-        assertTrue(sw.toString().contains("Total    12        4         2     18"));
+        assertTrue(sw.toString().contains("Total    13        4         2     19"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
@@ -72,10 +76,12 @@ class ScanCustomTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  9         Skipped   1     10"));
+        assertTrue(sw.toString().contains("Success  10        Skipped   1     11"));
         assertTrue(sw.toString().contains("Broken   3         Skipped   1     4"));
-        assertTrue(sw.toString().contains("Total    12        0         2     14"));
+        assertTrue(sw.toString().contains("Total    13        0         2     15"));
         assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
@@ -100,6 +106,8 @@ class ScanCustomTest {
         );
 
         assertNotEquals(0, code);
+
+        log.info(sw.toString());
 
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  Skipped   3         1     4"));
@@ -128,10 +136,12 @@ class ScanCustomTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  9         3         Skipped  12"));
+        assertTrue(sw.toString().contains("Success  10        3         Skipped  13"));
         assertTrue(sw.toString().contains("Broken   3         1         Skipped  4"));
-        assertTrue(sw.toString().contains("Total    12        4         0        16"));
+        assertTrue(sw.toString().contains("Total    13        4         0        17"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
@@ -159,6 +169,8 @@ class ScanCustomTest {
 
         assertEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  Skipped   Skipped   Skipped  0"));
         assertTrue(sw.toString().contains("Broken   Skipped   Skipped   Skipped  0"));
@@ -182,9 +194,11 @@ class ScanCustomTest {
 
         assertNotEquals(0, code);
 
-        assertTrue(sw.toString().contains("Success  9         3         1     13"));
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Success  10        3         1     14"));
         assertTrue(sw.toString().contains("Broken   3         1         1     5"));
-        assertTrue(sw.toString().contains("Total    12        4         2     18"));
+        assertTrue(sw.toString().contains("Total    13        4         2     19"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
