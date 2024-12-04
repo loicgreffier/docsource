@@ -5,6 +5,7 @@ import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.util.StringUtils;
 import org.yaml.snakeyaml.util.UriEncoder;
@@ -12,6 +13,7 @@ import org.yaml.snakeyaml.util.UriEncoder;
 /**
  * This class represents a relative link.
  */
+@Slf4j
 public class RelativeLink extends Link {
     public RelativeLink(File file,
                         String path,
@@ -126,6 +128,7 @@ public class RelativeLink extends Link {
      */
     private boolean isImage() {
         List<String> imageExtensions = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "svg");
+        log.info(FilenameUtils.getExtension(path.split("\\s+")[0]));
         return imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]).toLowerCase());
     }
 

@@ -33,7 +33,7 @@
 
 ![Image absolute](/content/folder-one/images/image.jpg)
 
-![Image absolute](/content/folder-one/images/image.JPG)
+![Image absolute uppercase](/content/folder-one/images/image.JPG)
 
 ![Image with title 1](/content/folder-one/images/image.jpg "Image 1")
 
