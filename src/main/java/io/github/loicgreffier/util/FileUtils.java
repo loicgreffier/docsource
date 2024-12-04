@@ -45,7 +45,8 @@ public abstract class FileUtils {
      * @throws IOException Any IO exception during file reading.
      */
     public static List<File> findFiles(File file, boolean recursive) throws IOException {
-        try (Stream<Path> fileStream = Files.find(Paths.get(file.toURI()), recursive ? Integer.MAX_VALUE : 1,
+        try (Stream<Path> fileStream = Files.find(Paths.get(file.toURI()),
+            recursive ? Integer.MAX_VALUE : 1,
             (filePath, fileAttr) -> fileAttr.isRegularFile() && isAuthorized(filePath.toFile()))) {
             return fileStream
                 .map(Path::toFile)
@@ -64,7 +65,8 @@ public abstract class FileUtils {
      */
     public static List<Link> findLinks(File file,
                                        List<String> regexs,
-                                       Link.ValidationOptions validationOptions) throws IOException {
+                                       Link.ValidationOptions validationOptions)
+        throws IOException {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
@@ -75,24 +77,28 @@ public abstract class FileUtils {
             while (matcher.find()) {
                 // .group(0) matches all: [](...),
                 // .group(1) matches the link
-                if (matcher.group(0).contains("://") && !validationOptions.isSkipExternal()) {
-                    links.add(
-                        new ExternalLink(
-                            file,
-                            matcher.group(1),
-                            matcher.group(0),
-                            validationOptions
-                        )
-                    );
-                } else if (matcher.group(0).contains("mailto:") && !validationOptions.isSkipMailto()) {
-                    links.add(
-                        new MailtoLink(
-                            file,
-                            matcher.group(1),
-                            matcher.group(0),
-                            validationOptions
-                        )
-                    );
+                if (matcher.group(0).contains("://")) {
+                    if (!validationOptions.isSkipExternal()) {
+                        links.add(
+                            new ExternalLink(
+                                file,
+                                matcher.group(1),
+                                matcher.group(0),
+                                validationOptions
+                            )
+                        );
+                    }
+                } else if (matcher.group(0).contains("mailto:")) {
+                    if (!validationOptions.isSkipMailto()) {
+                        links.add(
+                            new MailtoLink(
+                                file,
+                                matcher.group(1),
+                                matcher.group(0),
+                                validationOptions
+                            )
+                        );
+                    }
                 } else if (!validationOptions.isSkipRelative()) {
                     links.add(
                         new RelativeLink(
@@ -128,6 +134,7 @@ public abstract class FileUtils {
      * @return True if the folder is a Hugo folder, false otherwise.
      */
     public static boolean isHugo(String file) {
-        return Files.exists(Path.of(file + "/hugo.yaml")) || Files.exists(Path.of(file + "/hugo.toml"));
+        return Files.exists(Path.of(file + "/hugo.yaml")) ||
+            Files.exists(Path.of(file + "/hugo.toml"));
     }
 }
