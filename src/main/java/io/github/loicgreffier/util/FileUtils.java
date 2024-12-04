@@ -134,7 +134,7 @@ public abstract class FileUtils {
      * @return True if the folder is a Hugo folder, false otherwise.
      */
     public static boolean isHugo(String file) {
-        return Files.exists(Path.of(file + "/hugo.yaml")) ||
-            Files.exists(Path.of(file + "/hugo.toml"));
+        return Files.exists(Path.of(file + "/hugo.yaml"))
+            || Files.exists(Path.of(file + "/hugo.toml"));
     }
 }
