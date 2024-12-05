@@ -241,7 +241,7 @@ class ScanDocsifyTest {
 
         log.info(sw.toString());
 
-        assertTrue(sw.toString().contains("Success  12        5         1     19"));
+        assertTrue(sw.toString().contains("Success  12        5         1     18"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
         assertTrue(sw.toString().contains("Total    16        7         2     25"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
