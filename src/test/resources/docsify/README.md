@@ -37,18 +37,25 @@
 
 [/folder-one/page#success](/folder-one/page#success).
 
+Image:
 ![Image](images/image.jpg)
 
+Image with title 1:
 ![Image with title 1](images/image.jpg "Image 1")
 
+Image with title 2:
 ![Image with title 2](images/image.jpg 'Image 2')
 
+Image with space:
 ![Image with space](images/image%20with%20spaces.jpg "Image with spaces")
 
+Image:
 <img src="images/image.jpg"/>
 
+Image with title 1:
 <img src="images/image.jpg" title="Image with title 1" alt="Image with title 1"/>
 
+Image with title 2:
 <img title="Image with title 2" src="images/image.jpg" alt="Image with title 2"/>
 
 <!-- Specific use-cases. Should be ignored by regex -->
