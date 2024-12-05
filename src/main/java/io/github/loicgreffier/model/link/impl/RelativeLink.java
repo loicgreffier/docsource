@@ -128,7 +128,9 @@ public class RelativeLink extends Link {
      */
     private boolean isImage() {
         List<String> imageExtensions = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "svg");
+        log.info(path);
         log.info(FilenameUtils.getExtension(path.split("\\s+")[0]));
+        log.info("Test" + imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]).toLowerCase()));
         return imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]).toLowerCase());
     }
 
