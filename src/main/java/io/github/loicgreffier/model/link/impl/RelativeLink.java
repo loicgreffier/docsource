@@ -31,6 +31,9 @@ public class RelativeLink extends Link {
     public void validate() {
         Path checkPath = isImage() ? computeImagePath() : computePagePath();
 
+        log.info("Checking relative link: {}", checkPath);
+        log.info("File exists: {}", Files.exists(checkPath));
+        
         if (Files.exists(checkPath)) {
             status = Status.SUCCESS;
             details = "OK";
@@ -128,9 +131,6 @@ public class RelativeLink extends Link {
      */
     private boolean isImage() {
         List<String> imageExtensions = List.of("jpg", "jpeg", "png", "gif", "bmp", "webp", "tiff", "svg");
-        log.info(path);
-        log.info(FilenameUtils.getExtension(path.split("\\s+")[0]));
-        log.info("Test" + imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]).toLowerCase()));
         return imageExtensions.contains(FilenameUtils.getExtension(path.split("\\s+")[0]).toLowerCase());
     }
 
