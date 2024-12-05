@@ -1,3 +1,5 @@
+<div align="center">
+
 # Docsource
 
 [![GitHub Build](https://img.shields.io/github/actions/workflow/status/loicgreffier/docsource/push_main.yml?branch=main&logo=github&style=for-the-badge)](https://github.com/loicgreffier/docsource/actions/workflows/push_main.yml)
@@ -6,9 +8,13 @@
 [![Docker Pulls](https://img.shields.io/docker/pulls/loicgreffier/docsource?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource/tags)
 [![Docker Stars](https://img.shields.io/docker/stars/loicgreffier/docsource?label=Stars&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource)
 
-Docsource is a command-line interface (CLI) tool that detects broken links within Markdown documentation files.
+[Download](https://github.com/loicgreffier/docsource/releases) • [Getting Started](#getting-started)
+
+Command-line interface that detects broken links within Markdown documentation files.
 
 ![](.readme/demo.gif)
+
+</div>
 
 ## Table of Contents
 
@@ -21,7 +27,6 @@ Docsource is a command-line interface (CLI) tool that detects broken links withi
         * [Mailto Links](#mailto-links)
 * [Usage](#usage)
     * [Scan](#scan)
-        * [Multiple Folders or Files](#multiple-folders-or-files)
         * [All Absolute](#all-absolute)
 * [Continuous Integration](#continuous-integration)
     * [GitLab CI/CD](#gitlab-cicd)
@@ -30,8 +35,8 @@ Docsource is a command-line interface (CLI) tool that detects broken links withi
 
 ## Download
 
-You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases). It is
-available in three different formats:
+You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases).
+It is available in three different formats:
 
 - JAR (requires Java 21)
 - Windows
@@ -48,7 +53,7 @@ docsource scan --recursive .
 ### Supported Frameworks
 
 Docsource tries to detect the framework used to generate the documentation and applies the appropriate configuration.
-The supported frameworks are:
+The supported and tested frameworks are:
 
 - [Docsify](https://docsify.js.org)
 - [Hugo](https://gohugo.io)
@@ -59,29 +64,31 @@ Docsource can check three types of Markdown links: external links, relative link
 
 #### External Links
 
-External links are links that point to an external domain. Docsource sends an HTTP request to check the HTTP return
-code:
+External links point to an external domain.
+Docsource sends an HTTP request and check the HTTP return code:
 
 - The link is considered broken if the return code is 404.
 - The link is considered valid if the return code is anything other than 404.
 
 #### Relative Links
 
-Relative links are used for links within the same domain. Docsource checks whether the linked resource actually exists:
+Relative links point to the same domain.
+Docsource checks if the linked resource actually exists:
 
 - The link is considered broken if the linked resource does not exist.
 - The link is considered valid if the linked resource exists.
 
 A relative link can be either absolute or relative:
 
-- Absolute links are checked from the root directory of the documentation + the content directory if provided (
-  `--content-directory`)
-  or the image directory for images if provided (`--image-directory`).
-- Relative links are checked from the file to which the link belongs.
+- Absolute links are checked from the current user directory (i.e., the root directory of the documentation)
+  concatenated with the content directory if provided (`--content-directory`) or the image directory for images if
+  provided (`--image-directory`).
+- Relative links are checked from the file the link belongs to.
 
 #### Mailto Links
 
-Mailto links are used to include a link with an email address. Docsource checks the format of the linked email address:
+Mailto links point to an email address.
+Docsource checks the format of the email address:
 
 - The link is considered broken if the format is incorrect.
 - The link is considered valid if the format is correct.
@@ -97,53 +104,52 @@ Mailto links are used to include a link with an email address. Docsource checks 
  _|    |/  \_/    / \_/  \_|   |  /  |  /    |/
 (/\___/ \__/ \___/ \/ \__/  \_/|_/   |_/\___/|__/
 
-Usage: docsource scan [-AhkrvV] [--skip-external] [--skip-mailto] [--skip-relative]
-                [--content-directory=<contentDirectory>]
-                [--image-directory=<imageDirectory>] [files...]
+Usage: docsource scan [-AhIkrvV] [--skip-external] [--skip-mailto] [--skip-relative] [--content-directory=<contentDirectory>]
+                [--image-directory=<imageDirectory>] [--index-filename=<indexFilename>] [files...]
 
 Description:
 
 Scan documentation.
 
 Parameters:
-      [files...]        Root directories or files to scan.
+      [files...]         Root directories or files to scan.
 
 Options:
-  -A, --all-absolute    Consider relative link paths as absolute paths.
+  -A, --all-absolute     Consider relative paths as absolute paths.
       --content-directory=<contentDirectory>
-                        If different from the root directory, the directory containing the Markdown files. E.g., 'content' for Hugo.
-  -h, --help            Show this help message and exit.
+                         Specify a sub-directory of the root directory containing the Markdown files. E.g., 'content' for Hugo.
+  -h, --help             Show this help message and exit.
+  -I, --image-absolute   Consider relative image paths as absolute paths.
       --image-directory=<imageDirectory>
-                        If existing, the root directory of the images. E.g., 'static' for Hugo.
-  -k, --insecure        Turn off hostname and certificate chain verification.
-  -r, --recursive       Scan directories recursively.
-      --skip-external   Skip external links.
-      --skip-mailto     Skip mailto links.
-      --skip-relative   Skip relative links.
-  -v, --verbose         Enable the verbose mode.
-  -V, --version         Print version information and exit.
+                         Specify a sub-directory of the root directory containing the images. E.g., 'static' for Hugo.
+      --index-filename=<indexFilename>
+                         Specify the filename to use as an index file. E.g., '_index.md' for Hugo.
+  -k, --insecure         Turn off hostname and certificate chain verification.
+  -r, --recursive        Scan directories recursively.
+      --skip-external    Skip external links.
+      --skip-mailto      Skip mailto links.
+      --skip-relative    Skip relative links.
+  -v, --verbose          Enable the verbose mode.
+  -V, --version          Print version information and exit.
 ```
 
 `Scan` is used to scan Markdown files in your documentation to detect broken links.
 The command should be run from the root folder of your documentation.
 
-#### Multiple Folders or Files
+#### All Absolute (`--all-absolute`)
 
-You can provide multiple folders or files as input to `Scan` by specifying them after the command:
+If you need to check relative link paths as absolute paths rather than from the file the link belongs to, you can use
+the `--all-absolute` option.
 
-```console
-docsource scan directory1 directory2 file1.md file2.md
-```
+Example(s):
 
-#### All Absolute
+- Considering the current user directory is `/home/user/docs` and the content directory is `/home/user/docs/content`,
+  the link `[link](./folder-two/README)` will be checked from `/home/user/docs/content/folder-two/README` rather than
+  from `./folder-two/README` relatively to the file the link belongs to.
 
-Depending on how your documentation is built (e.g., a custom Angular/React project that parses Markdown files), you may
-need to consider relative link paths as absolute paths.
-
-- E.g., you may want `[link](./folder-two/README)` to be checked from the content directory rather than the "
-  folder-two" directory.
-
-To handle such cases, you can use the `--all-absolute` option.
+- Considering the current user directory is `/home/user/docs` and the image directory is `/home/user/docs/static`,
+  the image link `![image](./images/image.jpg)` will be checked from `/home/user/docs/static/images/image.jpg` rather
+  than from `./images/image.jpg` relatively to the file the link belongs to.
 
 ## Continuous Integration
 
