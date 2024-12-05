@@ -35,6 +35,10 @@
 
 ![Image with title 2](/content/folder-one/images/image.jpg 'Image 2')
 
+<!-- Specific use-cases. Should be ignored by regex -->
+[Ignored by regex]({{./folder-two/page}})
+[Ignored by regex]({{ ./folder-two/page }})
+
 ## Broken
 
 [./folder-two/does-not-exist](./folder-two/does-not-exist).
