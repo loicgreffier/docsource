@@ -27,9 +27,9 @@ public abstract class FileUtils {
     /**
      * Markdown link regex.
      * Match groups like: [](http), [](https) or [](/)
-     * but not like: [](#) that is not handled already.
+     * but not like: [](#) or []({) that is not handled or not eligible.
      */
-    private static final String MARKDOWN_LINK_REGEX = "!?\\[.*?\\]\\(([^#].*?)\\)";
+    private static final String MARKDOWN_LINK_REGEX = "!?\\[.*?\\]\\(([^#{].*?)\\)";
 
     /**
      * Href link regex.
