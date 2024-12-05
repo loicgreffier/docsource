@@ -68,8 +68,10 @@ public class Scan implements Callable<Integer> {
     )
     public String contentDirectory;
 
-    @Option(names = {"-I",
-        "--image-absolute"}, description = "Consider relative image paths as absolute paths.")
+    @Option(
+        names = {"-I", "--image-absolute"},
+        description = "Consider relative image paths as absolute paths."
+    )
     public Boolean imageAbsolute;
 
     @Option(
@@ -136,8 +138,7 @@ public class Scan implements Callable<Integer> {
                             commandSpec.commandLine().getOut().println();
                         }
                     } catch (IOException e) {
-                        commandSpec.commandLine().getErr()
-                            .println("Cannot get links from file " + file + ".");
+                        commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
                     }
                 });
 
@@ -239,8 +240,7 @@ public class Scan implements Callable<Integer> {
         links.forEach(link -> {
             link.validate();
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut()
-                    .println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
             }
             scannedLinks.add(link);
         });
@@ -262,9 +262,9 @@ public class Scan implements Callable<Integer> {
             new Help.Column(7, 0, Help.Column.Overflow.SPAN),
             new Help.Column(10, 2, Help.Column.Overflow.SPAN),
             new Help.Column(10, 2, Help.Column.Overflow.SPAN),
-            new Help.Column(skipMailto ? 9 : 6, 2,
-                Help.Column.Overflow.SPAN),
-            new Help.Column(7, 2, Help.Column.Overflow.SPAN));
+            new Help.Column(skipMailto ? 9 : 6, 2, Help.Column.Overflow.SPAN),
+            new Help.Column(7, 2, Help.Column.Overflow.SPAN)
+        );
 
         long successRelative = countScannedLinksByTypeAndStatus(RelativeLink.class, SUCCESS);
         long successExternal = countScannedLinksByTypeAndStatus(ExternalLink.class, SUCCESS);
@@ -311,11 +311,9 @@ public class Scan implements Callable<Integer> {
         commandSpec.commandLine().getOut().println(textTable);
 
         if (brokenRelative + brokenExternal + brokenMail > 0) {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
         } else {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
         }
 
         getScannedLinksByStatus(BROKEN)

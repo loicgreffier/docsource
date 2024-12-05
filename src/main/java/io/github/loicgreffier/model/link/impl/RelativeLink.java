@@ -30,9 +30,6 @@ public class RelativeLink extends Link {
     @Override
     public void validate() {
         Path checkPath = isImage() ? computeImagePath() : computePagePath();
-
-        log.info("Checking relative link: {}", checkPath);
-        log.info("File exists: {}", Files.exists(checkPath));
         
         if (Files.exists(checkPath)) {
             status = Status.SUCCESS;

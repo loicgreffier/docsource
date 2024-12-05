@@ -6,11 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
+@Slf4j
 class ScanDocsifyTest {
     String defaultUserDir = System.getProperty("user.dir");
 
@@ -36,10 +38,12 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  16        5         1     22"));
+        assertTrue(sw.toString().contains("Success  19        5         1     25"));
         assertTrue(sw.toString().contains("Broken   7         2         1     10"));
-        assertTrue(sw.toString().contains("Total    23        7         2     32"));
+        assertTrue(sw.toString().contains("Total    26        7         2     35"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -69,10 +73,12 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  16        Skipped   1     17"));
+        assertTrue(sw.toString().contains("Success  19        Skipped   1     20"));
         assertTrue(sw.toString().contains("Broken   7         Skipped   1     8"));
-        assertTrue(sw.toString().contains("Total    23        0         2     25"));
+        assertTrue(sw.toString().contains("Total    26        0         2     28"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -100,6 +106,8 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  Skipped   5         1     6"));
         assertTrue(sw.toString().contains("Broken   Skipped   2         1     3"));
@@ -126,10 +134,12 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  16        5         Skipped  21"));
+        assertTrue(sw.toString().contains("Success  19        5         Skipped  24"));
         assertTrue(sw.toString().contains("Broken   7         2         Skipped  9"));
-        assertTrue(sw.toString().contains("Total    23        7         0        30"));
+        assertTrue(sw.toString().contains("Total    26        7         0        33"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -160,6 +170,8 @@ class ScanDocsifyTest {
 
         assertEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  Skipped   Skipped   Skipped  0"));
         assertTrue(sw.toString().contains("Broken   Skipped   Skipped   Skipped  0"));
@@ -178,9 +190,11 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
-        assertTrue(sw.toString().contains("Success  12        5         1     18"));
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Success  15        5         1     21"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
-        assertTrue(sw.toString().contains("Total    16        7         2     25"));
+        assertTrue(sw.toString().contains("Total    19        7         2     28"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
             + "DNS name matching www.testingmcafeesites.com found.)"));
@@ -203,6 +217,8 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
+        log.info(sw.toString());
+
         assertTrue(sw.toString().contains("Success  4         0         0     4"));
         assertTrue(sw.toString().contains("Broken   3         0         0     3"));
         assertTrue(sw.toString().contains("Total    7         0         0     7"));
@@ -223,9 +239,11 @@ class ScanDocsifyTest {
 
         assertNotEquals(0, code);
 
-        assertTrue(sw.toString().contains("Success  12        5         1     18"));
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Success  15        5         1     22"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
-        assertTrue(sw.toString().contains("Total    16        7         2     25"));
+        assertTrue(sw.toString().contains("Total    19        7         2     28"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - https://www.testingmcafeesites.com/ (404)"));
         assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));

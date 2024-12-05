@@ -31,9 +31,13 @@
 
 <img src="content/folder-one/images/image.jpg"/>
 
-![Image absolute](/content/folder-one/images/image.jpg)
+![Image](/content/folder-one/images/image.jpg)
 
-![Image absolute uppercase](/content/folder-one/images/image.JPG)
+![Image uppercase](/content/folder-one/images/image-uppercase.jpg)
+
+![Image extension uppercase](/content/folder-one/images/image.JPG)
+
+![Image extension lowercase](/content/folder-one/images/image-uppercase-extension.jpg)
 
 ![Image with title 1](/content/folder-one/images/image.jpg "Image 1")
 
