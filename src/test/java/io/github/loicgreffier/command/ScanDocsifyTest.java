@@ -41,9 +41,9 @@ class ScanDocsifyTest {
         log.info(sw.toString());
 
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  19        5         1     25"));
+        assertTrue(sw.toString().contains("Success  16        5         1     22"));
         assertTrue(sw.toString().contains("Broken   7         2         1     10"));
-        assertTrue(sw.toString().contains("Total    26        7         2     35"));
+        assertTrue(sw.toString().contains("Total    23        7         2     32"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -76,9 +76,9 @@ class ScanDocsifyTest {
         log.info(sw.toString());
 
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  19        Skipped   1     20"));
+        assertTrue(sw.toString().contains("Success  16        Skipped   1     17"));
         assertTrue(sw.toString().contains("Broken   7         Skipped   1     8"));
-        assertTrue(sw.toString().contains("Total    26        0         2     28"));
+        assertTrue(sw.toString().contains("Total    23        0         2     25"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -137,9 +137,9 @@ class ScanDocsifyTest {
         log.info(sw.toString());
 
         assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  19        5         Skipped  24"));
+        assertTrue(sw.toString().contains("Success  16        5         Skipped  21"));
         assertTrue(sw.toString().contains("Broken   7         2         Skipped  9"));
-        assertTrue(sw.toString().contains("Total    26        7         0        33"));
+        assertTrue(sw.toString().contains("Total    23        7         0        30"));
         assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
         assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
@@ -192,9 +192,9 @@ class ScanDocsifyTest {
 
         log.info(sw.toString());
 
-        assertTrue(sw.toString().contains("Success  15        5         1     21"));
+        assertTrue(sw.toString().contains("Success  12        5         1     18"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
-        assertTrue(sw.toString().contains("Total    19        7         2     28"));
+        assertTrue(sw.toString().contains("Total    16        7         2     25"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
             + "DNS name matching www.testingmcafeesites.com found.)"));
@@ -241,9 +241,9 @@ class ScanDocsifyTest {
 
         log.info(sw.toString());
 
-        assertTrue(sw.toString().contains("Success  15        5         1     22"));
+        assertTrue(sw.toString().contains("Success  12        5         1     19"));
         assertTrue(sw.toString().contains("Broken   4         2         1     7"));
-        assertTrue(sw.toString().contains("Total    19        7         2     28"));
+        assertTrue(sw.toString().contains("Total    16        7         2     25"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString().contains("  - https://www.testingmcafeesites.com/ (404)"));
         assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));

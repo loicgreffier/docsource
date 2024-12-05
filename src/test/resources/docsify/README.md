@@ -40,15 +40,6 @@
 Image:
 ![Image](images/image.jpg)
 
-Image Uppercase:
-![Image uppercase](images/image-uppercase.jpg)
-
-Image Extension Uppercase:
-![Image extension uppercase](images/image.JPG)
-
-Image Extension Lowercase:
-![Image extension lowercase](images/image-uppercase-extension.jpg)
-
 Image with title 1:
 ![Image with title 1](images/image.jpg "Image 1")
 

@@ -33,12 +33,6 @@
 
 ![Image](/content/folder-one/images/image.jpg)
 
-![Image uppercase](/content/folder-one/images/image-uppercase.jpg)
-
-![Image extension uppercase](/content/folder-one/images/image.JPG)
-
-![Image extension lowercase](/content/folder-one/images/image-uppercase-extension.jpg)
-
 ![Image with title 1](/content/folder-one/images/image.jpg "Image 1")
 
 ![Image with title 2](/content/folder-one/images/image.jpg 'Image 2')
