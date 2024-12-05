@@ -59,7 +59,9 @@ public abstract class Link {
         private String currentDir;
         private String contentDirectory;
         private String imageDirectory;
+        private String indexFilename;
         private boolean allAbsolute;
+        private boolean imageAbsolute;
         private boolean skipExternal;
         private boolean skipRelative;
         private boolean skipMailto;

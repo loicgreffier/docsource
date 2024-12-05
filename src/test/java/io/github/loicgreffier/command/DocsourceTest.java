@@ -1,6 +1,7 @@
 package io.github.loicgreffier.command;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -17,8 +18,8 @@ class DocsourceTest {
 
         int code = cmd.execute();
 
-        assertThat(code).isZero();
-        assertThat(sw.toString()).contains("Usage:");
+        assertEquals(0, code);
+        assertTrue(sw.toString().contains("Usage:"));
     }
 
     @Test
@@ -30,7 +31,7 @@ class DocsourceTest {
 
         int code = cmd.execute("-v");
 
-        assertThat(code).isZero();
-        assertThat(docsource.verbose).isTrue();
+        assertEquals(0, code);
+        assertTrue(docsource.verbose);
     }
 }

@@ -24,27 +24,6 @@ import org.apache.commons.io.FilenameUtils;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public abstract class FileUtils {
-    /**
-     * Markdown link regex.
-     * Match groups like: [](http), [](https) or [](/)
-     * but not like: [](#) or []({) that is not handled or not eligible.
-     */
-    private static final String MARKDOWN_LINK_REGEX = "!?\\[.*?\\]\\(([^#{].*?)\\)";
-
-    /**
-     * Href link regex.
-     * Match groups like: href=""
-     * Ignore href attribute containing template examples: href="${...}"
-     */
-    private static final String HREF_LINK_REGEX = "<a.*href=\"(?!\\$\\{)([^}]*?)(?!\\})\"";
-
-    /**
-     * Img link regex.
-     * Match groups like: src=""
-     * Ignore src attribute containing template examples: src="${...}"
-     */
-    private static final String IMG_LINK_REGEX = "<img.*src=\"(?!\\$\\{)([^\\}]*?)(?!\\})\"";
-
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
     /**
@@ -79,15 +58,19 @@ public abstract class FileUtils {
      * Find links from a file.
      *
      * @param file              The file.
+     * @param regexs            The regexs to find links.
      * @param validationOptions The validation options.
      * @return A list of links.
      * @throws IOException Any IO exception during file reading.
      */
-    public static List<Link> findLinks(File file, Link.ValidationOptions validationOptions) throws IOException {
+    public static List<Link> findLinks(File file,
+                                       List<String> regexs,
+                                       Link.ValidationOptions validationOptions)
+        throws IOException {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
-        for (String regex : List.of(MARKDOWN_LINK_REGEX, HREF_LINK_REGEX, IMG_LINK_REGEX)) {
+        for (String regex : regexs) {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(fileContent);
 
@@ -97,7 +80,8 @@ public abstract class FileUtils {
                 if (matcher.group(0).contains("://")) {
                     if (!validationOptions.isSkipExternal()) {
                         links.add(
-                            new ExternalLink(file,
+                            new ExternalLink(
+                                file,
                                 matcher.group(1),
                                 matcher.group(0),
                                 validationOptions
@@ -138,7 +122,7 @@ public abstract class FileUtils {
      * @return True if the folder is a Docsify folder, false otherwise.
      * @throws IOException Any IO exception during file reading.
      */
-    public static boolean isDocsify(File file) throws IOException {
+    public static boolean isDocsify(String file) throws IOException {
         Path indexHtml = Path.of(file + "/index.html");
         return Files.exists(indexHtml) && Files.readString(indexHtml).contains("window.$docsify");
     }
@@ -149,7 +133,8 @@ public abstract class FileUtils {
      * @param file The folder.
      * @return True if the folder is a Hugo folder, false otherwise.
      */
-    public static boolean isHugo(File file) {
-        return Files.exists(Path.of(file + "/hugo.yaml")) || Files.exists(Path.of(file + "/hugo.toml"));
+    public static boolean isHugo(String file) {
+        return Files.exists(Path.of(file + "/hugo.yaml"))
+            || Files.exists(Path.of(file + "/hugo.toml"));
     }
 }

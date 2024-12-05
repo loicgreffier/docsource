@@ -31,7 +31,7 @@
 
 <img src="content/folder-one/images/image.jpg"/>
 
-![Image absolute](/content/folder-one/images/image.jpg)
+![Image](/content/folder-one/images/image.jpg)
 
 ![Image with title 1](/content/folder-one/images/image.jpg "Image 1")
 
