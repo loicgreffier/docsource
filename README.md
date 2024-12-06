@@ -28,6 +28,9 @@ Command-line interface that detects broken links within Markdown documentation f
 * [Usage](#usage)
     * [Scan](#scan)
         * [All Absolute](#all-absolute)
+        * [Content Directory](#content-directory)
+        * [Image Directory](#image-directory)
+        * [Index Filename](#index-filename)
 * [Continuous Integration](#continuous-integration)
     * [GitLab CI/CD](#gitlab-cicd)
 * [FAQ](#frequently-asked-questions-faq)
@@ -141,15 +144,26 @@ The command should be run from the root folder of your documentation.
 If you need to check relative link paths as absolute paths rather than from the file the link belongs to, you can use
 the `--all-absolute` option.
 
-Example(s):
+#### Content Directory (`--content-directory`)
 
-- Considering the current user directory is `/home/user/docs` and the content directory is `/home/user/docs/content`,
-  the link `[link](./folder-two/README)` will be checked from `/home/user/docs/content/folder-two/README` rather than
-  from `./folder-two/README` relatively to the file the link belongs to.
+If the documentation is located in a subdirectory of the root directory, you can specify the content directory using
+the `--content-directory` option.
 
-- Considering the current user directory is `/home/user/docs` and the image directory is `/home/user/docs/static`,
-  the image link `![image](./images/image.jpg)` will be checked from `/home/user/docs/static/images/image.jpg` rather
-  than from `./images/image.jpg` relatively to the file the link belongs to.
+E.g., for Hugo, the content directory is `content`.
+
+#### Image Directory (`--image-directory`)
+
+If the images are located in a subdirectory of the root directory, you can specify the image directory using the
+`--image-directory` option.
+
+E.g., for Hugo, the image directory is `static`.
+
+#### Index Filename (`--index-filename`)
+
+If the documentation uses a specific filename as an index file, you can specify the index filename using the
+`--index-filename` option.
+
+E.g., for Hugo, the index filename is `_index.md`.
 
 ## Continuous Integration
 
