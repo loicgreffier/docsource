@@ -45,6 +45,8 @@ It is available in three different formats:
 - Windows
 - Linux
 
+Additionally, a Docker image is available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource).
+
 ## Getting Started
 
 Docsource should be run from the root directory of your documentation.
