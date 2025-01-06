@@ -111,3 +111,36 @@ jobs:
         with:
           name: docsource-windows
           path: target/docsource.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: '21.0.1'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check style
+        run: mvn checkstyle:check
+
+      - name: Build and test
+        run: mvn clean package -Pnative -PnativeTest
+
+      - name: Publish native test report
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: '**/target/native-test-reports/TEST-*.xml'
+
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: docsource-macos
+          path: target/docsource
