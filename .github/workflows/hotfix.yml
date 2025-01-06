@@ -9,17 +9,17 @@ on:
 
 jobs:
   create-hotfix-branch:
-    name: Create Hotfix Branch
+    name: Create hotfix branch
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
-      - name: Checkout Project
+      - name: Checkout project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
-      - name: Create Branch
+      - name: Create branch
         run: |
           START_TAG=v${{ github.event.inputs.tag_version }}
           echo "Start from tag $START_TAG"
