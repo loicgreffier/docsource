@@ -55,7 +55,7 @@ jobs:
           - os: 'macos-latest'
             platform: 'darwin-arm64'
           - os: 'windows-latest'
-            platform: 'win-amd64'
+            platform: 'windows-amd64'
     runs-on: ${{ matrix.os }}
     steps:
       - name: Checkout Project
@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/docsource*
+          path: ${{ matrix.os == 'windows-latest' && 'docsource.exe' || 'docsource' }}
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
