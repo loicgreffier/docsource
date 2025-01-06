@@ -64,18 +64,27 @@ jobs:
           allowUpdates: true
 
   build-native:
-    name: 'Build native image ${{ matrix.platform }}'
+    name: Build native image ${{ matrix.platform }}
+    runs-on: ${{matrix.os}}
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
+            native-image-name: 'docsource'
+            archive-type: 'tar'
+            archive-extension: 'tar.gz'
           - os: 'macos-latest'
             platform: 'darwin-arm64'
+            native-image-name: 'docsource'
+            archive-type: 'tar'
+            archive-extension: 'tar.gz'
           - os: 'windows-latest'
             platform: 'windows-amd64'
-    runs-on: ${{matrix.os}}
+            native-image-name: 'docsource.exe'
+            archive-type: 'zip'
+            archive-extension: 'zip'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -118,24 +127,24 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         id: build_changelog
         with:
-          configuration: "changelog-builder.json"
+          configuration: 'changelog-builder.json'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Archive release
         uses: thedoctor0/zip-release@0.7.5
         with:
-          type: ${{ matrix.os == 'windows-latest' && 'zip' || 'tar' }}
-          filename: ${{ matrix.os == 'windows-latest' && format('docsource-{0}.zip',matrix.platform) || format('docsource-{0}.tar.gz',matrix.platform) }}
+          type: ${{ matrix.archive-type }}
+          filename: ${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
           directory: target
-          path: ${{ matrix.os == 'windows-latest' && 'docsource.exe' || 'docsource' }}
+          path: ${{ matrix.native-image-name }}
 
       - name: Update release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: ${{ github.workspace }}/target/docsource
+          artifacts: ${{ github.workspace }}/target/${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
           draft: true
           prerelease: true
           allowUpdates: true

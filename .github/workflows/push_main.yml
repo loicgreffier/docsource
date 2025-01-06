@@ -47,18 +47,21 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
   build-native:
-    name: 'Build native image ${{ matrix.platform }}'
+    name: Build native image ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
+            native-image-name: 'docsource'
           - os: 'macos-latest'
             platform: 'darwin-arm64'
+            native-image-name: 'docsource'
           - os: 'windows-latest'
             platform: 'windows-amd64'
-    runs-on: ${{ matrix.os }}
+            native-image-name: 'docsource.exe'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -88,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: ${{ matrix.os == 'windows-latest' && 'docsource.exe' || 'docsource' }}
+          path: ${{ matrix.native-image-name }}
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
