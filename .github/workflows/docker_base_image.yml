@@ -12,41 +12,43 @@ on:
 
 jobs:
   build-linux-base-image:
+    name: Build Linux Base Image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.linux-version != ''
     steps:
-      - name: Checkout project
+      - name: Checkout Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Docker login
+      - name: Docker Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Docker build
+      - name: Docker Build
         run: |
           docker build . -f .docker/Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
   
   build-jar-base-image:
+    Name: Build JAR Base Image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.jar-version != ''
     steps:
-      - name: Checkout project
+      - name: Checkout Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Docker login
+      - name: Docker Login
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Docker build
+      - name: Docker Build
         run: |
           docker build . -f .docker/jar.Dockerfile -t docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.jar-version }}-jar
