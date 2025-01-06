@@ -86,7 +86,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/docsource(.exe)?
+          path: target/docsource(\.exe)?
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
