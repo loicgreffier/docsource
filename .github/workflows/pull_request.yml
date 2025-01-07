@@ -61,7 +61,7 @@ jobs:
             platform: 'windows-amd64'
             extension: '.exe'
     steps:
-      - name: Checkout Project
+      - name: Checkout project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
