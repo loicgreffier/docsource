@@ -129,6 +129,7 @@
                     <configLocation>.checkstyle/checkstyle.xml</configLocation>
                     <violationSeverity>info</violationSeverity>
                     <consoleOutput>true</consoleOutput>
+                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
                 </configuration>
                 <executions>
                     <execution>
