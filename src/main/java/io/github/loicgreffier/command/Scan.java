@@ -1,3 +1,22 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one
+ * or more contributor license agreements.  See the NOTICE file
+ * distributed with this work for additional information
+ * regarding copyright ownership.  The ASF licenses this file
+ * to you under the Apache License, Version 2.0 (the
+ * "License"); you may not use this file except in compliance
+ * with the License.  You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
+
 package io.github.loicgreffier.command;
 
 import static io.github.loicgreffier.model.link.Link.Status.BROKEN;
@@ -138,7 +157,8 @@ public class Scan implements Callable<Integer> {
                             commandSpec.commandLine().getOut().println();
                         }
                     } catch (IOException e) {
-                        commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
+                        commandSpec.commandLine().getErr()
+                            .println("Cannot get links from file " + file + ".");
                     }
                 });
 
@@ -240,7 +260,8 @@ public class Scan implements Callable<Integer> {
         links.forEach(link -> {
             link.validate();
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                commandSpec.commandLine().getOut()
+                    .println(Help.Ansi.AUTO.string(link.toAnsiString()));
             }
             scannedLinks.add(link);
         });
@@ -311,9 +332,11 @@ public class Scan implements Callable<Integer> {
         commandSpec.commandLine().getOut().println(textTable);
 
         if (brokenRelative + brokenExternal + brokenMail > 0) {
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
+            commandSpec.commandLine().getOut()
+                .println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
         } else {
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
+            commandSpec.commandLine().getOut()
+                .println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
         }
 
         getScannedLinksByStatus(BROKEN)
@@ -359,7 +382,8 @@ public class Scan implements Callable<Integer> {
 
         if (scanFile.toFile().isFile()) {
             if (!FileUtils.isAuthorized(scanFile.toFile())) {
-                commandSpec.commandLine().getErr().println("The format of the " + file + " file is not supported.");
+                commandSpec.commandLine().getErr()
+                    .println("The format of the " + file + " file is not supported.");
                 return List.of();
             }
             return List.of(scanFile.toFile());
