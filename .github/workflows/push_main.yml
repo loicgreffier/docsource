@@ -55,13 +55,13 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
-            native-image-name: 'docsource'
+            extension: ''
           - os: 'macos-latest'
             platform: 'darwin-arm64'
-            native-image-name: 'docsource'
+            extension: ''
           - os: 'windows-latest'
             platform: 'windows-amd64'
-            native-image-name: 'docsource.exe'
+            extension: '.exe'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -91,7 +91,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/${{ matrix.native-image-name }}
+          path: target/docsource${{ matrix.extension }}
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
