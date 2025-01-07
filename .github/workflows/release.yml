@@ -17,8 +17,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
-          distribution: 'temurin'
+          java-version: 21
+          distribution: temurin
           cache: maven
 
       - name: Build and test
@@ -63,8 +63,28 @@ jobs:
           prerelease: true
           allowUpdates: true
 
-  build-linux:
-    runs-on: ubuntu-latest
+  build-native:
+    name: Build native image ${{ matrix.platform }}
+    runs-on: ${{matrix.os}}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+        include:
+          - os: 'ubuntu-latest'
+            platform: 'linux-amd64'
+            native-image-name: 'docsource'
+            archive-type: 'tar'
+            archive-extension: 'tar.gz'
+          - os: 'macos-latest'
+            platform: 'darwin-arm64'
+            native-image-name: 'docsource'
+            archive-type: 'tar'
+            archive-extension: 'tar.gz'
+          - os: 'windows-latest'
+            platform: 'windows-amd64'
+            native-image-name: 'docsource.exe'
+            archive-type: 'zip'
+            archive-extension: 'zip'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -88,6 +108,7 @@ jobs:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
       - name: Docker
+        if: matrix.os == 'ubuntu-latest'
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
@@ -106,58 +127,24 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         id: build_changelog
         with:
-          configuration: "changelog-builder.json"
+          configuration: 'changelog-builder.json'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Archive release
+        uses: thedoctor0/zip-release@0.7.5
+        with:
+          type: ${{ matrix.archive-type }}
+          filename: ${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
+          directory: target
+          path: ${{ matrix.native-image-name }}
 
       - name: Update release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: ${{ github.workspace }}/target/docsource
-          draft: true
-          prerelease: true
-          allowUpdates: true
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: 'graalvm'
-          java-version: '21.0.1'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Build and test
-        run: mvn clean package -Pnative -PnativeTest
-
-      - name: Publish native test report
-        if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: '**/target/native-test-reports/TEST-*.xml'
-
-      - name: Generate release changelog
-        uses: mikepenz/release-changelog-builder-action@v5
-        id: build_changelog
-        with:
-          configuration: "changelog-builder.json"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Update release
-        uses: ncipollo/release-action@v1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: ${{ github.workspace }}/target/docsource.exe
+          artifacts: ${{ github.workspace }}/target/${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
           draft: true
           prerelease: true
           allowUpdates: true

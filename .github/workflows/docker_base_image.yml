@@ -12,6 +12,7 @@ on:
 
 jobs:
   build-linux-base-image:
+    name: Build Linux base image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.linux-version != ''
     steps:
@@ -32,6 +33,7 @@ jobs:
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
   
   build-jar-base-image:
+    Name: Build JAR Base Image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.jar-version != ''
     steps:

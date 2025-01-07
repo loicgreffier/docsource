@@ -8,6 +8,7 @@ on:
 
 jobs:
   build-jar:
+    name: Build JAR
     runs-on: ubuntu-latest
     steps:
       - name: Checkout project
@@ -43,10 +44,24 @@ jobs:
       - name: Docker
         run: mvn clean package -DskipTests jib:dockerBuild
 
-  build-linux:
-    runs-on: ubuntu-latest
+  build-native:
+    name: Build native image ${{ matrix.platform }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+        include:
+          - os: 'ubuntu-latest'
+            platform: 'linux-amd64'
+            native-image-name: 'docsource'
+          - os: 'macos-latest'
+            platform: 'darwin-arm64'
+            native-image-name: 'docsource'
+          - os: 'windows-latest'
+            platform: 'windows-amd64'
+            native-image-name: 'docsource.exe'
     steps:
-      - name: Checkout project
+      - name: Checkout Project
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -73,41 +88,9 @@ jobs:
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: docsource-linux
-          path: target/docsource
+          name: docsource-${{ matrix.platform }}
+          path: target/${{ matrix.native-image-name }}
 
       - name: Docker
+        if: matrix.os == 'ubuntu-latest'
         run: mvn clean package -DskipTests -Pnative jib:dockerBuild
-
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - name: Checkout project
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-
-      - name: Set up GraalVM
-        uses: graalvm/setup-graalvm@v1
-        with:
-          distribution: 'graalvm'
-          java-version: '21.0.1'
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Check style
-        run: mvn checkstyle:check
-
-      - name: Build and test
-        run: mvn clean package -Pnative -PnativeTest
-
-      - name: Publish native test report
-        if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: '**/target/native-test-reports/TEST-*.xml'
-
-      - name: Upload
-        uses: actions/upload-artifact@v4
-        with:
-          name: docsource-windows
-          path: target/docsource.exe
