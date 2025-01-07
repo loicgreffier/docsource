@@ -49,7 +49,7 @@ jobs:
         uses: mikepenz/release-changelog-builder-action@v5
         id: build_changelog
         with:
-          configuration: "changelog-builder.json"
+          configuration: 'changelog-builder.json'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,19 +72,13 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
-            native-image-name: 'docsource'
-            archive-type: 'tar'
-            archive-extension: 'tar.gz'
+            extension: ''
           - os: 'macos-latest'
             platform: 'darwin-arm64'
-            native-image-name: 'docsource'
-            archive-type: 'tar'
-            archive-extension: 'tar.gz'
+            extension: ''
           - os: 'windows-latest'
             platform: 'windows-amd64'
-            native-image-name: 'docsource.exe'
-            archive-type: 'zip'
-            archive-extension: 'zip'
+            extension: '.exe'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -131,20 +125,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Archive release
-        uses: thedoctor0/zip-release@0.7.5
-        with:
-          type: ${{ matrix.archive-type }}
-          filename: ${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
-          directory: target
-          path: ${{ matrix.native-image-name }}
+      - name: Rename file
+        run: mv target/docsource${{ matrix.extension }} target/docsource-${{ matrix.platform }}${{ matrix.extension }}
 
       - name: Update release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: ${{ github.workspace }}/target/${{ format('docsource-{0}.{1}', matrix.platform, matrix.archive-extension) }}
+          artifacts: target/docsource-${{ matrix.platform }}${{ matrix.extension }}
           draft: true
           prerelease: true
           allowUpdates: true

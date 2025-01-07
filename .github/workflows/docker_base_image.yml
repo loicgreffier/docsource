@@ -33,7 +33,7 @@ jobs:
           docker push docker.io/loicgreffier/docsource-base:${{ github.event.inputs.linux-version }}
   
   build-jar-base-image:
-    Name: Build JAR Base Image
+    Name: Build JAR base image
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.jar-version != ''
     steps:
