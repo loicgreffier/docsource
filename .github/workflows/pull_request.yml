@@ -45,7 +45,7 @@ jobs:
         run: mvn clean package -DskipTests jib:dockerBuild
 
   build-native:
-    name: Build native image ${{ matrix.platform }}
+    name: Build Native Image ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:

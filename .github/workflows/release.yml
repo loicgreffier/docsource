@@ -65,7 +65,7 @@ jobs:
           allowUpdates: true
 
   release-native:
-    name: Release native image ${{ matrix.platform }}
+    name: Release Native Image ${{ matrix.platform }}
     runs-on: ${{matrix.os}}
     strategy:
       matrix:

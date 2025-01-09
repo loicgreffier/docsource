@@ -47,7 +47,7 @@ jobs:
           DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
 
   build-native:
-    name: Build native image ${{ matrix.platform }}
+    name: Build Native Image ${{ matrix.platform }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
