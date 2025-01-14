@@ -13,7 +13,7 @@
 
 [Download](https://github.com/loicgreffier/docsource/releases) • [Getting Started](#getting-started)
 
-Command-line interface that detects broken links within Markdown documentation files.
+Command-line Interface for detecting broken links in Markdown documentation files.
 
 ![](.readme/demo.gif)
 
