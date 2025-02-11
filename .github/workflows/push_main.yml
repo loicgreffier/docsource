@@ -22,11 +22,28 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Check style
         run: mvn checkstyle:check
 
       - name: Build and test
-        run: mvn clean package
+        id: build
+        run: |
+          mvn clean package
+          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
 
       - name: Publish test report
         if: always()
@@ -40,7 +57,14 @@ jobs:
           name: docsource-jar
           path: target/docsource.jar
 
+      - name: Sonar
+        run: mvn verify sonar:sonar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: Docker
+        if: endsWith(steps.build.outputs.current_version, '-SNAPSHOT')
         run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -75,11 +99,21 @@ jobs:
           java-version: '21.0.1'
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
       - name: Check style
         run: mvn checkstyle:check
 
       - name: Build and test
-        run: mvn clean package -Pnative -PnativeTest
+        id: build
+        run: |
+          mvn clean package -Pnative -PnativeTest
+          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
 
       - name: Publish native test report
         if: always()
@@ -94,7 +128,7 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Docker
-        if: matrix.os == 'ubuntu-latest'
+        if: endsWith(steps.build.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
         run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}

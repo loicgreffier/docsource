@@ -26,6 +26,7 @@
     <properties>
         <checkstyle.version>10.21.2</checkstyle.version>
         <commons-io.version>2.18.0</commons-io.version>
+        <jacoco.version>0.8.12</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
         <lombok.version>1.18.36</lombok.version>
@@ -33,6 +34,9 @@
         <picocli.version>4.7.6</picocli.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
         <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
+        <sonar.organization>loicgreffier</sonar.organization>
+        <sonar.projectKey>loicgreffier_docsource</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
@@ -112,6 +116,40 @@
                         <image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
                     </to>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>target/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <plugin>
