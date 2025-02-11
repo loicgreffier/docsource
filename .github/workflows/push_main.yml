@@ -40,7 +40,7 @@ jobs:
         run: mvn checkstyle:check
 
       - name: Build and test
-        id: build
+        id: build_jar
         run: |
           mvn clean package
           echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
@@ -64,7 +64,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Docker
-        if: endsWith(steps.build.outputs.current_version, '-SNAPSHOT')
+        if: endsWith(steps.build_jar.outputs.current_version, '-SNAPSHOT')
         run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
@@ -110,7 +110,7 @@ jobs:
         run: mvn checkstyle:check
 
       - name: Build and test
-        id: build
+        id: build_native
         run: |
           mvn clean package -Pnative -PnativeTest
           echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
@@ -128,7 +128,7 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Docker
-        if: endsWith(steps.build.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        if: endsWith(steps.build_native.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
         run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
