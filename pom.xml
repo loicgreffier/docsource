@@ -34,6 +34,9 @@
         <picocli.version>4.7.6</picocli.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
         <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
+        <sonar.organization>loicgreffier</sonar.organization>
+        <sonar.projectKey>loicgreffier_docsource</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     </properties>
 
     <dependencies>
