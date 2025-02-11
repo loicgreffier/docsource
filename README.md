@@ -8,6 +8,8 @@
 [![GitHub Release](https://img.shields.io/github/v/release/loicgreffier/docsource?logo=github&style=for-the-badge)](https://github.com/loicgreffier/docsource/releases)
 [![GitHub Stars](https://img.shields.io/github/stars/loicgreffier/docsource?logo=github&style=for-the-badge)](https://github.com/loicgreffier/docsource)
 [![Docker Pulls](https://img.shields.io/docker/pulls/loicgreffier/docsource?label=Pulls&logo=docker&style=for-the-badge)](https://hub.docker.com/r/loicgreffier/docsource/tags)
+[![SonarCloud Coverage](https://img.shields.io/sonar/coverage/loicgreffier_docsource?logo=sonarcloud&server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge)](https://sonarcloud.io/component_measures?id=loicgreffier_docsource&metric=coverage&view=list)
+[![SonarCloud Tests](https://img.shields.io/sonar/tests/loicgreffier_docsource/main?server=https%3A%2F%2Fsonarcloud.io&style=for-the-badge&logo=sonarcloud)](https://sonarcloud.io/component_measures?metric=tests&view=list&id=loicgreffier_docsource)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?logo=apache&style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)
 
 [Download](https://github.com/loicgreffier/docsource/releases) • [Getting Started](#getting-started)
