@@ -112,7 +112,7 @@ jobs:
       - name: Build and test
         id: build_native
         run: |
-          mvn clean package -Pnative -PnativeTest
+          mvn clean package -DskipTests -Pnative -PnativeTest
           echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
         shell: bash
 
