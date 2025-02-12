@@ -137,7 +137,7 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Docker
-        if: endsWith(steps.build_native.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
         run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
         env:
           DOCKER_USER: ${{ secrets.DOCKER_USER }}
