@@ -110,11 +110,19 @@ jobs:
         run: mvn checkstyle:check
 
       - name: Build and test
-        id: build_native
+        run: mvn clean package -Pnative -PnativeTest
+
+      - name: Version
+        id: native_version
+        if: matrix.os != 'windows-latest'
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+
+      - name: Version
+        id: native_version
+        if: matrix.os == 'windows-latest'
         run: |
-          mvn clean package -DskipTests -Pnative -PnativeTest
-          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
-        shell: bash
+          $current_version=(& mvn help:evaluate -Dexpression='project.version' -q -DforceStdout)
+          "current_version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8 -Append
 
       - name: Publish native test report
         if: always()
