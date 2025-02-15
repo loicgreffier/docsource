@@ -24,7 +24,6 @@ jobs:
           cache: maven
 
       - name: Cache SonarQube packages
-        if: env.SONAR_TOKEN != ''
         uses: actions/cache@v4
         with:
           path: ~/.sonar/cache
