@@ -40,7 +40,7 @@ jobs:
       - name: Check style
         run: mvn checkstyle:check
 
-      - name: Build and test
+      - name: Build
         run: mvn clean package
 
       - name: Publish test report

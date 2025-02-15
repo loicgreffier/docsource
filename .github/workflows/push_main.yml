@@ -39,7 +39,7 @@ jobs:
       - name: Check style
         run: mvn checkstyle:check
 
-      - name: Build and test
+      - name: Build
         id: build_jar
         run: |
           mvn clean package
