@@ -32,28 +32,27 @@ import org.fusesource.jansi.Ansi;
 @Getter
 @RequiredArgsConstructor
 public abstract class Link {
-	protected final File file;
-	protected final String path;
-	protected final String markdown;
-	protected Status status;
-	protected String details;
+    protected final File file;
+    protected final String path;
+    protected final String markdown;
+    protected Status status;
+    protected String details;
 
-	@NonNull
-	protected final ValidationOptions validationOptions;
+    @NonNull protected final ValidationOptions validationOptions;
 
-	/** Validate the link. */
-	public abstract void validate();
+    /** Validate the link. */
+    public abstract void validate();
 
-	/**
-	 * Get the Ansi string representation of the link.
-	 *
-	 * @return The Ansi string representation of the link.
-	 */
-	public String toAnsiString() {
-		return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
-	}
+    /**
+     * Get the Ansi string representation of the link.
+     *
+     * @return The Ansi string representation of the link.
+     */
+    public String toAnsiString() {
+        return "@|bold,cyan " + path + "|@ (@|bold," + getAnsiColor() + " " + details + "|@)";
+    }
 
-	/**
+    /**
      * Get the Ansi color of the link.
      *
      * @return The Ansi color of the link.
@@ -65,24 +64,25 @@ public abstract class Link {
         };
     }
 
-	/** This class represents the validation options. */
-	@Getter
-	@Builder
-	public static class ValidationOptions {
-		private String currentDir;
-		private String contentDirectory;
-		private String imageDirectory;
-		private String indexFilename;
-		private boolean allAbsolute;
-		private boolean imageAbsolute;
-		private boolean skipExternal;
-		private boolean skipRelative;
-		private boolean skipMailto;
-		private boolean insecure;
-	}
+    /** This class represents the validation options. */
+    @Getter
+    @Builder
+    public static class ValidationOptions {
+        private String currentDir;
+        private String contentDirectory;
+        private String imageDirectory;
+        private String indexFilename;
+        private boolean allAbsolute;
+        private boolean imageAbsolute;
+        private boolean skipExternal;
+        private boolean skipRelative;
+        private boolean skipMailto;
+        private boolean insecure;
+    }
 
-	/** This enum represents the link status. */
-	public enum Status {
-		SUCCESS, BROKEN
-	}
+    /** This enum represents the link status. */
+    public enum Status {
+        SUCCESS,
+        BROKEN
+    }
 }

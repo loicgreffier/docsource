@@ -29,42 +29,42 @@ import picocli.jansi.graalvm.AnsiConsole;
 /** This is the main class for the Docsource application. */
 @SpringBootApplication
 public class DocsourceApplication implements CommandLineRunner {
-	private final IFactory factory;
-	private final Docsource docsource;
+    private final IFactory factory;
+    private final Docsource docsource;
 
-	/**
-	 * Create a new Docsource application.
-	 *
-	 * @param factory The factory.
-	 * @param docsource The docsource command.
-	 */
-	public DocsourceApplication(IFactory factory, Docsource docsource) {
-		this.factory = factory;
-		this.docsource = docsource;
-	}
+    /**
+     * Create a new Docsource application.
+     *
+     * @param factory The factory.
+     * @param docsource The docsource command.
+     */
+    public DocsourceApplication(IFactory factory, Docsource docsource) {
+        this.factory = factory;
+        this.docsource = docsource;
+    }
 
-	/**
-	 * The main entry point of the Docsource application.
-	 *
-	 * @param args The command line arguments.
-	 */
-	public static void main(String[] args) {
-		SpringApplication.run(DocsourceApplication.class, args);
-	}
+    /**
+     * The main entry point of the Docsource application.
+     *
+     * @param args The command line arguments.
+     */
+    public static void main(String[] args) {
+        SpringApplication.run(DocsourceApplication.class, args);
+    }
 
-	/**
-	 * Run the Docsource command line.
-	 *
-	 * @param args The command line arguments.
-	 */
-	@Override
-	public void run(String... args) {
-		int exitCode;
-		try (
-				// Colors on Windows CMD (including for native)
-				AnsiConsole ansi = AnsiConsole.windowsInstall()) {
-			exitCode = new CommandLine(docsource, factory).execute(args);
-		}
-		System.exit(exitCode);
-	}
+    /**
+     * Run the Docsource command line.
+     *
+     * @param args The command line arguments.
+     */
+    @Override
+    public void run(String... args) {
+        int exitCode;
+        try (
+        // Colors on Windows CMD (including for native)
+        AnsiConsole ansi = AnsiConsole.windowsInstall()) {
+            exitCode = new CommandLine(docsource, factory).execute(args);
+        }
+        System.exit(exitCode);
+    }
 }

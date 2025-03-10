@@ -25,13 +25,13 @@ import org.junit.jupiter.api.Test;
 
 class FileUtilsTest {
 
-	@Test
-	void shouldDetectDocsify() throws IOException {
-		assertTrue(FileUtils.isDocsify("src/test/resources/docsify"));
-	}
+    @Test
+    void shouldDetectDocsify() throws IOException {
+        assertTrue(FileUtils.isDocsify("src/test/resources/docsify"));
+    }
 
-	@Test
-	void shouldDetectHugo() {
-		assertTrue(FileUtils.isHugo("src/test/resources/hugo"));
-	}
+    @Test
+    void shouldDetectHugo() {
+        assertTrue(FileUtils.isHugo("src/test/resources/hugo"));
+    }
 }

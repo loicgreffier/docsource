@@ -27,24 +27,24 @@ import picocli.CommandLine.IVersionProvider;
 @Component
 @Scope("singleton")
 public class VersionProvider implements IVersionProvider {
-	public final AppProperties appProperties;
+    public final AppProperties appProperties;
 
-	/**
-	 * Create a new VersionProvider.
-	 *
-	 * @param appProperties The application properties.
-	 */
-	public VersionProvider(AppProperties appProperties) {
-		this.appProperties = appProperties;
-	}
+    /**
+     * Create a new VersionProvider.
+     *
+     * @param appProperties The application properties.
+     */
+    public VersionProvider(AppProperties appProperties) {
+        this.appProperties = appProperties;
+    }
 
-	/**
-	 * Get the current application version.
-	 *
-	 * @return The current application version.
-	 */
-	@Override
-	public String[] getVersion() {
-		return new String[] { "Version " + appProperties.getVersion() };
-	}
+    /**
+     * Get the current application version.
+     *
+     * @return The current application version.
+     */
+    @Override
+    public String[] getVersion() {
+        return new String[] {"Version " + appProperties.getVersion()};
+    }
 }

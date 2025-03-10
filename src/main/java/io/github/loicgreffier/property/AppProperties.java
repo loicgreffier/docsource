@@ -29,5 +29,5 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {
-	private String version;
+    private String version;
 }
