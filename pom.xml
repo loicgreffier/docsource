@@ -173,7 +173,7 @@
                         <trimTrailingWhitespace />
                         <endWithNewline />
                         <licenseHeader>
-                            <file>.format/HEADER</file>
+                            <file>HEADER</file>
                         </licenseHeader>
                     </java>
                 </configuration>
