@@ -173,7 +173,7 @@
                         <trimTrailingWhitespace />
                         <endWithNewline />
                         <licenseHeader>
-                            <file>HEADER</file>
+                            <file>.spotless/HEADER</file>
                         </licenseHeader>
                     </java>
                 </configuration>
