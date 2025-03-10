@@ -27,10 +27,13 @@ import picocli.CommandLine.IVersionProvider;
 @Component
 @Scope("singleton")
 public class VersionProvider implements IVersionProvider {
-    public final AppProperties appProperties;
+    public AppProperties appProperties;
+
+    /** Constructor. */
+    public VersionProvider() {}
 
     /**
-     * Create a new VersionProvider.
+     * Constructor.
      *
      * @param appProperties The application properties.
      */

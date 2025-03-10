@@ -33,7 +33,7 @@ public class DocsourceApplication implements CommandLineRunner {
     private final Docsource docsource;
 
     /**
-     * Create a new Docsource application.
+     * Constructor.
      *
      * @param factory The factory.
      * @param docsource The docsource command.
