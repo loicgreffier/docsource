@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -53,13 +52,7 @@ class ScanCustomTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute(
-            "-r",
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "."
-        );
+        int code = cmd.execute("-r", "-A", "--content-directory=src/content", "--image-directory=src", ".");
 
         assertNotEquals(0, code);
 
@@ -85,13 +78,7 @@ class ScanCustomTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute(
-            "-r",
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "--skip-external",
-            "."
-        );
+                "-r", "-A", "--content-directory=src/content", "--image-directory=src", "--skip-external", ".");
 
         assertNotEquals(0, code);
 
@@ -116,13 +103,7 @@ class ScanCustomTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute(
-            "-r",
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "--skip-relative",
-            "."
-        );
+                "-r", "-A", "--content-directory=src/content", "--image-directory=src", "--skip-relative", ".");
 
         assertNotEquals(0, code);
 
@@ -145,13 +126,7 @@ class ScanCustomTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute(
-            "-r",
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "--skip-mailto",
-            "."
-        );
+                "-r", "-A", "--content-directory=src/content", "--image-directory=src", "--skip-mailto", ".");
 
         assertNotEquals(0, code);
 
@@ -176,15 +151,14 @@ class ScanCustomTest {
         cmd.setOut(new PrintWriter(sw));
 
         int code = cmd.execute(
-            "-r",
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "--skip-external",
-            "--skip-relative",
-            "--skip-mailto",
-            "."
-        );
+                "-r",
+                "-A",
+                "--content-directory=src/content",
+                "--image-directory=src",
+                "--skip-external",
+                "--skip-relative",
+                "--skip-mailto",
+                ".");
 
         assertEquals(0, code);
 
@@ -204,12 +178,7 @@ class ScanCustomTest {
         StringWriter sw = new StringWriter();
         cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute(
-            "-A",
-            "--content-directory=src/content",
-            "--image-directory=src",
-            "folder-one/page.md"
-        );
+        int code = cmd.execute("-A", "--content-directory=src/content", "--image-directory=src", "folder-one/page.md");
 
         assertNotEquals(0, code);
 

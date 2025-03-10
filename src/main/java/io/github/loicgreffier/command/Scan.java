@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.command;
 
 import static io.github.loicgreffier.model.link.Link.Status.BROKEN;
@@ -49,21 +48,20 @@ import picocli.CommandLine.Parameters;
 import picocli.CommandLine.ParentCommand;
 import picocli.CommandLine.Spec;
 
-/**
- * This class represents the "docsource scan" sub command.
- */
+/** This class represents the "docsource scan" sub command. */
 @Component
-@Command(name = "scan",
-    headerHeading = "@|bold Usage|@:",
-    synopsisHeading = " ",
-    descriptionHeading = "%n@|bold Description|@:%n%n",
-    description = "Scan documentation.",
-    parameterListHeading = "%n@|bold Parameters|@:%n",
-    optionListHeading = "%n@|bold Options|@:%n",
-    commandListHeading = "%n@|bold Commands|@:%n",
-    usageHelpAutoWidth = true,
-    versionProvider = VersionProvider.class,
-    mixinStandardHelpOptions = true)
+@Command(
+        name = "scan",
+        headerHeading = "@|bold Usage|@:",
+        synopsisHeading = " ",
+        descriptionHeading = "%n@|bold Description|@:%n%n",
+        description = "Scan documentation.",
+        parameterListHeading = "%n@|bold Parameters|@:%n",
+        optionListHeading = "%n@|bold Options|@:%n",
+        commandListHeading = "%n@|bold Commands|@:%n",
+        usageHelpAutoWidth = true,
+        versionProvider = VersionProvider.class,
+        mixinStandardHelpOptions = true)
 public class Scan implements Callable<Integer> {
     private static final String SKIPPED = "Skipped";
 
@@ -76,59 +74,63 @@ public class Scan implements Callable<Integer> {
     @Parameters(paramLabel = "files", description = "Root directories or files to scan.")
     public List<File> inputFiles;
 
-    @Option(names = {"-A",
-        "--all-absolute"}, description = "Consider relative paths as absolute paths.")
+    @Option(
+            names = {"-A", "--all-absolute"},
+            description = "Consider relative paths as absolute paths.")
     public boolean allAbsolute;
 
     @Option(
-        names = {"--content-directory"},
-        description = "Specify a sub-directory of the root directory "
-            + "containing the Markdown files. E.g., 'content' for Hugo."
-    )
+            names = {"--content-directory"},
+            description = "Specify a sub-directory of the root directory "
+                    + "containing the Markdown files. E.g., 'content' for Hugo.")
     public String contentDirectory;
 
     @Option(
-        names = {"-I", "--image-absolute"},
-        description = "Consider relative image paths as absolute paths."
-    )
+            names = {"-I", "--image-absolute"},
+            description = "Consider relative image paths as absolute paths.")
     public Boolean imageAbsolute;
 
     @Option(
-        names = {"--image-directory"},
-        description = "Specify a sub-directory of the root directory containing the images. E.g., 'static' for Hugo."
-    )
+            names = {"--image-directory"},
+            description =
+                    "Specify a sub-directory of the root directory containing the images. E.g., 'static' for Hugo.")
     public String imageDirectory;
 
     @Option(
-        names = {"--index-filename"},
-        description = "Specify the filename to use as an index file. E.g., '_index.md' for Hugo."
-    )
+            names = {"--index-filename"},
+            description = "Specify the filename to use as an index file. E.g., '_index.md' for Hugo.")
     public String indexFilename;
 
     @Option(
-        names = {"-k", "--insecure"},
-        description = "Turn off hostname and certificate chain verification."
-    )
+            names = {"-k", "--insecure"},
+            description = "Turn off hostname and certificate chain verification.")
     public boolean insecure;
 
-    @Option(names = {"-r", "--recursive"}, description = "Scan directories recursively.")
+    @Option(
+            names = {"-r", "--recursive"},
+            description = "Scan directories recursively.")
     public boolean recursive;
 
-    @Option(names = {"--skip-external"}, description = "Skip external links.")
+    @Option(
+            names = {"--skip-external"},
+            description = "Skip external links.")
     public boolean skipExternal;
 
-    @Option(names = {"--skip-mailto"}, description = "Skip mailto links.")
+    @Option(
+            names = {"--skip-mailto"},
+            description = "Skip mailto links.")
     public boolean skipMailto;
 
-    @Option(names = {"--skip-relative"}, description = "Skip relative links.")
+    @Option(
+            names = {"--skip-relative"},
+            description = "Skip relative links.")
     public boolean skipRelative;
 
     private final List<Link> scannedLinks = new ArrayList<>();
 
     /**
-     * Run the "docsource scan" sub command.
-     * When the command is run without any input file, the usage message is printed.
-     * When the command is run with input files, the links are scanned.
+     * Run the "docsource scan" sub command. When the command is run without any input file, the usage message is
+     * printed. When the command is run with input files, the links are scanned.
      *
      * @return The exit code.
      */
@@ -147,8 +149,10 @@ public class Scan implements Callable<Integer> {
                 List<File> files = findFiles(inputFile);
 
                 files.forEach(file -> {
-                    commandSpec.commandLine().getOut().println(Help.Ansi.AUTO
-                        .string("Scanning file @|bold " + file + "|@"));
+                    commandSpec
+                            .commandLine()
+                            .getOut()
+                            .println(Help.Ansi.AUTO.string("Scanning file @|bold " + file + "|@"));
 
                     try {
                         findAndValidateLinks(file, regexs);
@@ -157,8 +161,7 @@ public class Scan implements Callable<Integer> {
                             commandSpec.commandLine().getOut().println();
                         }
                     } catch (IOException e) {
-                        commandSpec.commandLine().getErr()
-                            .println("Cannot get links from file " + file + ".");
+                        commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
                     }
                 });
 
@@ -176,9 +179,7 @@ public class Scan implements Callable<Integer> {
         return summary.countBrokenLinks() == 0 ? 0 : 1;
     }
 
-    /**
-     * Display the skip information.
-     */
+    /** Display the skip information. */
     private void displaySkipInfo() {
         if (skipExternal && docsource.verbose) {
             commandSpec.commandLine().getOut().println("Skip external links requested.");
@@ -230,27 +231,26 @@ public class Scan implements Callable<Integer> {
     /**
      * Find and validate links in a file.
      *
-     * @param file   The file to scan.
+     * @param file The file to scan.
      * @param regexs The regex to look for.
      * @throws IOException Any IO exception during file reading.
      */
     private void findAndValidateLinks(File file, List<String> regexs) throws IOException {
         List<Link> links = FileUtils.findLinks(
-            file,
-            regexs,
-            Link.ValidationOptions.builder()
-                .currentDir(getCurrentDirectory())
-                .contentDirectory(contentDirectory)
-                .imageDirectory(imageDirectory)
-                .indexFilename(indexFilename)
-                .allAbsolute(allAbsolute)
-                .imageAbsolute(Optional.ofNullable(imageAbsolute).orElse(false))
-                .skipExternal(skipExternal)
-                .skipMailto(skipMailto)
-                .skipRelative(skipRelative)
-                .insecure(insecure)
-                .build()
-        );
+                file,
+                regexs,
+                Link.ValidationOptions.builder()
+                        .currentDir(getCurrentDirectory())
+                        .contentDirectory(contentDirectory)
+                        .imageDirectory(imageDirectory)
+                        .indexFilename(indexFilename)
+                        .allAbsolute(allAbsolute)
+                        .imageAbsolute(Optional.ofNullable(imageAbsolute).orElse(false))
+                        .skipExternal(skipExternal)
+                        .skipMailto(skipMailto)
+                        .skipRelative(skipRelative)
+                        .insecure(insecure)
+                        .build());
 
         if (links.isEmpty() && docsource.verbose) {
             commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found.\n"));
@@ -260,8 +260,7 @@ public class Scan implements Callable<Integer> {
         links.forEach(link -> {
             link.validate();
             if (docsource.verbose) {
-                commandSpec.commandLine().getOut()
-                    .println(Help.Ansi.AUTO.string(link.toAnsiString()));
+                commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(link.toAnsiString()));
             }
             scannedLinks.add(link);
         });
@@ -273,19 +272,16 @@ public class Scan implements Callable<Integer> {
      * @return The summary of the scan.
      */
     private Summary displaySummary() {
-        commandSpec.commandLine().getOut()
-            .println(Help.Ansi.AUTO.string("@|bold Summary |@"));
-        commandSpec.commandLine().getOut().println(
-            Help.Ansi.AUTO.string(new String(new char[40]).replace("\0", "-")));
+        commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Summary |@"));
+        commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(new String(new char[40]).replace("\0", "-")));
 
         Help.TextTable textTable = Help.TextTable.forColumns(
-            Help.defaultColorScheme(Help.Ansi.AUTO),
-            new Help.Column(7, 0, Help.Column.Overflow.SPAN),
-            new Help.Column(10, 2, Help.Column.Overflow.SPAN),
-            new Help.Column(10, 2, Help.Column.Overflow.SPAN),
-            new Help.Column(skipMailto ? 9 : 6, 2, Help.Column.Overflow.SPAN),
-            new Help.Column(7, 2, Help.Column.Overflow.SPAN)
-        );
+                Help.defaultColorScheme(Help.Ansi.AUTO),
+                new Help.Column(7, 0, Help.Column.Overflow.SPAN),
+                new Help.Column(10, 2, Help.Column.Overflow.SPAN),
+                new Help.Column(10, 2, Help.Column.Overflow.SPAN),
+                new Help.Column(skipMailto ? 9 : 6, 2, Help.Column.Overflow.SPAN),
+                new Help.Column(7, 2, Help.Column.Overflow.SPAN));
 
         long successRelative = countScannedLinksByTypeAndStatus(RelativeLink.class, SUCCESS);
         long successExternal = countScannedLinksByTypeAndStatus(ExternalLink.class, SUCCESS);
@@ -303,59 +299,50 @@ public class Scan implements Callable<Integer> {
 
         textTable.addRowValues("", "Relative", "External", "Mail", "Total");
         textTable.addRowValues(
-            "Success",
-            displaySuccessRelative,
-            displaySuccessExternal,
-            displaySuccessMail,
-            String.valueOf(successRelative + successExternal + successMail));
+                "Success",
+                displaySuccessRelative,
+                displaySuccessExternal,
+                displaySuccessMail,
+                String.valueOf(successRelative + successExternal + successMail));
 
         textTable.addRowValues(
-            "Broken",
-            displayBrokenRelative,
-            displayBrokenExternal,
-            displayBrokenMail,
-            String.valueOf(brokenRelative + brokenExternal + brokenMail));
+                "Broken",
+                displayBrokenRelative,
+                displayBrokenExternal,
+                displayBrokenMail,
+                String.valueOf(brokenRelative + brokenExternal + brokenMail));
 
         textTable.addRowValues(
-            "Total",
-            String.valueOf(successRelative + brokenRelative),
-            String.valueOf(successExternal + brokenExternal),
-            String.valueOf(successMail + brokenMail),
-            String.valueOf(successRelative
-                + successExternal
-                + successMail
-                + brokenRelative
-                + brokenExternal
-                + brokenMail)
-        );
+                "Total",
+                String.valueOf(successRelative + brokenRelative),
+                String.valueOf(successExternal + brokenExternal),
+                String.valueOf(successMail + brokenMail),
+                String.valueOf(successRelative
+                        + successExternal
+                        + successMail
+                        + brokenRelative
+                        + brokenExternal
+                        + brokenMail));
 
         commandSpec.commandLine().getOut().println(textTable);
 
         if (brokenRelative + brokenExternal + brokenMail > 0) {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold Broken links |@"));
         } else {
-            commandSpec.commandLine().getOut()
-                .println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("@|bold No broken links. |@"));
         }
 
-        getScannedLinksByStatus(BROKEN)
-            .stream()
-            .collect(Collectors.groupingBy(link -> link.getFile().getAbsolutePath()))
-            .forEach((key, value) -> {
-                commandSpec.commandLine().getOut().println(key);
-                value.forEach(brokenLink -> commandSpec.commandLine().getOut().println(
-                    Help.Ansi.AUTO.string("  - " + brokenLink.toAnsiString())));
-            });
+        getScannedLinksByStatus(BROKEN).stream()
+                .collect(Collectors.groupingBy(link -> link.getFile().getAbsolutePath()))
+                .forEach((key, value) -> {
+                    commandSpec.commandLine().getOut().println(key);
+                    value.forEach(brokenLink -> commandSpec
+                            .commandLine()
+                            .getOut()
+                            .println(Help.Ansi.AUTO.string("  - " + brokenLink.toAnsiString())));
+                });
 
-        return new Summary(
-            successRelative,
-            successExternal,
-            successMail,
-            brokenRelative,
-            brokenExternal,
-            brokenMail
-        );
+        return new Summary(successRelative, successExternal, successMail, brokenRelative, brokenExternal, brokenMail);
     }
 
     /**
@@ -382,24 +369,26 @@ public class Scan implements Callable<Integer> {
 
         if (scanFile.toFile().isFile()) {
             if (!FileUtils.isAuthorized(scanFile.toFile())) {
-                commandSpec.commandLine().getErr()
-                    .println("The format of the " + file + " file is not supported.");
+                commandSpec.commandLine().getErr().println("The format of the " + file + " file is not supported.");
                 return List.of();
             }
             return List.of(scanFile.toFile());
         }
 
-        commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
-            "Scanning directory @|bold " + scanFile + "|@"));
+        commandSpec
+                .commandLine()
+                .getOut()
+                .println(Help.Ansi.AUTO.string("Scanning directory @|bold " + scanFile + "|@"));
 
         try {
             List<File> files = FileUtils.findFiles(scanFile.toFile(), recursive);
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string(
-                "Found @|bold " + files.size() + " file(s)|@ to scan"));
+            commandSpec
+                    .commandLine()
+                    .getOut()
+                    .println(Help.Ansi.AUTO.string("Found @|bold " + files.size() + " file(s)|@ to scan"));
             return files;
         } catch (IOException e) {
-            commandSpec.commandLine().getErr()
-                .println("Cannot retrieve files from directory " + scanFile);
+            commandSpec.commandLine().getErr().println("Cannot retrieve files from directory " + scanFile);
         }
 
         return List.of();
@@ -409,16 +398,14 @@ public class Scan implements Callable<Integer> {
      * Count the scanned links by type and status.
      *
      * @param linkClass The link class to count.
-     * @param status    The link status to count.
-     * @param <T>       The link type.
+     * @param status The link status to count.
+     * @param <T> The link type.
      * @return The number of scanned links by type and status.
      */
-    public <T extends Link> long countScannedLinksByTypeAndStatus(Class<T> linkClass,
-                                                                  Link.Status status) {
-        return scannedLinks
-            .stream()
-            .filter(link -> linkClass.isInstance(link) && status.equals(link.getStatus()))
-            .count();
+    public <T extends Link> long countScannedLinksByTypeAndStatus(Class<T> linkClass, Link.Status status) {
+        return scannedLinks.stream()
+                .filter(link -> linkClass.isInstance(link) && status.equals(link.getStatus()))
+                .count();
     }
 
     /**
@@ -428,10 +415,9 @@ public class Scan implements Callable<Integer> {
      * @return The scanned links by status.
      */
     public List<Link> getScannedLinksByStatus(Link.Status status) {
-        return scannedLinks
-            .stream()
-            .filter(link -> status.equals(link.getStatus()))
-            .toList();
+        return scannedLinks.stream()
+                .filter(link -> status.equals(link.getStatus()))
+                .toList();
     }
 
     /**

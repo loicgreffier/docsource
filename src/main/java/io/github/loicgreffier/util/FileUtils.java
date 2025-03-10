@@ -16,9 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.util;
-
 
 import io.github.loicgreffier.model.link.Link;
 import io.github.loicgreffier.model.link.impl.ExternalLink;
@@ -34,14 +32,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
 import org.apache.commons.io.FilenameUtils;
 
-/**
- * This class represents a file utils.
- */
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+/** This class represents a file utils. */
 public abstract class FileUtils {
     private static final List<String> AUTHORIZED_EXTENSIONS = List.of("md");
 
@@ -58,34 +51,31 @@ public abstract class FileUtils {
     /**
      * Find files from a directory.
      *
-     * @param file      The directory.
+     * @param file The directory.
      * @param recursive True to find files recursively, false otherwise.
      * @return A list of files.
      * @throws IOException Any IO exception during file reading.
      */
     public static List<File> findFiles(File file, boolean recursive) throws IOException {
-        try (Stream<Path> fileStream = Files.find(Paths.get(file.toURI()),
-            recursive ? Integer.MAX_VALUE : 1,
-            (filePath, fileAttr) -> fileAttr.isRegularFile() && isAuthorized(filePath.toFile()))) {
-            return fileStream
-                .map(Path::toFile)
-                .toList();
+        try (Stream<Path> fileStream = Files.find(
+                Paths.get(file.toURI()),
+                recursive ? Integer.MAX_VALUE : 1,
+                (filePath, fileAttr) -> fileAttr.isRegularFile() && isAuthorized(filePath.toFile()))) {
+            return fileStream.map(Path::toFile).toList();
         }
     }
 
     /**
      * Find links from a file.
      *
-     * @param file              The file.
-     * @param regexs            The regexs to find links.
+     * @param file The file.
+     * @param regexs The regexs to find links.
      * @param validationOptions The validation options.
      * @return A list of links.
      * @throws IOException Any IO exception during file reading.
      */
-    public static List<Link> findLinks(File file,
-                                       List<String> regexs,
-                                       Link.ValidationOptions validationOptions)
-        throws IOException {
+    public static List<Link> findLinks(File file, List<String> regexs, Link.ValidationOptions validationOptions)
+            throws IOException {
         String fileContent = Files.readString(file.toPath());
         final List<Link> links = new ArrayList<>();
 
@@ -98,35 +88,14 @@ public abstract class FileUtils {
                 // .group(1) matches the link
                 if (matcher.group(0).contains("://")) {
                     if (!validationOptions.isSkipExternal()) {
-                        links.add(
-                            new ExternalLink(
-                                file,
-                                matcher.group(1),
-                                matcher.group(0),
-                                validationOptions
-                            )
-                        );
+                        links.add(new ExternalLink(file, matcher.group(1), matcher.group(0), validationOptions));
                     }
                 } else if (matcher.group(0).contains("mailto:")) {
                     if (!validationOptions.isSkipMailto()) {
-                        links.add(
-                            new MailtoLink(
-                                file,
-                                matcher.group(1),
-                                matcher.group(0),
-                                validationOptions
-                            )
-                        );
+                        links.add(new MailtoLink(file, matcher.group(1), matcher.group(0), validationOptions));
                     }
                 } else if (!validationOptions.isSkipRelative()) {
-                    links.add(
-                        new RelativeLink(
-                            file,
-                            matcher.group(1),
-                            matcher.group(0),
-                            validationOptions
-                        )
-                    );
+                    links.add(new RelativeLink(file, matcher.group(1), matcher.group(0), validationOptions));
                 }
             }
         }
@@ -153,7 +122,9 @@ public abstract class FileUtils {
      * @return True if the folder is a Hugo folder, false otherwise.
      */
     public static boolean isHugo(String file) {
-        return Files.exists(Path.of(file + "/hugo.yaml"))
-            || Files.exists(Path.of(file + "/hugo.toml"));
+        return Files.exists(Path.of(file + "/hugo.yaml")) || Files.exists(Path.of(file + "/hugo.toml"));
     }
+
+    /** Private constructor. */
+    private FileUtils() {}
 }

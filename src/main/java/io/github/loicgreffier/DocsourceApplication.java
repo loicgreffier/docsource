@@ -16,11 +16,9 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier;
 
 import io.github.loicgreffier.command.Docsource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -28,16 +26,22 @@ import picocli.CommandLine;
 import picocli.CommandLine.IFactory;
 import picocli.jansi.graalvm.AnsiConsole;
 
-/**
- * This is the main class for the Docsource application.
- */
+/** This is the main class for the Docsource application. */
 @SpringBootApplication
 public class DocsourceApplication implements CommandLineRunner {
-    @Autowired
-    private IFactory factory;
+    private final IFactory factory;
+    private final Docsource docsource;
 
-    @Autowired
-    private Docsource docsource;
+    /**
+     * Constructor.
+     *
+     * @param factory The factory.
+     * @param docsource The docsource command.
+     */
+    public DocsourceApplication(IFactory factory, Docsource docsource) {
+        this.factory = factory;
+        this.docsource = docsource;
+    }
 
     /**
      * The main entry point of the Docsource application.
@@ -57,8 +61,8 @@ public class DocsourceApplication implements CommandLineRunner {
     public void run(String... args) {
         int exitCode;
         try (
-            // Colors on Windows CMD (including for native)
-            AnsiConsole ansi = AnsiConsole.windowsInstall()) {
+        // Colors on Windows CMD (including for native)
+        AnsiConsole ansi = AnsiConsole.windowsInstall()) {
             exitCode = new CommandLine(docsource, factory).execute(args);
         }
         System.exit(exitCode);

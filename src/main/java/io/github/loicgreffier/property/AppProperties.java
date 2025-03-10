@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.property;
 
 import lombok.Getter;
@@ -24,9 +23,7 @@ import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-/**
- * This class represents the application properties.
- */
+/** This class represents the application properties. */
 @Getter
 @Setter
 @Configuration

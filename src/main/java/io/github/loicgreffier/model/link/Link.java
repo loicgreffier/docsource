@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.model.link;
 
 import static org.fusesource.jansi.Ansi.Color.GREEN;
@@ -29,9 +28,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.fusesource.jansi.Ansi;
 
-/**
- * This class represents a link.
- */
+/** This class represents a link. */
 @Getter
 @RequiredArgsConstructor
 public abstract class Link {
@@ -40,12 +37,10 @@ public abstract class Link {
     protected final String markdown;
     protected Status status;
     protected String details;
-    @NonNull
-    protected final ValidationOptions validationOptions;
 
-    /**
-     * Validate the link.
-     */
+    @NonNull protected final ValidationOptions validationOptions;
+
+    /** Validate the link. */
     public abstract void validate();
 
     /**
@@ -69,9 +64,7 @@ public abstract class Link {
         };
     }
 
-    /**
-     * This class represents the validation options.
-     */
+    /** This class represents the validation options. */
     @Getter
     @Builder
     public static class ValidationOptions {
@@ -87,9 +80,7 @@ public abstract class Link {
         private boolean insecure;
     }
 
-    /**
-     * This enum represents the link status.
-     */
+    /** This enum represents the link status. */
     public enum Status {
         SUCCESS,
         BROKEN
