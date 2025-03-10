@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,33 +29,33 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 class ScanHugoTest {
-    String defaultUserDir = System.getProperty("user.dir");
+	String defaultUserDir = System.getProperty("user.dir");
 
-    @BeforeEach
-    void setUp() {
-        System.setProperty("user.dir", defaultUserDir + "/src/test/resources/hugo");
-    }
+	@BeforeEach
+	void setUp() {
+		System.setProperty("user.dir", defaultUserDir + "/src/test/resources/hugo");
+	}
 
-    @AfterEach
-    void tearDown() {
-        System.setProperty("user.dir", defaultUserDir);
-    }
+	@AfterEach
+	void tearDown() {
+		System.setProperty("user.dir", defaultUserDir);
+	}
 
-    @Test
-    void shouldScanHugo() {
-        Scan scan = new Scan();
-        scan.docsource = new Docsource();
-        CommandLine cmd = new CommandLine(scan);
-        StringWriter sw = new StringWriter();
-        cmd.setOut(new PrintWriter(sw));
+	@Test
+	void shouldScanHugo() {
+		Scan scan = new Scan();
+		scan.docsource = new Docsource();
+		CommandLine cmd = new CommandLine(scan);
+		StringWriter sw = new StringWriter();
+		cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-r", ".");
+		int code = cmd.execute("-r", ".");
 
-        assertEquals(0, code);
+		assertEquals(0, code);
 
-        assertTrue(sw.toString().contains("Found 4 file(s) to scan"));
-        assertTrue(sw.toString().contains("Success  12        0         0     12"));
-        assertTrue(sw.toString().contains("Broken   0         0         0     0"));
-        assertTrue(sw.toString().contains("Total    12        0         0     12"));
-    }
+		assertTrue(sw.toString().contains("Found 4 file(s) to scan"));
+		assertTrue(sw.toString().contains("Success  12        0         0     12"));
+		assertTrue(sw.toString().contains("Broken   0         0         0     0"));
+		assertTrue(sw.toString().contains("Total    12        0         0     12"));
+	}
 }

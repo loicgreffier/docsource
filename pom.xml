@@ -24,7 +24,6 @@
     </scm>
 
     <properties>
-        <checkstyle.version>10.21.3</checkstyle.version>
         <commons-io.version>2.18.0</commons-io.version>
         <jacoco.version>0.8.12</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
@@ -33,7 +32,8 @@
         <java.version>21</java.version>
         <picocli.version>4.7.6</picocli.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
-        <maven.checkstyle.plugin>3.6.0</maven.checkstyle.plugin>
+        <palantir.version>2.39.0</palantir.version>
+        <spotless.version>2.44.3</spotless.version>
         <sonar.organization>loicgreffier</sonar.organization>
         <sonar.projectKey>loicgreffier_docsource</sonar.projectKey>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -153,32 +153,32 @@
             </plugin>
 
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>${maven.checkstyle.plugin}</version>
-                <dependencies>
-                    <dependency>
-                        <groupId>com.puppycrawl.tools</groupId>
-                        <artifactId>checkstyle</artifactId>
-                        <version>${checkstyle.version}</version>
-                    </dependency>
-                </dependencies>
+                <groupId>com.diffplug.spotless</groupId>
+                <artifactId>spotless-maven-plugin</artifactId>
+                <version>${spotless.version}</version>
                 <configuration>
-                    <configLocation>.checkstyle/checkstyle.xml</configLocation>
-                    <violationSeverity>info</violationSeverity>
-                    <consoleOutput>true</consoleOutput>
-                    <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                    <sourceDirectories>
-                        <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
-                    </sourceDirectories>
-                    <testSourceDirectories>
-                        <testSourceDirectory>${project.build.testSourceDirectory}</testSourceDirectory>
-                    </testSourceDirectories>
+                    <java>
+                        <includes>
+                            <include>src/main/java/**/*.java</include>
+                            <include>src/test/java/**/*.java</include>
+                        </includes>
+                        <palantirJavaFormat>
+                            <version>${palantir.version}</version>
+                            <style>PALANTIR</style>
+                            <formatJavadoc>true</formatJavadoc>
+                        </palantirJavaFormat>
+                        <removeUnusedImports />
+                        <formatAnnotations />
+                        <importOrder />
+                        <trimTrailingWhitespace />
+                        <endWithNewline />
+                        <licenseHeader>
+                            <file>.format/HEADER</file>
+                        </licenseHeader>
+                    </java>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>check-style</id>
-                        <phase>verify</phase>
                         <goals>
                             <goal>check</goal>
                         </goals>

@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,15 +27,15 @@ import org.junit.jupiter.api.Test;
 import picocli.CommandLine;
 
 class ScanTest {
-    @Test
-    void shouldDisplayUsageMessage() {
-        CommandLine cmd = new CommandLine(new Scan());
-        StringWriter sw = new StringWriter();
-        cmd.setOut(new PrintWriter(sw));
+	@Test
+	void shouldDisplayUsageMessage() {
+		CommandLine cmd = new CommandLine(new Scan());
+		StringWriter sw = new StringWriter();
+		cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute();
+		int code = cmd.execute();
 
-        assertEquals(0, code);
-        assertTrue(sw.toString().contains("Usage:"));
-    }
+		assertEquals(0, code);
+		assertTrue(sw.toString().contains("Usage:"));
+	}
 }

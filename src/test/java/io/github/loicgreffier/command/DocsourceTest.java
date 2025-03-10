@@ -16,7 +16,6 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
 package io.github.loicgreffier.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,28 +28,28 @@ import picocli.CommandLine;
 
 class DocsourceTest {
 
-    @Test
-    void shouldDisplayUsageMessage() {
-        CommandLine cmd = new CommandLine(new Docsource());
-        StringWriter sw = new StringWriter();
-        cmd.setOut(new PrintWriter(sw));
+	@Test
+	void shouldDisplayUsageMessage() {
+		CommandLine cmd = new CommandLine(new Docsource());
+		StringWriter sw = new StringWriter();
+		cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute();
+		int code = cmd.execute();
 
-        assertEquals(0, code);
-        assertTrue(sw.toString().contains("Usage:"));
-    }
+		assertEquals(0, code);
+		assertTrue(sw.toString().contains("Usage:"));
+	}
 
-    @Test
-    void shouldEnableVerboseMode() {
-        Docsource docsource = new Docsource();
-        CommandLine cmd = new CommandLine(docsource);
-        StringWriter sw = new StringWriter();
-        cmd.setOut(new PrintWriter(sw));
+	@Test
+	void shouldEnableVerboseMode() {
+		Docsource docsource = new Docsource();
+		CommandLine cmd = new CommandLine(docsource);
+		StringWriter sw = new StringWriter();
+		cmd.setOut(new PrintWriter(sw));
 
-        int code = cmd.execute("-v");
+		int code = cmd.execute("-v");
 
-        assertEquals(0, code);
-        assertTrue(docsource.verbose);
-    }
+		assertEquals(0, code);
+		assertTrue(docsource.verbose);
+	}
 }
