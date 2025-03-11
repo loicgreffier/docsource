@@ -132,7 +132,6 @@
                             <sortProperties>true</sortProperties>
                             <sortModules>true</sortModules>
                             <endWithNewline />
-                            <sortExecutions>true</sortExecutions>
                         </sortPom>
                     </pom>
                 </configuration>
@@ -175,6 +174,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+
                     <execution>
                         <id>post-unit-test</id>
                         <goals>
@@ -188,6 +188,7 @@
                             <outputDirectory>target/jacoco-ut</outputDirectory>
                         </configuration>
                     </execution>
+
                     <execution>
                         <id>report</id>
                         <goals>
