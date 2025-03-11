@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
         <version>3.4.3</version>
-        <relativePath/>
+        <relativePath />
     </parent>
 
     <groupId>io.github.loicgreffier</groupId>
@@ -18,37 +17,33 @@
 
     <scm>
         <connection>scm:git:https://github.com/loicgreffier/docsource.git</connection>
-        <url>scm:git:https://github.com/loicgreffier/docsource.git</url>
         <developerConnection>scm:git:https://github.com/loicgreffier/docsource.git</developerConnection>
         <tag>HEAD</tag>
+        <url>scm:git:https://github.com/loicgreffier/docsource.git</url>
     </scm>
 
     <properties>
         <commons-io.version>2.18.0</commons-io.version>
         <jacoco.version>0.8.12</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
-        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
-        <lombok.version>1.18.36</lombok.version>
         <java.version>21</java.version>
+        <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
+        <jib-native-image-extension-maven.version>0.1.0</jib-native-image-extension-maven.version>
+        <lombok.version>1.18.36</lombok.version>
         <palantir.version>2.39.0</palantir.version>
-        <picocli.version>4.7.6</picocli.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
-        <spotless-maven-plugin.version>2.44.3</spotless-maven-plugin.version>
+        <picocli.version>4.7.6</picocli.version>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>loicgreffier</sonar.organization>
         <sonar.projectKey>loicgreffier_docsource</sonar.projectKey>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <spotless-maven-plugin.version>2.44.3</spotless-maven-plugin.version>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-spring-boot-starter</artifactId>
-            <version>${picocli.version}</version>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
         </dependency>
 
         <dependency>
@@ -56,6 +51,18 @@
             <artifactId>picocli-codegen</artifactId>
             <version>${picocli.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-jansi-graalvm</artifactId>
+            <version>${picocli.jansi.graalvm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli-spring-boot-starter</artifactId>
+            <version>${picocli.version}</version>
         </dependency>
 
         <!-- Colors on Windows CMD (including for native) -->
@@ -66,22 +73,14 @@
         </dependency>
 
         <dependency>
-            <groupId>info.picocli</groupId>
-            <artifactId>picocli-jansi-graalvm</artifactId>
-            <version>${picocli.jansi.graalvm.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -94,64 +93,6 @@
     <build>
         <finalName>${project.name}</finalName>
         <plugins>
-            <plugin>
-                <groupId>org.graalvm.buildtools</groupId>
-                <artifactId>native-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib-maven-plugin.version}</version>
-                <configuration>
-                    <from>
-                        <image>loicgreffier/docsource-base:1.0.1-jar</image>
-                    </from>
-                    <to>
-                        <image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
-                    </to>
-                </configuration>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
-                <executions>
-                    <execution>
-                        <id>jacoco-initialize</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>target/jacoco.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>target/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
                 <artifactId>spotless-maven-plugin</artifactId>
@@ -176,6 +117,24 @@
                             <file>.spotless/HEADER</file>
                         </licenseHeader>
                     </java>
+                    <pom>
+                        <includes>
+                            <include>pom.xml</include>
+                        </includes>
+                        <sortPom>
+                            <nrOfIndentSpace>4</nrOfIndentSpace>
+                            <expandEmptyElements>false</expandEmptyElements>
+                            <spaceBeforeCloseEmptyElement>true</spaceBeforeCloseEmptyElement>
+                            <sortDependencies>groupId,artifactId</sortDependencies>
+                            <sortDependencyManagement>groupId,artifactId</sortDependencyManagement>
+                            <sortDependencyExclusions>groupId,artifactId</sortDependencyExclusions>
+                            <sortPlugins>groupId,artifactId</sortPlugins>
+                            <sortProperties>true</sortProperties>
+                            <sortModules>true</sortModules>
+                            <endWithNewline />
+                            <sortExecutions>true</sortExecutions>
+                        </sortPom>
+                    </pom>
                 </configuration>
                 <executions>
                     <execution>
@@ -185,6 +144,63 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${jib-maven-plugin.version}</version>
+                <configuration>
+                    <from>
+                        <image>loicgreffier/docsource-base:1.0.1-jar</image>
+                    </from>
+                    <to>
+                        <image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
+                    </to>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.graalvm.buildtools</groupId>
+                <artifactId>native-maven-plugin</artifactId>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco.version}</version>
+                <executions>
+                    <execution>
+                        <id>jacoco-initialize</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <!-- Sets the path to the file which contains the execution data. -->
+                            <dataFile>target/jacoco.exec</dataFile>
+                            <!-- Sets the output directory for the code coverage report. -->
+                            <outputDirectory>target/jacoco-ut</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>report</id>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <phase>prepare-package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 
@@ -193,6 +209,35 @@
             <id>native</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>com.google.cloud.tools</groupId>
+                        <artifactId>jib-maven-plugin</artifactId>
+                        <version>${jib-maven-plugin.version}</version>
+                        <configuration>
+                            <from>
+                                <image>loicgreffier/docsource-base:1.0.0</image>
+                            </from>
+                            <to>
+                                <image>docker.io/loicgreffier/docsource:${project.version}</image>
+                            </to>
+                            <pluginExtensions>
+                                <pluginExtension>
+                                    <implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
+                                    <properties>
+                                        <imageName>docsource</imageName>
+                                    </properties>
+                                </pluginExtension>
+                            </pluginExtensions>
+                        </configuration>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.google.cloud.tools</groupId>
+                                <artifactId>jib-native-image-extension-maven</artifactId>
+                                <version>${jib-native-image-extension-maven.version}</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
@@ -205,37 +250,6 @@
                                 <phase>package</phase>
                             </execution>
                         </executions>
-                    </plugin>
-
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>jib-maven-plugin</artifactId>
-                        <version>${jib-maven-plugin.version}</version>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.google.cloud.tools</groupId>
-                                <artifactId>jib-native-image-extension-maven</artifactId>
-                                <version>0.1.0</version>
-                            </dependency>
-                        </dependencies>
-                        <configuration>
-                            <from>
-                                <image>loicgreffier/docsource-base:1.0.0</image>
-                            </from>
-                            <to>
-                                <image>docker.io/loicgreffier/docsource:${project.version}</image>
-                            </to>
-                            <pluginExtensions>
-                                <pluginExtension>
-                                    <implementation>
-                                        com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension
-                                    </implementation>
-                                    <properties>
-                                        <imageName>docsource</imageName>
-                                    </properties>
-                                </pluginExtension>
-                            </pluginExtensions>
-                        </configuration>
                     </plugin>
                 </plugins>
             </build>
