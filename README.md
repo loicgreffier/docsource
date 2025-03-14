@@ -48,6 +48,7 @@ It is available in three different formats:
 - JAR (requires Java 21)
 - Windows
 - Linux
+- MacOS
 
 Additionally, a Docker image is available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource).
 
