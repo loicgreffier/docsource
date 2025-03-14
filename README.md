@@ -43,7 +43,7 @@ Command-line interface for detecting broken links in Markdown documentation file
 ## Download
 
 You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases).
-It is available in three different formats:
+It is available in four different formats:
 
 - JAR (requires Java 21)
 - Windows
