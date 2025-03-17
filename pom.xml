@@ -30,7 +30,7 @@
         <jib-maven-plugin.version>3.4.4</jib-maven-plugin.version>
         <jib-native-image-extension-maven.version>0.1.0</jib-native-image-extension-maven.version>
         <lombok.version>1.18.36</lombok.version>
-        <palantir.version>2.39.0</palantir.version>
+        <palantir.version>2.58.0</palantir.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
         <picocli.version>4.7.6</picocli.version>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
