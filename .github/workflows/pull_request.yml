@@ -104,7 +104,7 @@ jobs:
       - name: Lint
         run: mvn spotless:check
 
-      - name: Build and test
+      - name: Build
         run: mvn clean package -Pnative -PnativeTest
 
       - name: Publish native test report
