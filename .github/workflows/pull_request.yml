@@ -169,4 +169,4 @@ jobs:
         if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.scan.outputs.sarif }}
+          sarif_file: ${{ steps.native_scan.outputs.sarif }}
