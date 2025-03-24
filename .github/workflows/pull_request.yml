@@ -80,8 +80,8 @@ jobs:
           severity-cutoff: high
           only-fixed: true
 
-      - name: Upload Anchore scan
-        if: always()
+      - name: Upload Grype scan
+        if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -161,8 +161,8 @@ jobs:
           severity-cutoff: high
           only-fixed: true
 
-      - name: Upload Anchore scan
-        if: always()
+      - name: Upload Grype scan
+        if: ${{ success() || failure() }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
