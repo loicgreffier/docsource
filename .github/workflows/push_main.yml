@@ -114,12 +114,15 @@ jobs:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
             extension: ''
+            native-profile: 'native-static-musl'
           - os: 'macos-latest'
             platform: 'darwin-arm64'
             extension: ''
+            native-profile: 'native'
           - os: 'windows-latest'
             platform: 'windows-amd64'
             extension: '.exe'
+            native-profile: 'native'
     steps:
       - name: Docker login
         if: matrix.os == 'ubuntu-latest'
@@ -151,12 +154,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        run: |
-          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
-            mvn clean package -Pnative-static-musl -PnativeTest
-          else
-            mvn clean package -Pnative -PnativeTest
-          fi
+        run: mvn clean package -P${{ matrix.native-profile }} -PnativeTest
 
       - name: Publish native test report
         if: always()
