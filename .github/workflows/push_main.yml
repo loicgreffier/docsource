@@ -64,17 +64,13 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Docker
-        id: docker
         if: endsWith(steps.build_jar.outputs.current_version, '-SNAPSHOT')
-        run: |
-          IMAGE_NAME=$(mvn help:evaluate -Dexpression=docker.image.jar.name -q -DforceStdout)
-          docker build . -f .docker/jar.Dockerfile -t $IMAGE_NAME
-          docker push $IMAGE_NAME
-          echo image_name=$IMAGE_NAME >> $GITHUB_OUTPUT
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
-
+        uses: docker/build-push-action@v6
+        with:
+          file: .docker/jar.Dockerfile
+          push: true
+          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6
@@ -150,22 +146,18 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Docker
-        id: native_docker
         if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
-        run: |
-          IMAGE_NAME=$(mvn help:evaluate -Dexpression=docker.image.native.name -q -DforceStdout)
-          docker build . -f .docker/Dockerfile -t $IMAGE_NAME
-          docker push $IMAGE_NAME
-          echo image_name=$IMAGE_NAME >> $GITHUB_OUTPUT
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        uses: docker/build-push-action@v6
+        with:
+          file: .docker/Dockerfile
+          push: true
+          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}-jar
 
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6
         with:
-          image: ${{ steps.native_docker.outputs.image_name }}
+          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}-jar
           fail-build: true
           severity-cutoff: high
           only-fixed: true

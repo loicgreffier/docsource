@@ -24,8 +24,6 @@
 
     <properties>
         <commons-io.version>2.18.0</commons-io.version>
-        <docker.image.jar.name>loicgreffier/docsource:${project.version}-jar</docker.image.jar.name>
-        <docker.image.native.name>loicgreffier/docsource:${project.version}</docker.image.native.name>
         <jacoco.version>0.8.12</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
         <java.version>21</java.version>
