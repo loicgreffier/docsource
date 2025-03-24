@@ -65,7 +65,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
-      - name: Docker
+      - name: Docker build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -146,7 +146,7 @@ jobs:
           name: docsource-${{ matrix.platform }}
           path: target/docsource${{ matrix.extension }}
 
-      - name: Docker
+      - name: Docker build
         if: matrix.os == 'ubuntu-latest'
         id: native_docker
         uses: docker/build-push-action@v6
