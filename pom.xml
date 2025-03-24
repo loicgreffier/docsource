@@ -24,11 +24,11 @@
 
     <properties>
         <commons-io.version>2.18.0</commons-io.version>
+        <docker.image.jar.name>loicgreffier/docsource:${project.version}-jar</docker.image.jar.name>
+        <docker.image.native.name>loicgreffier/docsource:${project.version}</docker.image.native.name>
         <jacoco.version>0.8.12</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
         <java.version>21</java.version>
-        <jib-maven-plugin.version>3.4.5</jib-maven-plugin.version>
-        <jib-native-image-extension-maven.version>0.1.0</jib-native-image-extension-maven.version>
         <lombok.version>1.18.36</lombok.version>
         <palantir.version>2.58.0</palantir.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
@@ -145,20 +145,6 @@
             </plugin>
 
             <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>jib-maven-plugin</artifactId>
-                <version>${jib-maven-plugin.version}</version>
-                <configuration>
-                    <from>
-                        <image>loicgreffier/docsource-base:1.0.1-jar</image>
-                    </from>
-                    <to>
-                        <image>docker.io/loicgreffier/docsource:${project.version}-jar</image>
-                    </to>
-                </configuration>
-            </plugin>
-
-            <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
             </plugin>
@@ -211,35 +197,6 @@
             <id>native</id>
             <build>
                 <plugins>
-                    <plugin>
-                        <groupId>com.google.cloud.tools</groupId>
-                        <artifactId>jib-maven-plugin</artifactId>
-                        <version>${jib-maven-plugin.version}</version>
-                        <configuration>
-                            <from>
-                                <image>loicgreffier/docsource-base:1.0.0</image>
-                            </from>
-                            <to>
-                                <image>docker.io/loicgreffier/docsource:${project.version}</image>
-                            </to>
-                            <pluginExtensions>
-                                <pluginExtension>
-                                    <implementation>com.google.cloud.tools.jib.maven.extension.nativeimage.JibNativeImageExtension</implementation>
-                                    <properties>
-                                        <imageName>docsource</imageName>
-                                    </properties>
-                                </pluginExtension>
-                            </pluginExtensions>
-                        </configuration>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.google.cloud.tools</groupId>
-                                <artifactId>jib-native-image-extension-maven</artifactId>
-                                <version>${jib-native-image-extension-maven.version}</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
