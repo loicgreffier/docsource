@@ -10,6 +10,12 @@ jobs:
     name: Release JAR
     runs-on: ubuntu-latest
     steps:
+      - name: Docker login
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
       - name: Checkout project
         uses: actions/checkout@v4
         with:
@@ -90,6 +96,13 @@ jobs:
             platform: 'windows-amd64'
             extension: '.exe'
     steps:
+      - name: Docker login
+        if: matrix.os == 'ubuntu-latest'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
       - name: Checkout project
         uses: actions/checkout@v4
         with:
