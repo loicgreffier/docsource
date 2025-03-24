@@ -46,10 +46,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        id: build_jar
-        run: |
-          mvn clean package
-          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+        run: mvn clean package
 
       - name: Publish test report
         if: always()
@@ -69,14 +66,18 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Metadata
+        id: metadata
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+
       - name: Docker build
-        if: endsWith(steps.build_jar.outputs.current_version, '-SNAPSHOT')
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: docker
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/jar.Dockerfile
-          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
 
       - name: Scan image
         if: ${{ steps.docker.conclusion == 'success' }}
@@ -101,7 +102,7 @@ jobs:
           context: .
           file: .docker/jar.Dockerfile
           push: true
-          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
 
   build-native:
     name: Build Native Image ${{ matrix.platform }}
@@ -150,12 +151,12 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        run: mvn clean package -Pnative -PnativeTest
-
-      - name: Version
-        id: native_version
-        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
-        shell: bash
+        run: |
+          if [ "${{ matrix.os }}" == "ubuntu-latest" ]; then
+            mvn clean package -Pnative-static-musl -PnativeTest
+          else
+            mvn clean package -Pnative -PnativeTest
+          fi
 
       - name: Publish native test report
         if: always()
@@ -169,36 +170,41 @@ jobs:
           name: docsource-${{ matrix.platform }}
           path: target/docsource${{ matrix.extension }}
 
+      - name: Metadata
+        id: metadata
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Docker build
-        if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
-        id: native_docker
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        id: docker
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/Dockerfile
-          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
 
       - name: Scan image
-        if: ${{ steps.native_docker.conclusion == 'success' }}
-        id: native_scan
+        if: ${{ steps.docker.conclusion == 'success' }}
+        id: scan
         uses: anchore/scan-action@v6
         with:
-          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
           fail-build: true
           severity-cutoff: high
           only-fixed: true
 
       - name: Upload Grype scan
-        if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
+        if: ${{ steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.native_scan.outputs.sarif }}
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
       - name: Docker push
-        if: ${{ steps.native_docker.conclusion == 'success' && matrix.os == 'ubuntu-latest' }}
+        if: ${{ steps.docker.conclusion == 'success' && matrix.os == 'ubuntu-latest' }}
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/Dockerfile
           push: true
-          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
