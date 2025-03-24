@@ -1,6 +1,8 @@
-FROM eclipse-temurin:latest
+FROM eclipse-temurin:21-jre
 
-RUN echo "#!/bin/sh\n\njava -cp @/app/jib-classpath-file io.github.loicgreffier.DocsourceApplication \"\$@\"" > /usr/bin/docsource \
+COPY target/docsource.jar /app/docsource.jar
+
+RUN echo "#!/bin/sh\n\njava -jar /app/docsource.jar \"\$@\"" > /usr/bin/docsource \
     && chmod +x /usr/bin/docsource
 
 ENTRYPOINT ["/bin/bash"]

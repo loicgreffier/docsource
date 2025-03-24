@@ -41,7 +41,10 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        run: mvn clean package
+        id: build_jar
+        run: |
+          mvn clean package
+          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
 
       - name: Publish test report
         if: always()
@@ -63,7 +66,26 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Docker
-        run: mvn clean package -DskipTests jib:dockerBuild
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/jar.Dockerfile
+          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+
+      - name: Scan image
+        id: scan
+        uses: anchore/scan-action@v6
+        with:
+          image: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype scan
+        if: ${{ steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
   build-native:
     name: Build Native Image ${{ matrix.platform }}
@@ -107,6 +129,11 @@ jobs:
       - name: Build
         run: mvn clean package -Pnative -PnativeTest
 
+      - name: Version
+        id: native_version
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Publish native test report
         if: always()
         uses: mikepenz/action-junit-report@v5
@@ -121,4 +148,25 @@ jobs:
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
-        run: mvn clean package -DskipTests -Pnative jib:dockerBuild
+        id: native_docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/Dockerfile
+          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+
+      - name: Scan image
+        if: ${{ steps.native_docker.conclusion == 'success' }}
+        id: native_scan
+        uses: anchore/scan-action@v6
+        with:
+          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype scan
+        if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.native_scan.outputs.sarif }}

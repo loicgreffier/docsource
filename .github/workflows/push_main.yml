@@ -65,10 +65,29 @@ jobs:
 
       - name: Docker
         if: endsWith(steps.build_jar.outputs.current_version, '-SNAPSHOT')
-        run: mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        id: docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/jar.Dockerfile
+          push: true
+          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+
+      - name: Scan image
+        if: ${{ steps.docker.conclusion == 'success' }}
+        id: scan
+        uses: anchore/scan-action@v6
+        with:
+          image: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype scan
+        if: ${{ steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
 
   build-native:
     name: Build Native Image ${{ matrix.platform }}
@@ -131,7 +150,26 @@ jobs:
 
       - name: Docker
         if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
-        run: mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+        id: native_docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/Dockerfile
+          push: true
+          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+
+      - name: Scan image
+        if: ${{ steps.native_docker.conclusion == 'success' }}
+        id: native_scan
+        uses: anchore/scan-action@v6
+        with:
+          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype scan
+        if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan.outputs.sarif }}
