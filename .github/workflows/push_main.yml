@@ -74,7 +74,7 @@ jobs:
           tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
 
       - name: Scan image
-        if: ${{ steps.docker.conclusion.success }}
+        if: ${{ steps.docker.conclusion == 'success' }}
         id: scan
         uses: anchore/scan-action@v6
         with:
@@ -83,8 +83,8 @@ jobs:
           severity-cutoff: high
           only-fixed: true
 
-      - name: Upload Anchore scan
-        if: ${{ steps.scan.conclusion.success || steps.scan.conclusion.failure }}
+      - name: Upload Grype scan
+        if: ${{ steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -159,7 +159,7 @@ jobs:
           tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
 
       - name: Scan image
-        if: ${{ steps.native_docker.conclusion.success }}
+        if: ${{ steps.native_docker.conclusion == 'success' }}
         id: native_scan
         uses: anchore/scan-action@v6
         with:
@@ -168,8 +168,8 @@ jobs:
           severity-cutoff: high
           only-fixed: true
 
-      - name: Upload Anchore scan
-        if: ${{ steps.native_scan.conclusion.success || steps.native_scan.conclusion.failure }}
+      - name: Upload Grype scan
+        if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
