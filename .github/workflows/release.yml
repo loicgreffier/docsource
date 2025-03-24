@@ -38,20 +38,22 @@ jobs:
         with:
           report_paths: '**/target/surefire-reports/TEST-*.xml'
 
-      - name: Docker
+      - name: Is latest version
+        id: is_latest_version
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
-          if [ "$LATEST_VERSION" == "$CURRENT_VERSION" ]; then
-            echo "Latest version is $LATEST_VERSION. Current version is $CURRENT_VERSION. Pushing latest tag."
-            mvn clean package -DskipTests jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest-jar
-          else
-            echo "Latest version is $LATEST_VERSION. Current version is $CURRENT_VERSION. Pushing latest tag."
-            mvn clean package -P production jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
-          fi
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
+
+      - name: Docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/jar.Dockerfile
+          push: true
+          tags: |
+            loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+            ${{ steps.is_latest_version.outputs.latest_version }} && loicgreffier/docsource:latest-jar
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
@@ -116,21 +118,25 @@ jobs:
         with:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
-      - name: Docker
+      - name: Is latest native version
         if: matrix.os == 'ubuntu-latest'
+        id: is_latest_native_version
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
-          if [ "$LATEST_VERSION" == "$CURRENT_VERSION" ]; then
-            echo "Latest version is $LATEST_VERSION. Current version is $CURRENT_VERSION. Pushing latest tag."
-            mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN -Djib.to.tags=latest
-          else
-            echo "Latest version is $LATEST_VERSION. Current version is $CURRENT_VERSION. Pushing latest tag."
-            mvn clean package -DskipTests -Pnative jib:build -Djib.to.auth.username=$DOCKER_USER -Djib.to.auth.password=$DOCKER_TOKEN
-          fi
-        env:
-          DOCKER_USER: ${{ secrets.DOCKER_USER }}
-          DOCKER_TOKEN: ${{ secrets.DOCKER_TOKEN }}
+          echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
+
+      - name: Docker
+        if: matrix.os == 'ubuntu-latest'
+        id: native_docker
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/Dockerfile
+          push: true
+          tags: |
+            loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+            ${{ steps.is_latest_native_version.outputs.latest_version }} && loicgreffier/docsource:latest
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5

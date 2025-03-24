@@ -65,23 +65,26 @@ jobs:
 
       - name: Docker
         if: endsWith(steps.build_jar.outputs.current_version, '-SNAPSHOT')
+        id: docker
         uses: docker/build-push-action@v6
         with:
+          context: .
           file: .docker/jar.Dockerfile
           push: true
           tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
-          
+
       - name: Scan image
+        if: ${{ steps.docker.conclusion.success }}
         id: scan
         uses: anchore/scan-action@v6
         with:
-          image: ${{ steps.docker.outputs.image_name }}
+          image: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
           fail-build: true
           severity-cutoff: high
           only-fixed: true
 
       - name: Upload Anchore scan
-        if: always()
+        if: ${{ steps.scan.conclusion.success || steps.scan.conclusion.failure }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
@@ -147,23 +150,26 @@ jobs:
 
       - name: Docker
         if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        id: native_docker
         uses: docker/build-push-action@v6
         with:
+          context: .
           file: .docker/Dockerfile
           push: true
-          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}-jar
+          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
 
       - name: Scan image
-        id: scan
+        if: ${{ steps.native_docker.conclusion.success }}
+        id: native_scan
         uses: anchore/scan-action@v6
         with:
-          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}-jar
+          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
           fail-build: true
           severity-cutoff: high
           only-fixed: true
 
       - name: Upload Anchore scan
-        if: always()
+        if: ${{ steps.native_scan.conclusion.success || steps.native_scan.conclusion.failure }}
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
