@@ -98,8 +98,6 @@ jobs:
         if: ${{ steps.docker.conclusion == 'success' }}
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: .docker/jar.Dockerfile
           push: true
           tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
 
@@ -121,7 +119,7 @@ jobs:
             extension: '.exe'
     steps:
       - name: Docker login
-        if: endsWith(steps.native_version.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-latest'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
@@ -198,7 +196,5 @@ jobs:
         if: ${{ steps.native_docker.conclusion == 'success' && matrix.os == 'ubuntu-latest' }}
         uses: docker/build-push-action@v6
         with:
-          context: .
-          file: .docker/Dockerfile
           push: true
           tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
