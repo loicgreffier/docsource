@@ -225,15 +225,6 @@
                                 <buildArg>--libc=musl</buildArg>
                             </buildArgs>
                         </configuration>
-                        <executions>
-                            <execution>
-                                <id>build-native</id>
-                                <goals>
-                                    <goal>compile-no-fork</goal>
-                                </goals>
-                                <phase>package</phase>
-                            </execution>
-                        </executions>
                     </plugin>
                 </plugins>
             </build>

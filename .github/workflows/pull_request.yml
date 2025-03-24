@@ -98,15 +98,12 @@ jobs:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
             extension: ''
-            native-profile: 'native-static-musl'
           - os: 'macos-latest'
             platform: 'darwin-arm64'
             extension: ''
-            native-profile: 'native'
           - os: 'windows-latest'
             platform: 'windows-amd64'
             extension: '.exe'
-            native-profile: 'native'
     steps:
       - name: Checkout project
         uses: actions/checkout@v4
@@ -132,7 +129,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        run: mvn clean package -P${{ matrix.native-profile }} -PnativeTest
+        run: mvn clean package -Pnative -PnativeTest ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
       - name: Publish native test report
         if: always()
