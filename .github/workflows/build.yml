@@ -118,6 +118,11 @@ jobs:
             platform: 'windows-amd64'
             extension: '.exe'
     steps:
+      - name: Checkout project
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
       - name: Set up GraalVM
         uses: graalvm/setup-graalvm@v1
         with:
