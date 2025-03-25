@@ -53,7 +53,13 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Docker
-        run: docker build . -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar ${{ steps.metadata.outputs.latest_version && '-t loicgreffier/docsource:latest-jar' || '' }}
+        run: |
+          docker build . -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
+          docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
+          if [ "${{ steps.metadata.outputs.latest_version }}" == "true" ]; then
+            docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar loicgreffier/docsource:latest-jar
+            docker push loicgreffier/docsource:latest-jar
+          fi
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
@@ -137,7 +143,13 @@ jobs:
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
-        run: docker build . -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} ${{ steps.metadata.outputslatest_version && '-t loicgreffier/docsource:latest' || '' }}
+        run: |
+          docker build . -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
+          docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
+          if [ "${{ steps.metadata.outputs.latest_version }}" == "true" ]; then
+              docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} loicgreffier/docsource:latest
+              docker push loicgreffier/docsource:latest
+          fi
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
