@@ -100,6 +100,7 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: '21.0.1'
+          native-image-musl: ${{ matrix.os == 'ubuntu-latest' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Maven packages
@@ -135,6 +136,7 @@ jobs:
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Docker
+        if: matrix.os == 'ubuntu-latest'
         run: docker build . -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} ${{ steps.metadata.outputslatest_version && '-t loicgreffier/docsource:latest' || '' }}
 
       - name: Generate release changelog
