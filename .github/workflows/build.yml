@@ -76,6 +76,7 @@ jobs:
         run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar -f .docker/jar.Dockerfile
 
       - name: Scan image
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: scan
         uses: anchore/scan-action@v6
         with:
@@ -166,6 +167,7 @@ jobs:
         run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} -f .docker/Dockerfile
 
       - name: Scan image
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
         id: scan
         uses: anchore/scan-action@v6
         with:
