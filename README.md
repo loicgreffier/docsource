@@ -47,10 +47,10 @@ It is available in four different formats:
 
 - JAR (requires Java 21)
 - Windows
-- Linux
+- Linux, statically linked with Musl
 - MacOS
 
-Additionally, a Docker image is available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource).
+Additionally, Docker images are available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource):
 
 ## Getting Started
 

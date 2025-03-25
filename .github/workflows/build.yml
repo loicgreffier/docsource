@@ -1,10 +1,15 @@
-name: Pull Request
+name: Build
 
 on:
+  push:
+    branches:
+      - 'main'
   pull_request:
     branches:
       - 'main'
       - 'hotfix/v*.*.*'
+  schedule:
+    - cron: '0 5 * * 1'
 
 jobs:
   build-jar:
@@ -41,10 +46,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        id: build_jar
-        run: |
-          mvn clean package
-          echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+        run: mvn clean package
 
       - name: Publish test report
         if: always()
@@ -65,27 +67,39 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+      - name: Metadata
+        id: metadata
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+
       - name: Docker build
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: .docker/jar.Dockerfile
-          tags: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
+        run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar -f .docker/jar.Dockerfile
 
       - name: Scan image
         id: scan
         uses: anchore/scan-action@v6
         with:
-          image: loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
+          image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
           fail-build: true
           severity-cutoff: high
           only-fixed: true
 
       - name: Upload Grype scan
-        if: ${{ steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure' }}
+        if: steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - name: Docker login
+        if: github.ref == 'refs/heads/main' && steps.scan.conclusion == 'success'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Docker push
+        if: github.ref == 'refs/heads/main' && steps.scan.conclusion == 'success'
+        run: docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
 
   build-native:
     name: Build Native Image ${{ matrix.platform }}
@@ -114,6 +128,7 @@ jobs:
         with:
           distribution: 'graalvm'
           java-version: '21.0.1'
+          native-image-musl: ${{ matrix.os == 'ubuntu-latest' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cache Maven packages
@@ -127,12 +142,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Build
-        run: mvn clean package -Pnative -PnativeTest
-
-      - name: Version
-        id: native_version
-        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
-        shell: bash
+        run: mvn clean package -Pnative -PnativeTest ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
       - name: Publish native test report
         if: always()
@@ -146,27 +156,37 @@ jobs:
           name: docsource-${{ matrix.platform }}
           path: target/docsource${{ matrix.extension }}
 
+      - name: Metadata
+        id: metadata
+        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
+        shell: bash
+
       - name: Docker build
-        if: matrix.os == 'ubuntu-latest'
-        id: native_docker
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          file: .docker/Dockerfile
-          tags: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
+        run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} -f .docker/Dockerfile
 
       - name: Scan image
-        if: ${{ steps.native_docker.conclusion == 'success' }}
-        id: native_scan
+        id: scan
         uses: anchore/scan-action@v6
         with:
-          image: loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
+          image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
           fail-build: true
           severity-cutoff: high
           only-fixed: true
 
       - name: Upload Grype scan
-        if: ${{ steps.native_scan.conclusion == 'success' || steps.native_scan.conclusion == 'failure' }}
+        if: steps.scan.conclusion == 'success' || steps.scan.conclusion == 'failure'
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: ${{ steps.native_scan.outputs.sarif }}
+          sarif_file: ${{ steps.scan.outputs.sarif }}
+
+      - name: Docker login
+        if: github.ref == 'refs/heads/main' && steps.scan.conclusion == 'success'
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USER }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+      - name: Docker push
+        if: github.ref == 'refs/heads/main' && steps.scan.conclusion == 'success'
+        run: docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}

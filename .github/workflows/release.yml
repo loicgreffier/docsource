@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+env:
+  DOCKER_BUILD_RECORD_UPLOAD: false
+
 jobs:
   release-jar:
     name: Release JAR
@@ -44,11 +47,12 @@ jobs:
         with:
           report_paths: '**/target/surefire-reports/TEST-*.xml'
 
-      - name: Is latest version
-        id: is_latest_version
+      - name: Metadata
+        id: metadata
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
+          echo current_version=$(echo $CURRENT_VERSION) >> $GITHUB_OUTPUT
           echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
 
       - name: Docker
@@ -58,8 +62,8 @@ jobs:
           file: .docker/jar.Dockerfile
           push: true
           tags: |
-            loicgreffier/docsource:${{ steps.build_jar.outputs.current_version }}-jar
-            ${{ steps.is_latest_version.outputs.latest_version }} && loicgreffier/docsource:latest-jar
+            loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
+            ${{ steps.metadata.outputs.latest_version && 'loicgreffier/docsource:latest-jar' || '' }}
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
@@ -123,7 +127,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Build
-        run: mvn clean package -Pnative -PnativeTest
+        run: mvn clean package -Pnative -PnativeTest ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
       - name: Publish native test report
         if: always()
@@ -131,25 +135,25 @@ jobs:
         with:
           report_paths: '**/target/native-test-reports/TEST-*.xml'
 
-      - name: Is latest native version
+      - name: Metadata
         if: matrix.os == 'ubuntu-latest'
-        id: is_latest_native_version
+        id: metadata
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
+          echo current_version=$(echo $CURRENT_VERSION) >> $GITHUB_OUTPUT
           echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
 
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
-        id: native_docker
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/Dockerfile
           push: true
           tags: |
-            loicgreffier/docsource:${{ steps.native_version.outputs.current_version }}
-            ${{ steps.is_latest_native_version.outputs.latest_version }} && loicgreffier/docsource:latest
+            loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
+            ${{ steps.metadata.outputs.latest_version && 'loicgreffier/docsource:latest' || '' }}
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5

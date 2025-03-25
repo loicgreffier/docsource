@@ -211,5 +211,23 @@
                 </plugins>
             </build>
         </profile>
+
+        <profile>
+            <id>native-static-musl</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <configuration>
+                            <buildArgs>
+                                <buildArg>--static</buildArg>
+                                <buildArg>--libc=musl</buildArg>
+                            </buildArgs>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 </project>
