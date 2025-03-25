@@ -68,19 +68,20 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
       - name: Metadata
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: metadata
         run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
 
       - name: Docker build
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
-        run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar -f .docker/jar.Dockerfile
+        run: docker build . -t loicgreffier/docsource:1.2.2-SNAPSHOT-jar -f .docker/jar.Dockerfile
 
       - name: Scan image
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: scan
         uses: anchore/scan-action@v6
         with:
-          image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
+          image: loicgreffier/docsource:1.2.2-SNAPSHOT-jar
           fail-build: true
           severity-cutoff: high
           only-fixed: true
@@ -158,6 +159,7 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Metadata
+        if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
         id: metadata
         run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
         shell: bash
