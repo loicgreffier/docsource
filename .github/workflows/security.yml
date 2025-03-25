@@ -2,7 +2,7 @@ name: Security
 
 on:
   schedule:
-    - cron: '05 23 * * 3'
+    - cron: '5 * * * *'
 
 jobs:
   scan-jar:
