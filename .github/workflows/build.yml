@@ -73,7 +73,7 @@ jobs:
 
       - name: Docker build
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
-        run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar -f .docker/jar.Dockerfile
+        run: docker build . -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
 
       - name: Scan image
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
@@ -158,13 +158,14 @@ jobs:
           path: target/docsource${{ matrix.extension }}
 
       - name: Metadata
+        if: matrix.os == 'ubuntu-latest'
         id: metadata
         run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
         shell: bash
 
       - name: Docker build
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
-        run: docker build . -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} -f .docker/Dockerfile
+        run: docker build . -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
 
       - name: Scan image
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT') && matrix.os == 'ubuntu-latest'
