@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+env:
+  DOCKER_BUILD_RECORD_UPLOAD: false
+
 jobs:
   release-jar:
     name: Release JAR

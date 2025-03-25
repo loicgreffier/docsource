@@ -5,6 +5,9 @@ on:
     branches:
       - 'main'
 
+env:
+  DOCKER_BUILD_RECORD_UPLOAD: false
+
 jobs:
   build-jar:
     name: Build JAR
