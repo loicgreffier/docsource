@@ -67,12 +67,4 @@ public class DocsourceApplication implements CommandLineRunner {
         }
         System.exit(exitCode);
     }
-
-    public void testFunction() {
-        System.out.println("This is a test function");
-
-        for (int i = 0; i < 10; i++) {
-            System.out.println("This is a test function");
-        }
-    }
 }
