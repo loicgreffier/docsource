@@ -47,7 +47,7 @@ jobs:
         run: mvn spotless:check
 
       - name: Upload Grype scan source code
-        if: steps.lint.outcome == 'success' || steps.lint.outcome == 'failure'
+        if: steps.lint.outputs.conclusion == 'success' || steps.lint.outputs.conclusion == 'failure'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan_source_code.outputs.sarif }}
