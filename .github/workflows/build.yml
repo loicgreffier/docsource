@@ -65,7 +65,6 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan source code
-        if: always()
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan_source_code.outputs.sarif }}
