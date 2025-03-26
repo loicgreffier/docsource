@@ -202,12 +202,12 @@ jobs:
           category: 'docker-image'
 
       - name: Docker login
-        if: github.ref == 'refs/heads/main'
+        if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Docker push
-        if: github.ref == 'refs/heads/main'
+        if: matrix.os == 'ubuntu-latest' && github.ref == 'refs/heads/main'
         run: docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
