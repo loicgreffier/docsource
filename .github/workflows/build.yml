@@ -56,10 +56,7 @@ jobs:
 
       - name: Scan source code
         id: scan_source_code
-        uses: actions/github-script@v3
-        with:
-          script: |
-            core.setFailed('envA and envB are not equivalent!')
+        run: echo conclusion=failure >> $GITHUB_OUTPUT
 
       - name: Upload Grype scan source code
         if: steps.scan_source_code.conclusion == 'success' || steps.scan_source_code.conclusion == 'failure'
