@@ -56,7 +56,9 @@ jobs:
 
       - name: Scan source code
         id: scan_source_code
-        run: echo conclusion=failure >> $GITHUB_OUTPUT
+        run: |
+          echo conclusion=failure >> $GITHUB_OUTPUT
+          exit 1
 
       - name: Upload Grype scan source code
         if: steps.scan_source_code.conclusion == 'success' || steps.scan_source_code.conclusion == 'failure'
