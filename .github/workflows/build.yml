@@ -43,7 +43,6 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Lint
-        id: lint
         run: mvn spotless:check
 
       - name: Build
@@ -65,8 +64,11 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan source code
-        if: always()
-        run: echo "hello world"
+        if: always() && steps.scan_source_code.outputs.sarif != ''
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: ${{ steps.scan_source_code.outputs.sarif }}
+          category: 'source-code'
 
       - name: Upload
         uses: actions/upload-artifact@v4
@@ -100,21 +102,21 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan Docker image
-        if: steps.scan_docker_image.conclusion == 'success' || steps.scan_docker_image.conclusion == 'failure'
+        if: always() && steps.scan_docker_image.outputs.sarif != ''
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan_docker_image.outputs.sarif }}
           category: 'docker-image'
 
       - name: Docker login
-        if: github.ref == 'refs/heads/main' && steps.scan_docker_image.conclusion == 'success'
+        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Docker push
-        if: github.ref == 'refs/heads/main' && steps.scan_docker_image.conclusion == 'success'
+        if: github.ref == 'refs/heads/main'
         run: docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
 
   build-native:
@@ -193,19 +195,19 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan Docker image
-        if: steps.scan_docker_image.conclusion == 'success' || steps.scan_docker_image.conclusion == 'failure'
+        if: always() && steps.scan_docker_image.outputs.sarif != ''
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan_docker_image.outputs.sarif }}
           category: 'docker-image'
 
       - name: Docker login
-        if: github.ref == 'refs/heads/main' && steps.scan_docker_image.conclusion == 'success'
+        if: github.ref == 'refs/heads/main'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
       - name: Docker push
-        if: github.ref == 'refs/heads/main' && steps.scan_docker_image.conclusion == 'success'
+        if: github.ref == 'refs/heads/main'
         run: docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
