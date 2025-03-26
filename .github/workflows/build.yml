@@ -56,7 +56,12 @@ jobs:
 
       - name: Scan source code
         id: scan_source_code
-        run: echo "hello"
+        uses: anchore/scan-action@v6
+        with:
+          path: .
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
 
       - name: Upload Grype scan source code
         if: always() && steps.scan_source_code.outputs.sarif != ''
