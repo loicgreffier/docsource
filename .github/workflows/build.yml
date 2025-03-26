@@ -43,6 +43,7 @@ jobs:
           restore-keys: ${{ runner.os }}-m2
 
       - name: Lint
+        id: lint
         run: mvn spotless:check
 
       - name: Build
@@ -56,13 +57,16 @@ jobs:
 
       - name: Scan source code
         id: scan_source_code
-        run: |
-          echo conclusion=failure >> $GITHUB_OUTPUT
-          exit 1
+        uses: anchore/scan-action@v6
+        with:
+          path: .
+          fail-build: true
+          severity-cutoff: high
+          only-fixed: true
 
       - name: Upload Grype scan source code
-        if: steps.scan_source_code.conclusion == 'success' || steps.scan_source_code.conclusion == 'failure'
-        run: echo "Hello"
+        if: steps.lint.conclusion == 'success' || steps.lint.conclusion == 'failure'
+        run: echo "Hello World"
 
       - name: Upload
         uses: actions/upload-artifact@v4
