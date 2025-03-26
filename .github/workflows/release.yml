@@ -44,7 +44,7 @@ jobs:
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
           echo current_version=$(echo $CURRENT_VERSION) >> $GITHUB_OUTPUT
-          echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
+          echo is_latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
 
       - name: Docker login
         uses: docker/login-action@v3
@@ -54,12 +54,11 @@ jobs:
 
       - name: Docker
         run: |
-          docker build . -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
-          docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
-          if [ "${{ steps.metadata.outputs.latest_version }}" == "true" ]; then
+          docker build -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar .
+          if [ "${{ steps.metadata.outputs.is_latest_version }}" == "true" ]; then
             docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar loicgreffier/docsource:latest-jar
-            docker push loicgreffier/docsource:latest-jar
           fi
+          docker push loicgreffier/docsource --all-tags
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
@@ -132,7 +131,7 @@ jobs:
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
           LATEST_VERSION=$(git tag -l --sort=-version:refname | head -1 | cut -d 'v' -f 2)
           echo current_version=$(echo $CURRENT_VERSION) >> $GITHUB_OUTPUT
-          echo latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
+          echo is_latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
 
       - name: Docker login
         if: matrix.os == 'ubuntu-latest'
@@ -144,12 +143,11 @@ jobs:
       - name: Docker
         if: matrix.os == 'ubuntu-latest'
         run: |
-          docker build . -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
-          docker push loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
-          if [ "${{ steps.metadata.outputs.latest_version }}" == "true" ]; then
+          docker build -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} .
+          if [ "${{ steps.metadata.outputs.is_latest_version }}" == "true" ]; then
               docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} loicgreffier/docsource:latest
-              docker push loicgreffier/docsource:latest
           fi
+          docker push loicgreffier/docsource --all-tags
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
