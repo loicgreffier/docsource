@@ -65,7 +65,7 @@ jobs:
           only-fixed: true
 
       - name: Upload Grype scan source code
-        if: success() || failure()
+        if: steps.lint.conclusion == 'success' || steps.lint.conclusion == 'failure'
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.scan_source_code.outputs.sarif }}
