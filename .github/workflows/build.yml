@@ -178,7 +178,6 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         id: metadata
         run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
-        shell: bash
 
       - name: Docker build
         if: matrix.os == 'ubuntu-latest' && endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
