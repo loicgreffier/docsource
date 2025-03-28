@@ -112,12 +112,6 @@ jobs:
       - name: Build
         run: mvn clean package -DskipTests -Pnative ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
-      - name: Publish native test report
-        if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: '**/target/native-test-reports/TEST-*.xml'
-
       - name: Metadata
         if: matrix.os == 'ubuntu-latest'
         id: metadata
