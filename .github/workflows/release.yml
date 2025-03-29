@@ -46,7 +46,7 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Docker
+      - name: Docker build and push
         run: |
           docker build -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar .
           if [ "${{ steps.metadata.outputs.is_latest_version }}" == "true" ]; then
