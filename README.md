@@ -53,7 +53,7 @@ It is available in four different formats:
 Additionally, Docker images are available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource):
 
 - The `docsource:<version>` images contains Docsource as a native binary.
-- The `docsource:<version>-jar` images contains Docsource as a JAR application.
+- The `docsource:<version>-jar` images contains Docsource as a JAR.
 
 ## Getting Started
 
