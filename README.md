@@ -50,7 +50,10 @@ It is available in four different formats:
 - Linux, statically linked with Musl
 - MacOS
 
-Additionally, Docker images are available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource).
+Additionally, Docker images are available on [Docker Hub](https://hub.docker.com/r/loicgreffier/docsource):
+
+- The `docsource:<version>` images contains Docsource as a native binary.
+- The `docsource:<version>-jar` images contains Docsource as a JAR application.
 
 ## Getting Started
 
