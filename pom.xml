@@ -23,7 +23,7 @@
     </scm>
 
     <properties>
-        <commons-io.version>2.18.0</commons-io.version>
+        <commons-io.version>2.19.0</commons-io.version>
         <jacoco.version>0.8.13</jacoco.version>
         <jansi.version>2.4.1</jansi.version>
         <java.version>21</java.version>
