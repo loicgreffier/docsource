@@ -1,7 +1,8 @@
-app.version: @project.version@
+app:
+  version: "@project.version@"
 logging:
   level:
-    root: 'OFF'
+    root: "OFF"
 spring:
   main:
     log-startup-info: false
