@@ -35,7 +35,7 @@ jobs:
 
       - name: Validate release version format
         run: |
-          if [ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]; then
+          if [[ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Release version must follow SemVer format (X.Y.Z) and start with a digit"
             exit 1
           fi
