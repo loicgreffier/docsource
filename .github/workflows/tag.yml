@@ -37,6 +37,7 @@ jobs:
         run: |
           if [[ ! "${{ github.event.inputs.release_version }}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
             echo "Release version must follow SemVer format (X.Y.Z) and start with a digit"
+            echo "Current value: ${{ github.event.inputs.release_version }}"
             exit 1
           fi
 
