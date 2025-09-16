@@ -24,7 +24,7 @@
 
     <properties>
         <commons-io.version>2.20.0</commons-io.version>
-        <jacoco-maven-plugin.version>0.8.13</jacoco.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <jansi.version>2.4.2</jansi.version>
         <java.version>21</java.version>
         <lombok.version>1.18.40</lombok.version>
