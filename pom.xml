@@ -24,7 +24,7 @@
 
     <properties>
         <commons-io.version>2.20.0</commons-io.version>
-        <jacoco.version>0.8.13</jacoco.version>
+        <jacoco-maven-plugin.version>0.8.13</jacoco.version>
         <jansi.version>2.4.2</jansi.version>
         <java.version>21</java.version>
         <lombok.version>1.18.40</lombok.version>
@@ -164,7 +164,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco.version}</version>
+                <version>${jacoco-maven-plugin.version}</version>
                 <executions>
                     <execution>
                         <id>jacoco-initialize</id>
@@ -174,25 +174,11 @@
                     </execution>
 
                     <execution>
-                        <id>post-unit-test</id>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                        <phase>test</phase>
-                        <configuration>
-                            <!-- Sets the path to the file which contains the execution data. -->
-                            <dataFile>target/jacoco.exec</dataFile>
-                            <!-- Sets the output directory for the code coverage report. -->
-                            <outputDirectory>target/jacoco-ut</outputDirectory>
-                        </configuration>
-                    </execution>
-
-                    <execution>
                         <id>report</id>
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <phase>prepare-package</phase>
+                        <phase>test</phase>
                     </execution>
                 </executions>
             </plugin>
