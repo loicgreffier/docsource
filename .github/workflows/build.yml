@@ -63,7 +63,7 @@ jobs:
 
       - name: Grype source code
         id: grype_source_code
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         with:
           path: .
           fail-build: true
@@ -94,7 +94,7 @@ jobs:
       - name: Grype Docker image
         if: endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: grype_docker_image
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         with:
           image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
           fail-build: true
@@ -186,7 +186,7 @@ jobs:
       - name: Grype Docker image
         if: matrix.os == 'ubuntu-latest' && endsWith(steps.metadata.outputs.current_version, '-SNAPSHOT')
         id: grype_docker_image
-        uses: anchore/scan-action@v6
+        uses: anchore/scan-action@v7
         with:
           image: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}
           fail-build: true
