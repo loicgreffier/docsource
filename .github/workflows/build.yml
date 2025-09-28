@@ -247,7 +247,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/docsource${{ matrix.extension }}
+          path: target/docsource-${{ steps.metadata.outputs.current_version }}${{ matrix.extension }}
 
   build-docker-native:
     name: Build Docker Native Image ${{ matrix.platform }}
@@ -274,7 +274,7 @@ jobs:
 
       - name: Metadata
         id: metadata
-        run: echo image_name=michelin/kafkactl:native-$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
+        run: echo image_name=loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-$(echo ${{ matrix.platform }} | sed 's/\//-/g')-native >> $GITHUB_OUTPUT
 
       - name: Docker build
         uses: docker/build-push-action@v6
