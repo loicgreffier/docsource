@@ -1,11 +1,11 @@
-FROM alpine:3.21
+FROM alpine:3
 
-# Enable multi-platform build. When enabled, Docker will copy the binary built for the target platform.
-ARG MULTI_PLATFORM_BUILD=false
+ARG TARGETOS
+ARG TARGETARCH
 
 LABEL org.opencontainers.image.authors="io.github.loicgreffier"
 
-COPY ${MULTI_PLATFORM_BUILD:+target/docsource-$TARGETOS-$TARGETARCH/docsource}${MULTI_PLATFORM_BUILD:-target/docsource} /app/docsource
+COPY target/docsource-$TARGETOS-$TARGETARCH/docsource /app/docsource
 
 RUN apk update \
     && echo -e "#!/bin/sh\n\n/app/docsource \"\$@\"" > /usr/bin/docsource \
