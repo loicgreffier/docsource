@@ -89,6 +89,7 @@
     </dependencies>
 
     <build>
+        <finalName>${artifactId}</finalName>
         <plugins>
             <plugin>
                 <groupId>com.diffplug.spotless</groupId>
@@ -197,9 +198,6 @@
                     <plugin>
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
-                        <configuration>
-                            <imageName>${artifactId}-${version}</imageName>
-                        </configuration>
                         <executions>
                             <execution>
                                 <id>build-native</id>

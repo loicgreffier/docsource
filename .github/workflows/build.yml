@@ -275,13 +275,16 @@ jobs:
 
       - name: Metadata
         id: metadata
-        run: echo image_name=loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
+        run: |
+          echo os_arch=$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
+          echo image_name=loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-$os_arch >> $GITHUB_OUTPUT
 
       - name: Docker build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/Dockerfile
+          build-args: ARTIFACT_PATH=target/${{ steps.metadata.outputs.os_arch }}/docsource
           platforms: ${{ matrix.platform }}
           push: false
           load: true
