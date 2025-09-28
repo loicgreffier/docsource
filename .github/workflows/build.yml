@@ -170,10 +170,6 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Metadata
-        id: metadata
-        run: echo current_version=$(echo $(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)) >> $GITHUB_OUTPUT
-
       - name: Docker push
         uses: docker/build-push-action@v6
         with:
@@ -181,7 +177,7 @@ jobs:
           file: .docker/jar.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: true
-          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
+          tags: loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-jar
         env:
           DOCKER_BUILD_SUMMARY: false
 
@@ -216,7 +212,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: '21.0.1'
+          java-version: '21'
           native-image-musl: ${{ matrix.os == 'ubuntu-latest' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
