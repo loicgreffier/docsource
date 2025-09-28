@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-jar
-          path: target/docsource.jar
+          path: target/docsource-${{ steps.metadata.outputs.current_version }}.jar
 
   build-docker:
     name: Build Docker ${{ matrix.platform }}
