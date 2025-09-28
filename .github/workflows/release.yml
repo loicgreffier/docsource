@@ -46,19 +46,24 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Docker build and push
-        run: |
-          docker build -f .docker/jar.Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar .
-          if [ "${{ steps.metadata.outputs.is_latest_version }}" == "true" ]; then
-            docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar loicgreffier/docsource:latest-jar
-          fi
-          docker push loicgreffier/docsource --all-tags
+      - name: Docker push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/jar.Dockerfile
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-jar
+            ${{ steps.metadata.outputs.is_latest_version == 'true' && 'loicgreffier/docsource:latest-jar' || '' }}
+        env:
+          DOCKER_BUILD_SUMMARY: false
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
         id: build_changelog
         with:
-          configuration: 'changelog-builder.json'
+          configuration: changelog-builder.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -72,8 +77,8 @@ jobs:
           prerelease: true
           allowUpdates: true
 
-  release-native:
-    name: Release Native Image ${{ matrix.platform }}
+  build-native:
+    name: Build Native Image ${{ matrix.platform }}
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
@@ -121,27 +126,50 @@ jobs:
           echo current_version=$(echo $CURRENT_VERSION) >> $GITHUB_OUTPUT
           echo is_latest_version=$(echo $(test "$LATEST_VERSION" == "$CURRENT_VERSION" && echo true || echo false)) >> $GITHUB_OUTPUT
 
+  release-native:
+    name: Release Native Image
+    runs-on: ubuntu-latest
+    needs: build-native
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Download artifact
+        uses: actions/download-artifact@v5
+        with:
+          pattern: docsource-*
+          path: target
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Docker login
-        if: matrix.os == 'ubuntu-latest'
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Docker
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          docker build -f .docker/Dockerfile -t loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} .
-          if [ "${{ steps.metadata.outputs.is_latest_version }}" == "true" ]; then
-              docker tag loicgreffier/docsource:${{ steps.metadata.outputs.current_version }} loicgreffier/docsource:latest
-          fi
-          docker push loicgreffier/docsource --all-tags
+      - name: Docker push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/Dockerfile
+          build-args: MULTI_PLATFORM_BUILD=true
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: |
+            loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}
+            ${{ needs.build-native.outputs.is_latest_version == 'true' && 'loicgreffier/docsource:latest' || '' }}
+        env:
+          DOCKER_BUILD_SUMMARY: false
 
       - name: Generate release changelog
         uses: mikepenz/release-changelog-builder-action@v5
         id: build_changelog
         with:
-          configuration: 'changelog-builder.json'
+          configuration: changelog-builder.json
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

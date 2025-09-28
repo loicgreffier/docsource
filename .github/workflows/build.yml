@@ -248,7 +248,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/docsource-${{ steps.metadata.outputs.current_version }}${{ matrix.extension }}
+          path: target/docsource${{ matrix.extension }}
 
   build-docker-native:
     name: Build Docker Native Image ${{ matrix.platform }}
@@ -275,16 +275,14 @@ jobs:
 
       - name: Metadata
         id: metadata
-        run: |
-          echo os_arch=$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
-          echo image_name=loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-$os_arch >> $GITHUB_OUTPUT
+        run: echo image_name=loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
 
       - name: Docker build
         uses: docker/build-push-action@v6
         with:
           context: .
           file: .docker/Dockerfile
-          build-args: ARTIFACT_PATH=target/${{ steps.metadata.outputs.os_arch }}/docsource
+          build-args: MULTI_PLATFORM_BUILD=true
           platforms: ${{ matrix.platform }}
           push: false
           load: true
@@ -339,6 +337,7 @@ jobs:
         with:
           context: .
           file: .docker/Dockerfile
+          build-args: MULTI_PLATFORM_BUILD=true
           platforms: linux/amd64,linux/arm64
           push: true
           tags: loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}
