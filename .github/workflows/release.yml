@@ -78,7 +78,7 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: ${{ github.workspace }}/target/docsource.jar
+          artifacts: target/docsource.jar
           draft: true
           prerelease: true
           allowUpdates: true
@@ -88,10 +88,13 @@ jobs:
     runs-on: ${{matrix.os}}
     strategy:
       matrix:
-        os: [ 'ubuntu-latest', 'windows-latest', 'macos-latest' ]
+        os: [ 'ubuntu-latest', 'ubuntu-24.04-arm', 'windows-latest', 'macos-latest' ]
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
+            extension: ''
+          - os: 'ubuntu-24.04-arm'
+            platform: 'linux-arm64'
             extension: ''
           - os: 'macos-latest'
             platform: 'darwin-arm64'
@@ -109,7 +112,7 @@ jobs:
         uses: graalvm/setup-graalvm@v1
         with:
           distribution: 'graalvm'
-          java-version: '21.0.1'
+          java-version: '21'
           native-image-musl: ${{ matrix.os == 'ubuntu-latest' }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -124,7 +127,6 @@ jobs:
         run: mvn clean package -DskipTests -Pnative ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
       - name: Metadata
-        if: matrix.os == 'ubuntu-latest'
         id: metadata
         run: |
           CURRENT_VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
