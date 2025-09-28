@@ -114,7 +114,10 @@ jobs:
 
       - name: Metadata
         id: metadata
-        run: echo image_name=loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-$(echo ${{ matrix.platform }} | sed 's/\//-/g')-jar >> $GITHUB_OUTPUT
+        run: |
+          platform_slug=$(echo ${{ matrix.platform }} | sed 's/\//-/g')
+          echo platform_slug=$platform_slug >> $GITHUB_OUTPUT
+          echo image_name=loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-$platform_slug-jar >> $GITHUB_OUTPUT
 
       - name: Docker build
         uses: docker/build-push-action@v6
@@ -142,7 +145,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.grype_docker_image.outputs.sarif }}
-          category: docker-image-${{ matrix.platform }}
+          category: docker-image-${{ steps.metadata.outputs.platform_slug }}
 
   push-docker:
     name: Push Docker
@@ -271,7 +274,10 @@ jobs:
 
       - name: Metadata
         id: metadata
-        run: echo image_name=loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-$(echo ${{ matrix.platform }} | sed 's/\//-/g') >> $GITHUB_OUTPUT
+        run: |
+          platform_slug=$(echo ${{ matrix.platform }} | sed 's/\//-/g')
+          echo platform_slug=$platform_slug >> $GITHUB_OUTPUT
+          echo image_name=loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-$platform_slug >> $GITHUB_OUTPUT
 
       - name: Docker build
         uses: docker/build-push-action@v6
@@ -300,7 +306,7 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: ${{ steps.grype_docker_image.outputs.sarif }}
-          category: docker-image-native-${{ matrix.platform }}
+          category: docker-image-native-${{ steps.metadata.outputs.platform_slug }}
 
   push-docker-native:
     name: Push Docker Native Image
