@@ -60,7 +60,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            loicgreffier/docsource:${{ needs.build-native.outputs.current_version }}-jar
+            loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
             ${{ steps.metadata.outputs.is_latest_version == 'true' && 'loicgreffier/docsource:latest-jar' || '' }}
         env:
           DOCKER_BUILD_SUMMARY: false
@@ -85,7 +85,9 @@ jobs:
 
   build-native:
     name: Build Native Image ${{ matrix.platform }}
-    runs-on: ${{matrix.os}}
+    runs-on: ${{ matrix.os }}
+    outputs:
+      current_version: ${{ steps.metadata.outputs.current_version }}
     strategy:
       matrix:
         os: [ 'ubuntu-latest', 'ubuntu-24.04-arm', 'windows-latest', 'macos-latest' ]
@@ -188,14 +190,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Rename file
-        run: mv target/docsource-${{ steps.metadata.outputs.current_version }}${{ matrix.extension }} target/docsource-${{ steps.metadata.outputs.current_version }}-${{ matrix.platform }}${{ matrix.extension }}
+        run: mv target/docsource-${{ needs.build-native.outputs.current_version }}${{ matrix.extension }} target/docsource-${{ needs.build-native.outputs.current_version }}-${{ matrix.platform }}${{ matrix.extension }}
 
       - name: Update release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           body: ${{ steps.build_changelog.outputs.changelog }}
-          artifacts: target/docsource-*/docsource-${{ steps.metadata.outputs.current_version }}-${{ matrix.platform }}${{ matrix.extension }}
+          artifacts: target/docsource-*/docsource-${{ needs.build-native.outputs.current_version }}-${{ matrix.platform }}${{ matrix.extension }}
           draft: true
           prerelease: true
           allowUpdates: true
