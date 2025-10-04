@@ -67,7 +67,7 @@ class ScanDocsifyTest {
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString()
-                .contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
+                .contains("  - https://www.testingmcafeesites.com/ ((certificate_unknown) No subject alternative "
                         + "DNS name matching www.testingmcafeesites.com found.)"));
         assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder-one/page (file not found)"));
@@ -124,7 +124,7 @@ class ScanDocsifyTest {
         assertTrue(sw.toString().contains("Total    0         7         2     9"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString()
-                .contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
+                .contains("  - https://www.testingmcafeesites.com/ ((certificate_unknown) No subject alternative "
                         + "DNS name matching www.testingmcafeesites.com found.)"));
         assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
     }
@@ -152,7 +152,7 @@ class ScanDocsifyTest {
         assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString()
-                .contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
+                .contains("  - https://www.testingmcafeesites.com/ ((certificate_unknown) No subject alternative "
                         + "DNS name matching www.testingmcafeesites.com found.)"));
         assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder-one/page (file not found)"));
@@ -199,7 +199,7 @@ class ScanDocsifyTest {
         assertTrue(sw.toString().contains("Total    16        7         2     25"));
         assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
         assertTrue(sw.toString()
-                .contains("  - https://www.testingmcafeesites.com/ (No subject alternative "
+                .contains("  - https://www.testingmcafeesites.com/ ((certificate_unknown) No subject alternative "
                         + "DNS name matching www.testingmcafeesites.com found.)"));
         assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));
         assertTrue(sw.toString().contains("  - /doesNotExist/folder-one/page (file not found)"));

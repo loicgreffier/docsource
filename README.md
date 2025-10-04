@@ -45,7 +45,7 @@ Command-line interface for detecting broken links in Markdown documentation file
 You can download Docsource from the [GitHub releases page](https://github.com/loicgreffier/docsource/releases).
 It is available in the following formats:
 
-- JAR (requires Java 21)
+- JAR (requires Java 25)
 - Windows
 - Linux AMD64 (statically linked with Musl)
 - Linux ARM64
