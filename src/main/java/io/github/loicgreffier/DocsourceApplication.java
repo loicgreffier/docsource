@@ -48,7 +48,7 @@ public class DocsourceApplication implements CommandLineRunner {
      *
      * @param args The command line arguments.
      */
-    public static void main(String[] args) {
+    static void main(String[] args) {
         SpringApplication.run(DocsourceApplication.class, args);
     }
 
@@ -62,7 +62,7 @@ public class DocsourceApplication implements CommandLineRunner {
         int exitCode;
         try (
         // Colors on Windows CMD (including for native)
-        AnsiConsole ansi = AnsiConsole.windowsInstall()) {
+        var _ = AnsiConsole.windowsInstall()) {
             exitCode = new CommandLine(docsource, factory).execute(args);
         }
         System.exit(exitCode);
