@@ -18,17 +18,14 @@
  */
 package io.github.loicgreffier.property;
 
-import io.github.loicgreffier.util.VersionProvider;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.aot.hint.annotation.RegisterReflectionForBinding;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 /** This class represents the application properties. */
 @Getter
 @Setter
-@RegisterReflectionForBinding(VersionProvider.class)
 @Configuration
 @ConfigurationProperties(prefix = "app")
 public class AppProperties {

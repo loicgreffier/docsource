@@ -232,12 +232,6 @@ jobs:
       - name: Build
         run: mvn clean package -Pnative -PnativeTest ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
 
-      - name: Display Reflect Json
-        if: always()
-        run: |
-          ls -lrt target
-          cat target/spring-aot/main/resources/META-INF/native-image/io.github.loicgreffier/docsource/reflect-config.json
-
       - name: Publish native test report
         if: always()
         uses: mikepenz/action-junit-report@v5
