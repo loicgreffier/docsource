@@ -160,7 +160,7 @@ public class Scan implements Callable<Integer> {
                         if (docsource.verbose) {
                             commandSpec.commandLine().getOut().println();
                         }
-                    } catch (IOException e) {
+                    } catch (IOException _) {
                         commandSpec.commandLine().getErr().println("Cannot get links from file " + file + ".");
                     }
                 });
@@ -168,7 +168,7 @@ public class Scan implements Callable<Integer> {
                 if (!docsource.verbose) {
                     commandSpec.commandLine().getOut().println();
                 }
-            } catch (IOException e) {
+            } catch (IOException _) {
                 commandSpec.commandLine().getErr().println("Error while looking up the framework.");
             }
         });
@@ -253,7 +253,7 @@ public class Scan implements Callable<Integer> {
                         .build());
 
         if (links.isEmpty() && docsource.verbose) {
-            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found.\n"));
+            commandSpec.commandLine().getOut().println(Help.Ansi.AUTO.string("No link found."));
             return;
         }
 
@@ -387,7 +387,7 @@ public class Scan implements Callable<Integer> {
                     .getOut()
                     .println(Help.Ansi.AUTO.string("Found @|bold " + files.size() + " file(s)|@ to scan"));
             return files;
-        } catch (IOException e) {
+        } catch (IOException _) {
             commandSpec.commandLine().getErr().println("Cannot retrieve files from directory " + scanFile);
         }
 
