@@ -33,6 +33,7 @@ public class VersionProvider implements IVersionProvider {
     private AppProperties appProperties;
 
     /** Constructor. */
+    @Reflective
     public VersionProvider() {}
 
     /**
