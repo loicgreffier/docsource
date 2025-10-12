@@ -19,6 +19,7 @@
 package io.github.loicgreffier.util;
 
 import io.github.loicgreffier.property.AppProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import picocli.CommandLine.IVersionProvider;
