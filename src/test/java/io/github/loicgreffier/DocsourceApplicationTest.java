@@ -21,9 +21,11 @@ package io.github.loicgreffier;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledInNativeImage;
 import org.springframework.boot.SpringApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
+@DisabledInNativeImage
 class DocsourceApplicationTest {
 
     @Test
