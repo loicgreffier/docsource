@@ -53,21 +53,8 @@
 
         <dependency>
             <groupId>info.picocli</groupId>
-            <artifactId>picocli-jansi-graalvm</artifactId>
-            <version>${picocli.jansi.graalvm.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>info.picocli</groupId>
             <artifactId>picocli-spring-boot-starter</artifactId>
             <version>${picocli.version}</version>
-        </dependency>
-
-        <!-- Colors on Windows CMD (including for native) -->
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>${jansi.version}</version>
         </dependency>
 
         <dependency>
