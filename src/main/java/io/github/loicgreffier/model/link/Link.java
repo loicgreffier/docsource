@@ -18,15 +18,15 @@
  */
 package io.github.loicgreffier.model.link;
 
-import static org.fusesource.jansi.Ansi.Color.GREEN;
-import static org.fusesource.jansi.Ansi.Color.RED;
-
 import java.io.File;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.fusesource.jansi.Ansi;
+import org.jline.jansi.Ansi;
+
+import static org.jline.jansi.Ansi.Color.GREEN;
+import static org.jline.jansi.Ansi.Color.RED;
 
 /** This class represents a link. */
 @Getter
