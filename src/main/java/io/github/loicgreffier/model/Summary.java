@@ -18,42 +18,14 @@
  */
 package io.github.loicgreffier.model;
 
-import lombok.Getter;
-
 /** This class represents the summary of the scan. */
-@Getter
-public class Summary {
-    private Long successRelative;
-    private Long successExternal;
-    private Long successMail;
-    private Long brokenRelative;
-    private Long brokenExternal;
-    private Long brokenMail;
-
-    /**
-     * Constructor.
-     *
-     * @param successRelative The number of relative links that are not broken.
-     * @param successExternal The number of external links that are not broken.
-     * @param successMail The number of mail links that are not broken.
-     * @param brokenRelative The number of relative links that are broken.
-     * @param brokenExternal The number of external links that are broken.
-     * @param brokenMail The number of mail links that are broken.
-     */
-    public Summary(
-            Long successRelative,
-            Long successExternal,
-            Long successMail,
-            Long brokenRelative,
-            Long brokenExternal,
-            Long brokenMail) {
-        this.successRelative = successRelative;
-        this.successExternal = successExternal;
-        this.successMail = successMail;
-        this.brokenRelative = brokenRelative;
-        this.brokenExternal = brokenExternal;
-        this.brokenMail = brokenMail;
-    }
+public record Summary(
+        Long successRelative,
+        Long successExternal,
+        Long successMail,
+        Long brokenRelative,
+        Long brokenExternal,
+        Long brokenMail) {
 
     /**
      * Count the number of broken links.

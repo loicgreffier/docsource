@@ -52,29 +52,29 @@ public class ExternalLink extends Link {
     @Override
     public void validate() {
         try {
-            HttpClient client = buildHttpClient(validationOptions.isInsecure());
+            try (HttpClient client = buildHttpClient(validationOptions.isInsecure())) {
+                HttpRequest request = HttpRequest.newBuilder()
+                        // Modify user-agent for websites with protection against Java HTTP clients
+                        .setHeader(
+                                "User-Agent",
+                                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+                                        + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
+                        .setHeader("Accept", "*/*")
+                        .uri(URI.create(path))
+                        .GET()
+                        .build();
 
-            HttpRequest request = HttpRequest.newBuilder()
-                    // Modify user-agent for websites with protection against Java HTTP clients
-                    .setHeader(
-                            "User-Agent",
-                            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-                                    + "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/108.0.0.0 Safari/537.36")
-                    .setHeader("Accept", "*/*")
-                    .uri(URI.create(path))
-                    .GET()
-                    .build();
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                int code = response.statusCode();
+                if (response.statusCode() == HTTP_NOT_FOUND) {
+                    status = BROKEN;
+                } else {
+                    status = SUCCESS;
+                }
 
-            int code = response.statusCode();
-            if (response.statusCode() == HTTP_NOT_FOUND) {
-                status = BROKEN;
-            } else {
-                status = SUCCESS;
+                details = String.valueOf(code);
             }
-
-            details = String.valueOf(code);
         } catch (IllegalArgumentException | KeyManagementException | NoSuchAlgorithmException e) {
             status = BROKEN;
             details = e.getMessage();

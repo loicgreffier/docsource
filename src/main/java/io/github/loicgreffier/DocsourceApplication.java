@@ -62,7 +62,7 @@ public class DocsourceApplication implements CommandLineRunner {
         int exitCode;
         try (
         // Colors on Windows CMD (including for native)
-        AnsiConsole ansi = AnsiConsole.windowsInstall()) {
+        var _ = AnsiConsole.windowsInstall()) {
             exitCode = new CommandLine(docsource, factory).execute(args);
         }
         System.exit(exitCode);

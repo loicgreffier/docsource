@@ -26,9 +26,9 @@
         <commons-io.version>2.20.0</commons-io.version>
         <jacoco-maven-plugin.version>0.8.13</jacoco-maven-plugin.version>
         <jansi.version>2.4.2</jansi.version>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
         <lombok.version>1.18.42</lombok.version>
-        <palantir.version>2.58.0</palantir.version>
+        <palantir.version>2.75.0</palantir.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
         <picocli.version>4.7.7</picocli.version>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -74,8 +74,9 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <scope>provided</scope>
+            <optional>true</optional>
         </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter</artifactId>
@@ -156,6 +157,25 @@
             </plugin>
 
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>info.picocli</groupId>
+                            <artifactId>picocli-codegen</artifactId>
+                            <version>${picocli.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <plugin>
                 <groupId>org.graalvm.buildtools</groupId>
                 <artifactId>native-maven-plugin</artifactId>
             </plugin>
@@ -185,6 +205,14 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
             </plugin>
         </plugins>
     </build>
@@ -198,7 +226,7 @@
                         <groupId>org.graalvm.buildtools</groupId>
                         <artifactId>native-maven-plugin</artifactId>
                         <configuration>
-                            <imageName>${artifactId}-${version}</imageName>
+                            <imageName>${project.artifactId}-${project.version}</imageName>
                         </configuration>
                         <executions>
                             <execution>
