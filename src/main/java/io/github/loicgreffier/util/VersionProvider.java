@@ -26,25 +26,11 @@ import org.springframework.stereotype.Component;
 import picocli.CommandLine.IVersionProvider;
 
 /** This class provides the current application version for -V option. */
-@Reflective
-@Component
-@Scope("singleton")
 public class VersionProvider implements IVersionProvider {
     private AppProperties appProperties;
 
     /** Constructor. */
-    @Reflective
     public VersionProvider() {}
-
-    /**
-     * Constructor.
-     *
-     * @param appProperties The application properties.
-     */
-    @Autowired
-    public VersionProvider(AppProperties appProperties) {
-        this.appProperties = appProperties;
-    }
 
     /**
      * Get the current application version.
@@ -53,6 +39,6 @@ public class VersionProvider implements IVersionProvider {
      */
     @Override
     public String[] getVersion() {
-        return new String[] {"Version " + appProperties.getVersion()};
+        return new String[] {"Version 1.0"};
     }
 }

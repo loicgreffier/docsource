@@ -234,7 +234,9 @@ jobs:
 
       - name: Display Reflect Json
         if: always()
-        run: cat target/spring-aot/main/resources/META-INF/native-image/io.github.loicgreffier/docsource/reflect-config.json
+        run: |
+          ls -lrt target
+          cat target/spring-aot/main/resources/META-INF/native-image/io.github.loicgreffier/docsource/reflect-config.json
 
       - name: Publish native test report
         if: always()
