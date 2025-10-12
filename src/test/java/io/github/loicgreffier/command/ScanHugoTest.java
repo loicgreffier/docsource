@@ -58,4 +58,27 @@ class ScanHugoTest {
         assertTrue(sw.toString().contains("Broken   0         0         0     0"));
         assertTrue(sw.toString().contains("Total    12        0         0     12"));
     }
+
+    @Test
+    void shouldScanHugoInVerboseMode() {
+        Docsource docsource = new Docsource();
+        docsource.verbose = true;
+
+        Scan scan = new Scan();
+        scan.docsource = docsource;
+        CommandLine cmd = new CommandLine(scan);
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
+
+        int code = cmd.execute("-r", ".");
+
+        assertEquals(0, code);
+
+        assertTrue(sw.toString().contains("Looking up framework..."));
+        assertTrue(sw.toString().contains("Hugo framework detected."));
+        assertTrue(sw.toString().contains("Found 4 file(s) to scan"));
+        assertTrue(sw.toString().contains("Success  12        0         0     12"));
+        assertTrue(sw.toString().contains("Broken   0         0         0     0"));
+        assertTrue(sw.toString().contains("Total    12        0         0     12"));
+    }
 }

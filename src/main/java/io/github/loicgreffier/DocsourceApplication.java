@@ -20,6 +20,7 @@ package io.github.loicgreffier;
 
 import io.github.loicgreffier.command.Docsource;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.ExitCodeGenerator;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import picocli.CommandLine;
@@ -28,9 +29,10 @@ import picocli.jansi.graalvm.AnsiConsole;
 
 /** This is the main class for the Docsource application. */
 @SpringBootApplication
-public class DocsourceApplication implements CommandLineRunner {
+public class DocsourceApplication implements CommandLineRunner, ExitCodeGenerator {
     private final IFactory factory;
     private final Docsource docsource;
+    private int exitCode;
 
     /**
      * Constructor.
@@ -44,12 +46,12 @@ public class DocsourceApplication implements CommandLineRunner {
     }
 
     /**
-     * The main entry point of the Docsource application.
+     * Main entry point of the Docsource application.
      *
      * @param args The command line arguments.
      */
     public static void main(String[] args) {
-        SpringApplication.run(DocsourceApplication.class, args);
+        System.exit(SpringApplication.exit(SpringApplication.run(DocsourceApplication.class, args)));
     }
 
     /**
@@ -59,12 +61,19 @@ public class DocsourceApplication implements CommandLineRunner {
      */
     @Override
     public void run(String... args) {
-        int exitCode;
-        try (
         // Colors on Windows CMD (including for native)
-        var _ = AnsiConsole.windowsInstall()) {
+        try (var _ = AnsiConsole.windowsInstall()) {
             exitCode = new CommandLine(docsource, factory).execute(args);
         }
-        System.exit(exitCode);
+    }
+
+    /**
+     * Get the exit code of the application.
+     *
+     * @return The exit code.
+     */
+    @Override
+    public int getExitCode() {
+        return exitCode;
     }
 }
