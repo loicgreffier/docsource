@@ -77,6 +77,43 @@ class ScanDocsifyTest {
     }
 
     @Test
+    void shouldScanDocsifyInVerboseMode() {
+        Docsource docsource = new Docsource();
+        docsource.verbose = true;
+
+        Scan scan = new Scan();
+        scan.docsource = docsource;
+        CommandLine cmd = new CommandLine(scan);
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
+
+        int code = cmd.execute("-r", ".");
+
+        assertNotEquals(0, code);
+
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Looking up framework..."));
+        assertTrue(sw.toString().contains("Docsify framework detected."));
+        assertTrue(sw.toString().contains("Found 3 file(s) to scan"));
+        assertTrue(sw.toString().contains("Success  16        5         1     22"));
+        assertTrue(sw.toString().contains("Broken   7         2         1     10"));
+        assertTrue(sw.toString().contains("Total    23        7         2     32"));
+        assertTrue(sw.toString().contains("  - ./folder-two/page (file not found)"));
+        assertTrue(sw.toString().contains("  - images/image.jpg (image not found)"));
+        assertTrue(sw.toString().contains("  - /doesNotExist/folder/page (file not found)"));
+        assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
+        assertTrue(sw.toString()
+                .contains("  - https://www.testingmcafeesites.com/ ((certificate_unknown) No subject alternative "
+                        + "DNS name matching www.testingmcafeesites.com found.)"));
+        assertTrue(sw.toString().contains("  - ./does-not-exist (file not found)"));
+        assertTrue(sw.toString().contains("  - /doesNotExist/folder-one/page (file not found)"));
+        assertTrue(sw.toString().contains("  - /docsify/README (file not found)"));
+        assertTrue(sw.toString().contains("  - /folder-one (file not found)"));
+        assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
+    }
+
+    @Test
     void shouldScanDocsifySkippingExternalLinks() {
         Scan scan = new Scan();
         scan.docsource = new Docsource();

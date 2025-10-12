@@ -70,6 +70,36 @@ class ScanCustomTest {
     }
 
     @Test
+    void shouldScanCustomInVerboseMode() {
+        Docsource docsource = new Docsource();
+        docsource.verbose = true;
+
+        Scan scan = new Scan();
+        scan.docsource = docsource;
+        CommandLine cmd = new CommandLine(scan);
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
+
+        int code = cmd.execute("-r", "-A", "--content-directory=src/content", "--image-directory=src", ".");
+
+        assertNotEquals(0, code);
+
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Looking up framework..."));
+        assertTrue(sw.toString().contains("No framework detected."));
+        assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
+        assertTrue(sw.toString().contains("Success  9         3         1     13"));
+        assertTrue(sw.toString().contains("Broken   3         1         1     5"));
+        assertTrue(sw.toString().contains("Total    12        4         2     18"));
+        assertTrue(sw.toString().contains("  - https://www.gogle.fr/ (invalid URL)"));
+        assertTrue(sw.toString().contains("  - ./folder-two/does-not-exist (file not found)"));
+        assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
+        assertTrue(sw.toString().contains("  - mailto:testgmail (bad format)"));
+        assertTrue(sw.toString().contains("  - content/folder-one/images/imageNotFound.jpg (image not found)"));
+    }
+
+    @Test
     void shouldScanCustomSkippingExternalLinks() {
         Scan scan = new Scan();
         scan.docsource = new Docsource();
@@ -164,6 +194,40 @@ class ScanCustomTest {
 
         log.info(sw.toString());
 
+        assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
+        assertTrue(sw.toString().contains("Success  Skipped   Skipped   Skipped  0"));
+        assertTrue(sw.toString().contains("Broken   Skipped   Skipped   Skipped  0"));
+        assertTrue(sw.toString().contains("Total    0         0         0        0"));
+    }
+
+    @Test
+    void shouldScanCustomSkippingAllLinksInVerboseMode() {
+        Docsource docsource = new Docsource();
+        docsource.verbose = true;
+
+        Scan scan = new Scan();
+        scan.docsource = docsource;
+        CommandLine cmd = new CommandLine(scan);
+        StringWriter sw = new StringWriter();
+        cmd.setOut(new PrintWriter(sw));
+
+        int code = cmd.execute(
+                "-r",
+                "-A",
+                "--content-directory=src/content",
+                "--image-directory=src",
+                "--skip-external",
+                "--skip-relative",
+                "--skip-mailto",
+                ".");
+
+        assertEquals(0, code);
+
+        log.info(sw.toString());
+
+        assertTrue(sw.toString().contains("Skip external links requested."));
+        assertTrue(sw.toString().contains("Skip relative links requested."));
+        assertTrue(sw.toString().contains("Skip mailto links requested."));
         assertTrue(sw.toString().contains("Found 2 file(s) to scan"));
         assertTrue(sw.toString().contains("Success  Skipped   Skipped   Skipped  0"));
         assertTrue(sw.toString().contains("Broken   Skipped   Skipped   Skipped  0"));
