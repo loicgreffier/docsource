@@ -1,0 +1,153 @@
+name: Security
+
+on:
+  schedule:
+    - cron: '0 5 * * 1-5'
+  workflow_dispatch:
+
+jobs:
+  scan-code:
+    name: Scan code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Grype source code
+        id: grype_source_code
+        uses: anchore/scan-action@v7
+        with:
+          path: .
+          fail-build: false
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype source code report
+        if: steps.grype_source_code.outputs.sarif != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.grype_source_code.outputs.sarif }}
+          category: source-code
+
+  scan-docker:
+    name: Scan Docker ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ 'linux/amd64', 'linux/arm64' ]
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
+          restore-keys: ${{ runner.os }}-m2
+
+      - name: Build
+        run: mvn clean package -DskipTests
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Metadata
+        id: metadata
+        run: |
+          platform_slug=$(echo ${{ matrix.platform }} | sed 's/\//-/g')
+          echo platform_slug=$platform_slug >> $GITHUB_OUTPUT
+          echo image_name=loicgreffier/docsource:$platform_slug-jar >> $GITHUB_OUTPUT
+
+      - name: Docker build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/jar.Dockerfile
+          platforms: ${{ matrix.platform }}
+          push: false
+          load: true
+          tags: ${{ steps.metadata.outputs.image_name }}
+        env:
+          DOCKER_BUILD_SUMMARY: false
+
+      - name: Grype Docker image
+        id: grype_docker_image
+        uses: anchore/scan-action@v7
+        with:
+          image: ${{ steps.metadata.outputs.image_name }}
+          fail-build: false
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype Docker image report
+        if: steps.grype_docker_image.outputs.sarif != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.grype_docker_image.outputs.sarif }}
+          category: docker-image-${{ steps.metadata.outputs.platform_slug }}
+
+  scan-docker-native:
+    name: Scan Docker Native Image ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [ 'linux/amd64', 'linux/arm64' ]
+    steps:
+      - name: Checkout project
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up GraalVM
+        uses: graalvm/setup-graalvm@v1
+        with:
+          distribution: 'graalvm'
+          java-version: '25'
+          native-image-musl: ${{ matrix.os == 'ubuntu-latest' }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build
+        run: mvn clean package -Pnative ${{ matrix.os == 'ubuntu-latest' && '-Pnative-static-musl' || '' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Metadata
+        id: metadata
+        run: |
+          platform_slug=$(echo ${{ matrix.platform }} | sed 's/\//-/g')
+          echo platform_slug=$platform_slug >> $GITHUB_OUTPUT
+          echo image_name=loicgreffier/docsource:$platform_slug >> $GITHUB_OUTPUT
+
+      - name: Docker build
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: .docker/Dockerfile
+          platforms: ${{ matrix.platform }}
+          push: false
+          load: true
+          tags: ${{ steps.metadata.outputs.image_name }}
+        env:
+          DOCKER_BUILD_SUMMARY: false
+
+      - name: Grype Docker image
+        id: grype_docker_image
+        uses: anchore/scan-action@v7
+        with:
+          image: ${{ steps.metadata.outputs.image_name }}
+          fail-build: false
+          severity-cutoff: high
+          only-fixed: true
+
+      - name: Upload Grype Docker image report
+        if: always() && steps.grype_docker_image.outputs.sarif != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: ${{ steps.grype_docker_image.outputs.sarif }}
+          category: docker-image-native-${{ steps.metadata.outputs.platform_slug }}
