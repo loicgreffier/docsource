@@ -82,7 +82,7 @@ jobs:
           file: .docker/jar.Dockerfile
           platforms: linux/amd64,linux/arm64
           push: ${{ github.ref == 'refs/heads/main' && 'true' || 'false' }}
-          tags: loicgreffier/docsource:${{ needs.build-jar.outputs.current_version }}-jar
+          tags: loicgreffier/docsource:${{ steps.metadata.outputs.current_version }}-jar
         env:
           DOCKER_BUILD_SUMMARY: false
 
