@@ -109,10 +109,8 @@ jobs:
         include:
           - os: 'ubuntu-latest'
             platform: 'linux-amd64'
-            extension: ''
           - os: 'ubuntu-24.04-arm'
             platform: 'linux-arm64'
-            extension: ''
     steps:
       - name: Checkout project
         uses: actions/checkout@v5
@@ -145,7 +143,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: docsource-${{ matrix.platform }}
-          path: target/docsource-${{ steps.metadata.outputs.current_version }}${{ matrix.extension }}
+          path: target/docsource-${{ steps.metadata.outputs.current_version }}
 
   scan-docker-native:
     name: Scan Docker Native Image ${{ matrix.platform }}
