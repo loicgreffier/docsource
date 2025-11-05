@@ -26,6 +26,7 @@ jobs:
           format: sarif
           output: trivy-results.sarif
           ignore-unfixed: true
+          limit-severities-for-sarif: true
 
       - name: Upload Trivy source code report
         if: always()
@@ -95,6 +96,7 @@ jobs:
           format: sarif
           output: trivy-results.sarif
           ignore-unfixed: true
+          limit-severities-for-sarif: true
 
       - name: Upload Trivy Docker image report
         if: always()
@@ -201,6 +203,7 @@ jobs:
           format: sarif
           output: trivy-results.sarif
           ignore-unfixed: true
+          limit-severities-for-sarif: true
 
       - name: Upload Trivy Docker image report
         if: always()
