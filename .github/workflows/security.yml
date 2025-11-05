@@ -86,8 +86,7 @@ jobs:
           DOCKER_BUILD_SUMMARY: false
 
       - name: Trivy Docker image
-        id: trivy_docker_image
-        uses: anchore/scan-action@v7
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: image
           image-ref: ${{ steps.metadata.outputs.image_name }}
@@ -193,8 +192,7 @@ jobs:
           DOCKER_BUILD_SUMMARY: false
 
       - name: Trivy Docker image
-        id: trivy_docker_image
-        uses: anchore/scan-action@v7
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: image
           image-ref: ${{ steps.metadata.outputs.image_name }}
@@ -208,5 +206,5 @@ jobs:
         if: always()
         uses: github/codeql-action/upload-sarif@v4
         with:
-          sarif_file: ${{ steps.trivy_docker_image.outputs.sarif }}
+          sarif_file: trivy-results.sarif
           category: docker-image-native-${{ steps.metadata.outputs.platform_slug }}
