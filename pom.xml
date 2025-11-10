@@ -227,6 +227,9 @@
                         <artifactId>native-maven-plugin</artifactId>
                         <configuration>
                             <imageName>${project.artifactId}-${project.version}</imageName>
+                            <buildArgs>
+                                <buildArg>--enable-native-access=ALL-UNNAMED</buildArg>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>
