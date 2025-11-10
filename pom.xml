@@ -227,6 +227,10 @@
                         <artifactId>native-maven-plugin</artifactId>
                         <configuration>
                             <imageName>${project.artifactId}-${project.version}</imageName>
+                            <buildArgs>
+                                <!-- https://github.com/fusesource/jansi/issues/301 -->
+                                <buildArg>--enable-native-access=ALL-UNNAMED</buildArg>
+                            </buildArgs>
                         </configuration>
                         <executions>
                             <execution>
