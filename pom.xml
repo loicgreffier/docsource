@@ -23,7 +23,7 @@
     </scm>
 
     <properties>
-        <commons-io.version>2.20.0</commons-io.version>
+        <commons-io.version>2.21.0</commons-io.version>
         <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
         <jansi.version>2.4.2</jansi.version>
         <java.version>25</java.version>
