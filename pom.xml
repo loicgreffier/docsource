@@ -31,6 +31,7 @@
         <palantir.version>2.75.0</palantir.version>
         <picocli.jansi.graalvm.version>1.2.0</picocli.jansi.graalvm.version>
         <picocli.version>4.7.7</picocli.version>
+        <sonar-maven-plugin.version>5.3.0.6276</sonar-maven-plugin.version>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>loicgreffier</sonar.organization>
         <sonar.projectKey>loicgreffier_docsource</sonar.projectKey>
@@ -200,6 +201,12 @@
                         <phase>test</phase>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>${sonar-maven-plugin.version}</version>
             </plugin>
 
             <plugin>
