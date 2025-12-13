@@ -1,5 +1,7 @@
 <div align="center">
 
+This project is archived and is no longer being developed or maintained.
+
 <img src=".readme/logo.svg" alt="Docsource"/>
 
 # Docsource
