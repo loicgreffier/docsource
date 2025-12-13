@@ -87,7 +87,7 @@ jobs:
           DOCKER_BUILD_SUMMARY: false
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: docsource-jar
           path: target/docsource-${{ steps.metadata.outputs.current_version }}.jar
@@ -152,7 +152,7 @@ jobs:
         shell: bash
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: docsource-${{ matrix.platform }}
           path: target/docsource-${{ steps.metadata.outputs.current_version }}${{ matrix.extension }}
